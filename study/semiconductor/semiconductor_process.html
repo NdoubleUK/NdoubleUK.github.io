@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>반도체 공정 정리</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --primary: #6366f1;
+            --text: #e5e7eb;
+            --sub: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--sub);
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+            .section h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+                border-left: 4px solid var(--primary);
+                padding-left: 10px;
+            }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--sub);
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--sub);
+            text-decoration: none;
+        }
+
+            .back:hover {
+                color: var(--text);
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <a href="study.html" class="back">← Study로 돌아가기</a>
+
+        <h1>반도체 공정 정리</h1>
+        <p class="subtitle">전체 공정 흐름 및 핵심 포인트 정리</p>
+
+        <div class="section">
+            <h2>1. 개요</h2>
+            <div class="card">
+                <p>
+                    반도체 제조 공정은 웨이퍼 위에 회로를 형성하는 일련의 과정으로,
+                    전공정(FEOL)과 후공정(BEOL)으로 구분된다.
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 전체 공정 흐름</h2>
+            <div class="card">
+                <ul>
+                    <li>산화 (Oxidation)</li>
+                    <li>포토 공정 (Photolithography)</li>
+                    <li>식각 (Etching)</li>
+                    <li>증착 (Deposition)</li>
+                    <li>이온 주입 (Ion Implantation)</li>
+                    <li>금속 배선 (Metalization)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 주요 공정 설명</h2>
+            <div class="card">
+                <ul>
+                    <li><b>포토 공정</b>: 회로 패턴을 웨이퍼에 형성</li>
+                    <li><b>식각</b>: 불필요한 영역 제거</li>
+                    <li><b>증착</b>: 박막 형성</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. 검사 공정 (Inspection)</h2>
+            <div class="card">
+                <ul>
+                    <li>Pattern Defect 검출</li>
+                    <li>Overlay / Alignment 검사</li>
+                    <li>표면 결함 검사</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. 인사이트</h2>
+            <div class="card">
+                <ul>
+                    <li>미세 공정일수록 Alignment 중요성 증가</li>
+                    <li>검사 공정은 수율과 직결되는 핵심 단계</li>
+                    <li>조명 및 해상도 설계가 검출력에 큰 영향</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
