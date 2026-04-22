@@ -78,9 +78,24 @@
       color: var(--sub);
     }
 
-    .back:hover {
-      color: var(--text);
-    }
+    .breadcrumb {
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.breadcrumb a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #e5e7eb;
+}
+
+.breadcrumb span {
+  margin: 0 6px;
+}
 
   </style>
 </head>
@@ -88,8 +103,13 @@
 
 <div class="container">
   
-  <a href="../portfolio.html" class="back">← 메인으로 돌아가기</a>
-  <a href="../../index.html" class="back">← 홈으로 돌아가기</a>
+  <div class="breadcrumb">
+  <a href="../../index.html">홈</a>
+  <span>›</span>
+  <a href="../../index.html">Study Archive</a>
+  <span>›</span>
+  <span>UT Mod Chipping Project</span>
+</div>
 
   <h1>UT Mod Chipping Edge Inpection Machine</h1>
   <p class="subtitle">휴대폰 디스플레이 Cell 타겟의 Edge 불량 검사 시스템</p>
