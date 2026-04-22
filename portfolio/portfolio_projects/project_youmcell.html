@@ -78,9 +78,18 @@
       color: var(--sub);
     }
 
-    .back:hover {
-      color: var(--text);
-    }
+.breadcrumb a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #e5e7eb;
+}
+
+.breadcrumb span {
+  margin: 0 6px;
+}
 
   </style>
 </head>
@@ -88,8 +97,21 @@
 
 <div class="container">
 
-  <a href="../portfolio.html" class="back">← 메인으로 돌아가기</a>
-  <a href="../../index.html" class="back">← 홈으로 돌아가기</a>
+  <div class="breadcrumb">
+  <a href="../../index.html">홈</a>
+  <span>›</span>
+  <a href="../../index.html">Study Archive</a>
+  <span>›</span>
+  <span>YOUMCELL Project</span>
+</div>
+
+  <div class="container">
+
+  <div class="breadcrumb">
+  <a href="../index.html">홈</a>
+  <span>›</span>
+  <span>Study Archive</span>
+</div>
 
   <h1>Youm Cell External Inspection Machine</h1>
   <p class="subtitle">Flexible Cell 타겟의 외관 검사 시스템</p>
