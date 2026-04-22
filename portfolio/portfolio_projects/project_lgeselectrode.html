@@ -78,9 +78,24 @@
       color: var(--sub);
     }
 
-    .back:hover {
-      color: var(--text);
-    }
+    .breadcrumb {
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.breadcrumb a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #e5e7eb;
+}
+
+.breadcrumb span {
+  margin: 0 6px;
+}
 
   </style>
 </head>
@@ -88,8 +103,13 @@
 
 <div class="container">
 
-  <a href="../portfolio.html" class="back">← 메인으로 돌아가기</a>
-  <a href="../../index.html" class="back">← 홈으로 돌아가기</a>
+  <div class="breadcrumb">
+  <a href="../../index.html">홈</a>
+  <span>›</span>
+  <a href="../portfolio.html">Portfolio</a>
+  <span>›</span>
+  <span>Dry & Wet Electrode Inspection Project</span>
+</div>
 
   <h1>Dry & Wet Electrode External Inspection Machine (Coating Process)</h1>
   <p class="subtitle">건/습식 전극 외관 검사 시스템</p>
