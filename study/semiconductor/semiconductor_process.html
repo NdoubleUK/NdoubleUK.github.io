@@ -167,10 +167,23 @@
             .card li { 
                 margin-bottom: 8px; color: var(--sub); 
             } 
-        
+               
             .card li-desc { 
                 margin-top: 4px; font-size: 13px; color: var(--sub); padding-left: 10px; display: block;
             }
+
+        .card li-link {
+                  display: block;
+                  padding: 8px 10px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  color: var(--text);
+                  transition: 0.2s;
+                }
+
+        .card li-link:hover {
+          background: #1f2937;
+        }
 
         footer {
             text-align: center;
@@ -242,7 +255,11 @@
             <h2>2. 전체 공정 흐름</h2>
             <div class="card">
                 <ul>
-                    <li>웨이퍼 제조 공정</li>
+                    <li>
+                        <li-link href="semiconductor_wafer.html">
+                            웨이퍼 제조 공정
+                        </li-link>
+                    </li>
                     <li>산화 공정(Oxidation)</li>
                     <li>포토 공정 (Photolithography)</li>
                     <li>식각 공정(Etching)</li>
