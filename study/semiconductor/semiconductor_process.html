@@ -160,9 +160,17 @@
                 font-size: 14px;
             }
 
-            .card ul { padding-left: 20px; } 
-            .card li { margin-bottom: 8px; color: var(--sub); } 
-            .card li-desc { margin-top: 4px; font-size: 13px; color: var(--sub); padding-left: 10px; }
+            .card ul { 
+                padding-left: 20px; 
+            } 
+        
+            .card li { 
+                margin-bottom: 8px; color: var(--sub); 
+            } 
+        
+            .card li-desc { 
+                margin-top: 4px; font-size: 13px; color: var(--sub); padding-left: 10px; 
+            }
 
         footer {
             text-align: center;
@@ -214,10 +222,8 @@
     </header>
 
     <section class="hero">
-        <div class="hero">
-            <h3>반도체 공정의 이해</h3>
-            <p3>전체 공정 흐름 및 핵심 포인트 정리</p3>
-        </div>
+        <h3>반도체 공정의 이해</h3>
+        <p3>전체 공정 흐름 및 핵심 포인트 정리</p3>
     </section>
 
     <div class="container">
@@ -271,24 +277,24 @@
                     <ul>
                         <li>
                             IDM (Integrated Device Manufacturer)
-                            <div class="li-desc">"혼자 다 하는 회사"</div>
-                            <div class="li-desc">설계 + 제조(공정) + 패키징/테스트까지 전부 직접 수행</div>
-                            <div class="li-desc">즉, 반도체를 기획부터 생산까지 통합 운영</div>
-                            <div class="li-desc">대표 기업 : 삼성전자, 인텔 등</div>
+                            <li-desc>"혼자 다 하는 회사"</div>
+                            <li-desc>설계 + 제조(공정) + 패키징/테스트까지 전부 직접 수행</li-desc>
+                            <li-desc>즉, 반도체를 기획부터 생산까지 통합 운영</li-desc>
+                            <li-desc>대표 기업 : 삼성전자, 인텔 등</li-desc>
                         </li>
                         <li>
                             Fabless (팹리스)
-                            <div class="li-desc">"설계만 하는 회사"</div>
-                            <div class="li-desc">반도체 설계(디자인)만 하고 실제 생산은 파운드리에 맡김</div>
-                            <div class="li-desc">대표 기업 : NVIDIA, Qualcomm</div>
-                            <div class="li-desc">Fab은 Fabrication의 약자로 단순 공장의 의미보단 생산 라인으로 이해</div>
+                            <li-desc>"설계만 하는 회사"</li-desc>
+                            <li-desc>반도체 설계(디자인)만 하고 실제 생산은 파운드리에 맡김</li-desc>
+                            <li-desc>대표 기업 : NVIDIA, Qualcomm</li-desc>
+                            <li-desc>Fab은 Fabrication의 약자로 단순 공장의 의미보단 생산 라인으로 이해</li-desc>
                         </li>
                         <li>
                             Foundry (파운드리)
-                            <div class="li-desc">"생산만 하는 회사(반도체 공장)"</div>
-                            <div class="li-desc">팹리스가 설계한 칩을 대신 만들어주는 역할</div>
-                            <div class="li-desc">고객사 설계를 기반으로 웨이퍼 생산</div>
-                            <div class="li-desc">대표 기업 : TSMC, 삼성전자(파운드리 사업도 운영)</div>
+                            <li-desc>"생산만 하는 회사(반도체 공장)"</li-desc>
+                            <li-desc>팹리스가 설계한 칩을 대신 만들어주는 역할</li-desc>
+                            <li-desc>고객사 설계를 기반으로 웨이퍼 생산</li-desc>
+                            <li-desc>대표 기업 : TSMC, 삼성전자(파운드리 사업도 운영)</li-desc>
                         </li>
                     </ul>
                 </div>
