@@ -29,159 +29,192 @@
             line-height: 1.7;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 60px 20px;
+     header {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #1f2937;
+      z-index: 100;
+    }
+
+    nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h1 { font-size: 18px; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--sub);
+      transition: 0.3s;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 60px 20px;
+    }
+
+    h1 {
+        margin-bottom: 10px;
+}
+
+.subtitle {
+  color: var(--sub);
+  margin-bottom: 40px;
+}
+
+.sub-title-h3 {
+  margin: 20px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  border-left: 2px solid var(--primary);
+  padding-left: 8px;
+}
+
+    .section {
+        margin-bottom: 50px;
+    }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
         }
 
-        h1 {
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
+    .card {
+        background: var(--card);
+        margin-bottom : 24px;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 8px;
+        color: var(--sub);
+    }
+
+    .li-desc {
+          margin-top: 4px;
+          font-size: 13px;
           color: var(--sub);
-          margin-bottom: 40px;
-        }
-       
-        .sub-title-h3 {
-          margin: 20px 0 10px;
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--text);
-          border-left: 2px solid var(--primary);
-          padding-left: 8px;
+          padding-left: 10px;
         }
 
-        .section {
-            margin-bottom: 50px;
+    .back {
+        display: inline-block;
+        margin-bottom: 30px;
+        color: var(--sub);
+        text-decoration: none;
+    }
+
+        .back:hover {
+            color: var(--text);
         }
-
-            .section h2 {
-                font-size: 22px;
-                margin-bottom: 15px;
-                border-left: 4px solid var(--primary);
-                padding-left: 10px;
-            }
-
-        .card {
-            background: var(--card);
-            margin-bottom : 24px;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #1f2937;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            color: var(--sub);
-        }
-
-        .li-desc {
-              margin-top: 4px;
-              font-size: 13px;
-              color: var(--sub);
-              padding-left: 10px;
-            }
-
-        .back {
-            display: inline-block;
-            margin-bottom: 30px;
-            color: var(--sub);
-            text-decoration: none;
-        }
-
-            .back:hover {
-                color: var(--text);
-            }
-    </style>
+</style>
 </head>
-    <header>
 
-                  <div class="breadcrumb">
-                    <a href="../../index.html">홈</a>
-                    <span>›</span>
-                    <a href="../study.html">Study Archive</a>
-                    <span>›</span>
-                    <span>반도체 공정의 이해</span>
-                  </div>
-    </header>
+<header>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">홈</a>
+        <span>›</span>
+        <a href="../study.html">Study Archive</a>
+        <span>›</span>
+        <span>반도체 공정의 이해</span>
+      </div>
+</header>
 <body>
-                <div class="container">
+    <div class="container">
         <h1>반도체 공정의 이해</h1>
         <p class="subtitle">전체 공정 흐름 및 핵심 포인트 정리</p>
-
+    
         <div class="section">
             <h2>1. 개요</h2>
             <div class="card">
-                <p>
-                    반도체 제조 공정은 웨이퍼 위에 회로를 형성하는 일련의 과정으로,
-                    전공정(FEOL)과 후공정(BEOL)으로 구분된다.
-                </p>
-            </div>
+            <p>
+                반도체 제조 공정은 웨이퍼 위에 회로를 형성하는 일련의 과정으로,
+                전공정(FEOL)과 후공정(BEOL)으로 구분된다.
+            </p>
         </div>
-
-        <div class="section">
-            <h2>2. 전체 공정 흐름</h2>
-            <div class="card">
-                <ul>
-                    <li>웨이퍼 제조 공정</li>
-                    <li>산화 공정(Oxidation)</li>
-                    <li>포토 공정 (Photolithography)</li>
-                    <li>식각 공정(Etching)</li>
-                    <li>증착 공정(Deposition)</li>
-                    <li>이온 주입 공정(Ion Implantation)</li>
-                    <li>금속 배선 공정(Metalization)</li>
-                    <li>EDS 공정(Electrical Die Sorting)</li>
-                    <li>패키징 공정</li>
-                </ul>
-            </div>
+    </div>
+    <div class="section">
+        <h2>2. 전체 공정 흐름</h2>
+        <div class="card">
+            <ul>
+                <li>웨이퍼 제조 공정</li>
+                <li>산화 공정(Oxidation)</li>
+                <li>포토 공정 (Photolithography)</li>
+                <li>식각 공정(Etching)</li>
+                <li>증착 공정(Deposition)</li>
+                <li>이온 주입 공정(Ion Implantation)</li>
+                <li>금속 배선 공정(Metalization)</li>
+                <li>EDS 공정(Electrical Die Sorting)</li>
+                <li>패키징 공정</li>
+            </ul>
         </div>
-
-        <div class="section">
-            <h2>3. 전공정과 후공정의 비교</h2>
-            <div class="card">
-                <h3 class="sub-title-h3">전공정 (FEOL) : 웨이퍼 제조 공정 ~ 금속 배선 공정</h3>
-                <ul>
-                   <li>주로 미국 or 일본의 기술력 있는 회사 (국내 회사들도 있음)</li>
-                   <li>기술 구현이 어려우면서 수익성이 높음</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3 class="sub-title-h3">후공정 (BEOL) : EDS 공정~ 패키징 공정</h3>
-                <ul>
-                   <li>우리나라 산업의 대부분 (삼성전자, SK하이닉스 등)</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3 class="sub-title-h3">산업 용어</h3>
-                <ul>
-                   <li>IDM (Integrated Device Manufacturer)
-                       <div class="li-desc">"혼자 다 하는 회사"</div>
-                       <div class="li-desc">설계 + 제조(공정) + 패키징/테스트까지 전부 직접 수행</div>
-                       <div class="li-desc">즉, 반도체를 기획부터 생산까지 통합 운영</div>
-                       <div class="li-desc">대표 기업 : 삼성전자, 인텔 등</div>
-                   </li>
-                   <li>Fabless (팹리스)
-                        <div class="li-desc">"설계만 하는 회사"</div>
-                        <div class="li-desc">반도체 설계(디자인)만 하고 실제 생산은 파운드리에 맡김</div>
-                        <div class="li-desc">대표 기업 : NVIDIA, Qualcomm</div>
-                        <div class="li-desc">Fab은 Fabrication의 약자로 단순 공장의 의미보단 생산 라인으로 이해</div>
-                   </li>
-                   <li>Foundry (파운드리)
-                       <div class="li-desc">"생산만 하는 회사(반도체 공장)"</div>
-                       <div class="li-desc">팹리스가 설계한 칩을 대신 만들어주는 역할</div>
-                       <div class="li-desc">고객사 설계를 기반으로 웨이퍼 생산</div>
-                       <div class="li-desc">대표 기업 : TSMC, 삼성전자(파운드리 사업도 운영)</div>
-                   </li>
-                </ul>
-            </div>
+    </div>
+    <div class="section">
+        <h2>3. 전공정과 후공정의 비교</h2>
+        <div class="card">
+            <h3 class="sub-title-h3">전공정 (FEOL) : 웨이퍼 제조 공정 ~ 금속 배선 공정</h3>
+            <ul>
+               <li>주로 미국 or 일본의 기술력 있는 회사 (국내 회사들도 있음)</li>
+               <li>기술 구현이 어려우면서 수익성이 높음</li>
+            </ul>
         </div>
-   </div>
-
+        <div class="card">
+            <h3 class="sub-title-h3">후공정 (BEOL) : EDS 공정~ 패키징 공정</h3>
+            <ul>
+               <li>우리나라 산업의 대부분 (삼성전자, SK하이닉스 등)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3 class="sub-title-h3">산업 용어</h3>
+            <ul>
+               <li>IDM (Integrated Device Manufacturer)
+                   <div class="li-desc">"혼자 다 하는 회사"</div>
+                   <div class="li-desc">설계 + 제조(공정) + 패키징/테스트까지 전부 직접 수행</div>
+                   <div class="li-desc">즉, 반도체를 기획부터 생산까지 통합 운영</div>
+                   <div class="li-desc">대표 기업 : 삼성전자, 인텔 등</div>
+               </li>
+               <li>Fabless (팹리스)
+                    <div class="li-desc">"설계만 하는 회사"</div>
+                    <div class="li-desc">반도체 설계(디자인)만 하고 실제 생산은 파운드리에 맡김</div>
+                    <div class="li-desc">대표 기업 : NVIDIA, Qualcomm</div>
+                    <div class="li-desc">Fab은 Fabrication의 약자로 단순 공장의 의미보단 생산 라인으로 이해</div>
+               </li>
+               <li>Foundry (파운드리)
+                   <div class="li-desc">"생산만 하는 회사(반도체 공장)"</div>
+                   <div class="li-desc">팹리스가 설계한 칩을 대신 만들어주는 역할</div>
+                   <div class="li-desc">고객사 설계를 기반으로 웨이퍼 생산</div>
+                   <div class="li-desc">대표 기업 : TSMC, 삼성전자(파운드리 사업도 운영)</div>
+               </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>© 2026 NDoubleuK Portfolio</p>
+</footer>
 </body>
 </html>
