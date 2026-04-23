@@ -199,16 +199,31 @@
             font-size: 12px;
         }
 
-        .li-link {
-              display: block;
-              padding: 8px 10px;
-              border-radius: 6px;
-              text-decoration: none;
-              color: var(--sub);
-            }
-            
-        .li-link:hover {
-          background: #1f2937;
+        .detail-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 10px;
+          padding: 6px 12px;
+          font-size: 13px;
+          color: var(--primary);
+          border: 1px solid var(--primary);
+          border-radius: 999px;
+          text-decoration: none;
+          transition: 0.2s;
+        }
+        
+        .detail-btn:hover {
+          background: var(--primary);
+          color: white;
+        }
+        
+        .arrow {
+          transition: transform 0.2s;
+        }
+        
+        .detail-btn:hover .arrow {
+          transform: translateX(3px);
         }
     </style>
 </head>
@@ -255,12 +270,9 @@
             <div class="card">
                 <ul>
                    <li>
-                       <!--
-                      <a href="./semiconductor_wafer.html" class="li-link">
-                        웨이퍼 제조 공정
+                        <a href="./semiconductor_wafer.html" class="detail-btn">
+                        웨이퍼 제조 공정 <span class="arrow">→</span>
                       </a>
-                       -->
-                       웨이퍼 제조 공정
                     </li>
                     <li>산화 공정(Oxidation)</li>
                     <li>포토 공정 (Photolithography)</li>
