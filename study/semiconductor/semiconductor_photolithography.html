@@ -127,15 +127,10 @@
         <div class="card">
             <ul>
                 <li>산화공정 이후의 Wafer에 반도체 회로를 그려 넣는 공정</li>
-                <li>Wafer 위에 회로 패턴이 담긴 마스크 상을 빛을 이용해 비춰 회로를 그리는 공정</li>
-                <li>패턴 형성 방식은 사진 인화 과정과 유사함</li>
-                <li>집적도가 증가할수록 미세 공정 필요</li>
-                <li>
-                    미세 회로 패턴 구현은 포토 공정에 의해 결정됨
-                    <div class="li-desc">
-                        집적도가 높아질수록 포토 공정 기술 수준도 함께 요구됨
-                    </div>
-                </li>
+                <li>Wafer 위에 회로 패턴이 담긴 마스크 상을 빛을 이용해 비춰 회로를 그리기 때문에 Photo Lithography라는 이름이 붙여짐</li>
+                <li>패턴을 형성하는 방법은 흑백 사진을 만들 때, 필름에 형성된 상을 인화지에 인화하는 것과 유사함</li>
+                <li>반도체는 집적도가 증가할수록 칩을 구성하는 단위 소자 역시 미세 공정을 사용해 작게 만들어야 함</li>
+                <li>미세 회로 패턴 구현은 포토 공정에 의해 결정됨(집적도가 높아질수록 포토 공정 기술 수준도 함께 요구됨)</li>
             </ul>
         </div>
     </div>
@@ -143,23 +138,22 @@
     <div class="section">
         <h2>2. 전체 공정 흐름</h2>
         <div class="card">
-
-            <h3>① 회로 설계</h3>
+            <h3>① 웨이퍼에 회로 패턴을 만드는 준비 단계</h3>
             <ul>
-                <li>CAD를 이용해 Wafer에 그려 넣을 회로 설계</li>
-                <li>설계 정밀도가 반도체 집적도에 직접적인 영향</li>
+                <li>CAD(Computer-aided design)를 이용해 Wafer에 그려 넣을 회로를 설계</li>
+                <li>전자회로 패턴으로 설계되는 이 도면에 엔지니어들이 설계한 정밀회로를 담으며, 그 정밀도가 반도체의 집적도를 결정</li>
             </ul>
 
-            <h3>② 포토마스크 제작</h3>
+            <h3>② 사진 원판의 역할을 하는 포토마스크 만들기</h3>
             <div class="img-box">
-                <img src="../../images/photo_photomask.png" alt="포토마스크">
+                <img src="../../images/photo_photomask.png" alt="포토마스크(Photo Mask)">
             </div>
             <ul>
-                <li>석영 기판 위에 크롬으로 회로 형성</li>
-                <li>Reticle이라고도 불림</li>
-                <li>회로보다 크게 제작 후 축소 노광</li>
-                <li>
-                    국내 주요 업체
+                <li>포토마스크(Photo Mask) : 설계된 회로 패턴은 순도가 높은 석영(Quartz)을 가공해서 만든 기판 위에 크롬(Cr)으로 미세 회로를 형상화</li>
+                <li>마스크는 Reticle이라고도 부르는데, 이것은 회로 패턴을 고스란히 담은 필름으로 사진 원판의 기능을 하게 됨</li>
+                <li>마스크는 보다 세밀한 패터닝을 위해 반도체 회로보다 크게 제작되며, 렌즈를 이용 빛을 축소해 조사하게</li>
+                <li>Blank Mask : IC미세회로가 그려지지 않은 마스크</li>
+                <li>국내 주요 업체
                     <div class="li-desc">Blank Mask: S&S TECH</div>
                     <div class="li-desc">Photo Mask: S&S TECH, FST</div>
                     <div class="li-desc">Pellicle: FST</div>
@@ -168,11 +162,16 @@
 
             <h3>③ 감광액 도포</h3>
             <div class="img-box">
-                <img src="../../images/photo_photoresist.png" alt="감광액">
+                <img src="../../images/photo_photoresist.png" alt="감광액 도포">
             </div>
             <ul>
-                <li>Wafer 표면에 Photo Resist 도포</li>
-                <li>균일하고 얇은 막 형성이 중요</li>
+                <li>Wafer 표면에 빛에 민감한 물질인 감광액(PR, Photo Resist)을 골고루 바르는 작업</li>
+                <li>보다 고품질의 미세한 회로 패턴을 얻기 위해서는 감광액(PR) 막이 얇고 균일해야 하며 빛에 대한 감도가 높아야 함</li>
+                <li>국내 주요 업체
+                    <div class="li-desc">감광액 : 동진세미켐</div>
+                    <div class="li-desc">감광액 원료 : 이엔에프테크놀로, Purit</div>
+                    <div class="li-desc">위 업체들은 감광액 이외에도 식각 공정에 사용되는 여러가지 화학물질 제작</div>
+                </li>
             </ul>
 
             <h3>④ 노광</h3>
@@ -180,23 +179,24 @@
                 <img src="../../images/photo_stepper.png" alt="노광">
             </div>
             <ul>
-                <li>마스크 패턴을 빛으로 Wafer에 전사</li>
-                <li>EUV 장비 대표 기업: ASML</li>
+                <li>노광(Stepper Exposure) : 감광액 막을 형성한 Wafer위에 노광장비를 사용해 회로 패턴이 담긴 마스크에 빛을 통과시켜 회로를 찍어내는 공정</li>
+                <li>반도체 공정에서의 노광은 빛을 선택적으로 조사하는 과정</li>
+                <li>대표적인 EUV 장비 제조 회사 = ASML (네덜란드)</li>
             </ul>
 
-            <h3>⑤ 현상</h3>
+            <h3>⑤ 현상 공정</h3>
             <div class="img-box">
                 <img src="../../images/photo_develop.png" alt="현상">
             </div>
             <ul>
-                <li>노광된 영역 선택 제거</li>
-                <li>패턴 형상이 결정되는 핵심 단계</li>
+                <li>웨이퍼에 현상액을 뿌려 가며 노광된 영역과 노광 되지 않은 영역을 선택적으로 제거해 회로 패턴을 형성하는 공정</li>
+                <li>포토공정의 마지막 단계로 일반 사진을 현상하는 과정과 동일하며, 패턴의 형상이 결정되기 대문에 매우 중요함</li>
             </ul>
 
             <h3>⑥ 검사</h3>
             <ul>
-                <li>광학 장비로 패턴 검사</li>
-                <li>결함 검출 및 품질 확인</li>
+                <li>각종 측정 장비와 광학 현미경 등을 통해 패턴이 잘 그려졌는지 검사를 진행</li>
+                <li>이 부분에는 어떤게 있을까? 찾아보는 것도 좋을 것 같아</li>
             </ul>
 
         </div>
