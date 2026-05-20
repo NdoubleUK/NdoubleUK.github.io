@@ -166,12 +166,12 @@
             <span>›</span>
             <a href="./semiconductor_process.html">반도체 공정의 이해</a>
             <span>›</span>
-            <span>증착 공정 (Deposition)</span>
+            <span>금속 배선 공정 (Metal Interconnect)</span>
         </div>
     </div>
 
     <nav>
-        <h3>증착 공정 (Deposition)</h3>
+        <h3>금속 배선 공정 (Metal Interconnect)</h3>
         <!--<ul>
             <li><a href="#projects">네이게이션추가</a></li>
         </ul>-->
@@ -183,48 +183,43 @@
         <h2>1. 개요</h2>
         <div class="card">
             <ul>
-                <li>회로 간의 구분과 연결, 보호 역할을 하는 박막(thin film)을 만드는 과정</li>
-                <li>사전적 의미로 '박막(thin film)'이란 단순한 기계 가공으로는 실현 불가능한 1um(마이크로미터) 이하의 얇은 막을 뜻함</li>
-                <li>웨이퍼 위에 원하는 분자 또는 원자 단위의 박막을 입히는 일련의 과정</li>
-                <li>두께가 워낙 얇기 때문에 웨이퍼 위에 균일하게 박막을 형성하기 위해서는 정교하고 세밀한 기술력이 필</li>
-                <li>박막은 크게 회로들 간 전기적인 신호를 연결해주는 금속막(전도)층과 내부 연결층을 전기적으로 분리하거나 오염원으로부터 차단시켜주는 절연막층으로 구분</li>
+                <li>반도체 회로에 전기적 신호가 잘 전달 되도록 전기길(금속선)을 연결하는 과정</li>
+                <li>전기가 잘 통하는 금속의 성질을 이용</li>
+                <li>반도체의 회로 패턴을 따라 금속선(Metal Line)을 이어주는 과정</li>
+                <li>금속 재료의 필요 조건</li>
+                    <div class="li-desc">웨이퍼와의 부착성</div>
+                    <div class="li-desc">전기 저항이 낮은 물질</div>
+                    <div class="li-desc">열적ㆍ화학적 안정성</div>
+                    <div class="li-desc">높은 신뢰성</div>
+                    <div class="li-desc">제조 가격</div>
+                <li>대표적인 금속 : 알루미늄(Al), 티타늄(Ti), 텅스텐(W) 등이 있음</li>
 
                 <div class="img-box">
-                    <img src="../../images/deposition_structure.png" alt="증착구조">
+                    <img src="../../images/metal_interconnect_needto.png" alt="금속재료의필요조건">
                 </div>
             </ul>
         </div>
     </div>
 
     <div class="section">
-        <h2>2. 물리적 방법(PVD)과 화학적 방법(CVD)</h2>
+        <h2>2. 전체 공정의 흐름</h2>
         <div class="card">
-            <h3>① 물리적 기상증착방법 (PVD, Physical Vapor Deposition)</h3>
+            <h3>① 금속의 증기화</h3>
             <ul>
-                <li>금속 박막의 증착에 주로 사용되며 화학반응이 수반되지는 않음</li>
-                <li>스퍼터링(Sputtering)</li>
-                  <div class="li-desc">PVD의 한 종류</div>
-                  <div class="li-desc">플라즈마 이온으로 타겟 금속을 때려서 튀어나온 원자를 웨이퍼에 증착하는 방식</div>
-                  <div class="li-desc">금속 타켓 준비 → 이온으로 때임 → 금속 원자가 튀어나옴 → 웨이퍼에 달라붙음</div>
-                  <div class="li-desc">스퍼터링 타켓 제조 업체 : 지오엘리먼트</div>
+                <li>금속을 진공 챔버에 넣고 낮은 압력에서 끓이거나 전기적 충격을 주면 금속은 증기 상태가 됨</li>
             </ul>
-            <h3>② 화학적 기상증착방법 (CVD, Chemical Vapor Deposition)</h3>
-            <ul>
-                <li>가스의 화학 반응으로 형성된 입자들을 외부 에너지가 부여된 수증기 형태로 쏘아 증착 시키는 방</li>
-                <li>도체, 부도체, 반도체의 박막증착에 모두 사용될 수 있는 기술</li>
-                <li>현재 반도체 공정에서는 화학적 기상증착방법(CVD)를 주로 사용하고 있음</li>
-                <li>사용하는 외부 에너지에 따라 열 CVD, 플라즈마 CVD, 광 CVD로 세분화 할 수 있음</li>
-                <li>플라즈마 CVD는 저온에서 형성이 가능하고 두께 균일도를 조절할 수 있으며, 대량 처리가 가능하느는 장점으로 가장 많이 이용되고 있음</li>
-            </ul>
-            <h3>ⓑ 원자층 증착방법 (ALD, Atomic Layer Deposition)</h3>
-            <ul>
-                <li>원자층 단위로 아주 얇고 균일하게 박막을 증착하는 방식</li>
-                <li>PVD와 CVD 방법의 경우, 패턴이 깊고 좁아질수록 내부까지 균일하게 코팅하기 어려움</li>
-                <li>특히 FinFET, 3D NAND, GAA 구조 같은 3D 구조에서는 깊은 구멍 내부까지 균일한 박막이 필요 → ALD가 강력한 퍼포먼스를 보여줌</li>
-            </ul>
-            <h3>③ 주요 업체</h3>
-            <ul>
-                <li>국내 : 원익IPS, 주성엔지니어링, TES, 유진테크(산화막)</li>
+            <h3>② 금속막 형성</h3>
+                <li>웨이퍼를 금속의 증기화가 진행된 진공 챔버에 넣으면 얇은 금속막이 형성 됨</li>
+                <li>대표적인 반도체용 금속 배선 재료로는 알루미늄(Al)이 있음</li>
+                    <div class="li-desc">장점 : 산화막(Silicon Dioxide)과의 부착성이 좋고, 가공성이 뛰어남</div>
+                    <div class="li-desc">단점 : 알루미늄(Al)은 실리콘(Si)과 만나면 서로 섞이려는 성질이 있음</div>
+                    <div class="li-desc">실리콘 웨이퍼의 경우 알루미늄 배선 과정에서 접합면이 파괴되는 현상이 생길 수 있음</div>
+                <li>베리어 메탈(Barrier Metal) : 알루미늄과 웨이퍼 접합면 사이에 장벽(Barrier) 역할을 하는 금속을 증착</li>
+                    <div class="li-desc">이중으로 박막을 형성해 접합면이 파괴되는 것을 막을 수 있음</div>
+                <div class="img-box">
+                    <img src="../../images/metal_interconnect_process.png" alt="금속배선">
+                </div>
+                <li>금속 배선 공정에서도 좁은 영역에 균일한 박막을 형성시키기 위해 화학적 기상증착(CVD)으로의 전환이 이루어지고 있음</li>
             </ul>
         </div>
     </div>
