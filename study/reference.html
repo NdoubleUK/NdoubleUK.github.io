@@ -40,10 +40,47 @@
         a:hover{
             text-decoration:underline;
         }
+
+                footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1f2937;
+            color: var(--sub);
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 26px;
+            }
+        }
+
+        .breadcrumb a {
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+            .breadcrumb a:hover {
+                color: #e5e7eb;
+            }
+
+        .breadcrumb span {
+            margin: 0 6px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
-
+    <header>
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>›</span>
+                <a href="./study.html">Study Archive</a>
+                <span>›</span>
+                <span>References</span>
+            </div>
+        </div>
+    </header>
 <h1>References</h1>
 
 <p>
@@ -94,4 +131,8 @@ Study 페이지 작성 시 참고한 자료들을 정리한 페이지입니다.
 </div>
 
 </body>
+
+    <footer>
+        <p>© 2026 NDoubleuK Portfolio</p>
+    </footer>
 </html>
