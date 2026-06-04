@@ -118,7 +118,7 @@
     <h2>1. 프로젝트 개요</h2>
     <div class="card">
       <p>
-        반도체/전극 검사 공정에서 발생하는 미세 결함을 검출하기 위한 시스템 개발 프로젝트.
+        Flexible Cell 및 Rigid Cell의 Edge 미세 Crack 및 Chipping 불량 검출을 위한 개발 프로젝트
       </p>
     </div>
   </div>
@@ -127,9 +127,9 @@
     <h2>2. 문제 상황 (Before)</h2>
     <div class="card">
       <ul>
-        <li>미세 결함 검출 정확도 부족</li>
-        <li>조명 변화에 따른 오검출 발생</li>
-        <li>Alignment 오차로 인한 검출 불안정</li>
+        <li>1.2um 해상도의 Area Camera를 이용한 고속 촬상이 가능한 조명 수배</li></li>
+        <li>카메라 자체 Exposure Time Delay로 인한 조명 동기화 문제</li>
+        <li>조명 광원의 Rise Time 문제</li>
       </ul>
     </div>
   </div>
@@ -138,9 +138,10 @@
     <h2>3. 해결 방법 (How)</h2>
     <div class="card">
       <ul>
-        <li>Sub-pixel alignment 알고리즘 적용</li>
-        <li>조명 정규화 및 이미지 전처리 개선</li>
-        <li>ROI 기반 검사 구조 설계</li>
+        <li>80mm/s 사양에 15us 노출이 최대 시간인점을 감안하여, 여러 조명업체 컨택 후 적합한 조명 선정</li>
+        <li>추후에는 조명업체와 협업하여 200mm/s(최대노출 6us) 가능한 광학계 구성까지 개발 완료</li>
+        <li>자체 실험을 통해 카메라의 Exposure Time Delay를 확인하여, 조명 Delay를 추가하여 동기화 문제 해결</li>
+        <li>조명 광원의 Rise Time 문제도 Exposure Time Delay 문제와 함께 Delay 및 Dummy Setting으로 해결</li>
       </ul>
     </div>
   </div>
@@ -149,8 +150,8 @@
     <h2>4. 핵심 기술</h2>
     <div class="card">
       <ul>
-        <li><span class="highlight">Sub-pixel Alignment</span> 기반 위치 정렬</li>
-        <li>영상 필터링 및 노이즈 제거</li>
+        <li><span class="highlight">On-the-Fly 방식을 가능하게 하는</span>조명 선정 및 AF module</li>
+        <li>Alignment 기술 : Accuracy ±0.01°</li>
         <li>딥러닝 기반 결함 분류 (CNN)</li>
       </ul>
     </div>
@@ -160,9 +161,8 @@
     <h2>5. 결과 (After)</h2>
     <div class="card">
       <ul>
-        <li>검출 정확도 <span class="highlight">+15% 향상</span></li>
-        <li>오검출율 <span class="highlight">30% 감소</span></li>
-        <li>검사 속도 <span class="highlight">20% 개선</span></li>
+        <li>80mm/s 부터 200mm/s 속도 커버 가능한 광학계 개발로 고객사 Needs 충족</li>
+        <li>현재 까지도 위 광학시스템은 꾸준한 수익성 모델로 자리 잡음</li>
       </ul>
     </div>
   </div>
@@ -171,8 +171,7 @@
     <h2>6. 트러블슈팅</h2>
     <div class="card">
       <ul>
-        <li>조명 변화로 인한 threshold 실패 → adaptive 방식으로 개선</li>
-        <li>Alignment drift 발생 → 기준점 보정 로직 추가</li>
+        <li>Grab Fail 이슈 발생 → 단계 별 디버깅 및 테스트로 HW 시스템 구성에서 특정 상황에서 Trigger 미출력 문제 확인 후 해결</li>
       </ul>
     </div>
   </div>
