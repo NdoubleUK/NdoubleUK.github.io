@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --primary: #6366f1;
+            --text: #e5e7eb;
+            --sub: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1f2937;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            nav h1 {
+                font-size: 18px;
+            }
+
+            nav ul {
+                list-style: none;
+                display: flex;
+                gap: 20px;
+            }
+
+            nav a {
+                text-decoration: none;
+                color: var(--sub);
+                transition: 0.3s;
+            }
+
+                nav a:hover {
+                    color: var(--text);
+                }
+
+        section {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 20px;
+            margin-bottom: 20px;
+        }
+
+            .section h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+                border-left: 4px solid var(--primary);
+                padding-left: 10px;
+            }
+
+        .hero {
+            text-align: center;
+            padding: 140px 20px 100px;
+        }
+
+            .hero h2 {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+            .hero h3 {
+                text-align: left;
+                font-size: 30px;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+            .hero p {
+                color: var(--sub);
+                font-size: 18px;
+            }
+
+            .hero p3 {
+                text-align: left;
+                color: var(--sub);
+                font-size: 18px;
+            }
+
+        .btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            border-radius: 999px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .btn:hover {
+                opacity: 0.8;
+            }
+
+        h2.section-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            transition: 0.3s;
+            margin-bottom: 14px;
+        }
+
+            .card:hover {
+                transform: translateY(-6px);
+                border-color: var(--primary);
+            }
+
+            .card h3 {
+                margin-bottom: 10px;
+            }
+
+            .card p {
+                color: var(--sub);
+                font-size: 14px;
+            }
+
+            .card ul {
+                padding-left: 20px;
+            }
+
+            .card li {
+                margin-bottom: 8px; color: var(--sub);
+            }
+
+            .card li-desc {
+                margin-top: 4px; font-size: 13px; color: var(--sub); padding-left: 10px; display: block;
+            }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1f2937;
+            color: var(--sub);
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 26px;
+            }
+        }
+
+        .breadcrumb a {
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+            .breadcrumb a:hover {
+                color: #e5e7eb;
+            }
+
+        .breadcrumb span {
+            margin: 0 6px;
+            font-size: 12px;
+        }
+
+        .detail-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 10px;
+          padding: 6px 12px;
+          font-size: 13px;
+          color: var(--primary);
+          border: 1px solid var(--primary);
+          border-radius: 999px;
+          text-decoration: none;
+          transition: 0.2s;
+        }
+
+        .detail-btn:hover {
+          background: var(--primary);
+          color: white;
+        }
+
+        .arrow {
+          transition: transform 0.2s;
+        }
+
+        .detail-btn:hover .arrow {
+          transform: translateX(3px);
+        }
+
+        .img-box {
+          margin: 12px 0 16px;
+          text-align: center;
+        }
+
+        .img-box img {
+          width: 100%;
+          max-width: 600px;
+          border-radius: 10px;
+          border: 1px solid #1f2937;
+        }
+
+        .img-caption {
+          margin-top: 6px;
+          font-size: 13px;
+          color: var(--sub);
+        }
+
+        .svg-box {
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .svg-box svg {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 14px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            border: 1px solid #1f2937;
+            padding: 10px 12px;
+            text-align: left;
+            color: var(--sub);
+        }
+
+        .compare-table th {
+            color: var(--text);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .note {
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .vc-wrap {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-top: 12px;
+        }
+
+        .vc-col {
+            flex: 0 0 138px;
+            background: var(--card);
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .vc-col-header {
+            background: var(--primary);
+            color: #ffffff;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 6px;
+        }
+
+        .vc-col-body {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .vc-item {
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--sub);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a>
+                <span>›</span>
+                <a href="../study.html">Study Archive</a>
+                <span>›</span>
+                <span>반도체 공정의 이해</span>
+            </div>
+        </div>
+
+        <nav>
+            <h3>반도체 공정</h3>
+        </nav>
+    </header>
+
+    <section id="section">
+        <div class="section">
+            <h2>1. 개요</h2>
+            <div class="card">
+                <span class="tag">기초 개념</span>
+                <p>
+                    반도체 제조 공정은 둥근 실리콘 원판(웨이퍼) 위에 눈에 보이지 않을 만큼 미세한 전자 회로를 그리고,
+                    이를 낱개의 칩으로 잘라 우리가 아는 형태의 반도체 제품으로 완성하는 일련의 과정이다.
+                    이 전체 흐름은 크게 전공정(FEOL, Front-End-Of-Line)과 후공정(BEOL, Back-End-Of-Line)으로 구분된다.
+                </p>
+                <div class="note">
+                    <strong>💡 전공정 vs 후공정, 쉽게 이해하기</strong><br>
+                    비유하자면 전공정은 웨이퍼라는 '도화지' 위에 회로라는 '그림'을 그리고 색을 입히는 과정(반도체 소자 자체를 만드는 단계)이고,
+                    후공정은 그렇게 완성된 그림(칩)을 하나씩 오려내어 실제로 쓸 수 있는 '액자(패키지)'에 담고, 제대로 작동하는지
+                    최종 검사까지 마치는 과정이라고 볼 수 있다.
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 전체 공정 흐름</h2>
+            <div class="card">
+                <div class="svg-box" style="max-width:1040px;">
+                    <svg viewBox="0 0 900 185" xmlns="http://www.w3.org/2000/svg" style="max-width:1040px;">
+                        <text x="450" y="24" text-anchor="middle" fill="#e5e7eb" font-size="14" font-weight="700">반도체 제조 9대 공정 흐름</text>
+
+                        <rect x="10" y="60" width="440" height="70" rx="8" fill="none" stroke="#6366f1" stroke-dasharray="4,3"/>
+                        <text x="230" y="52" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="700">전공정 (FEOL)</text>
+
+                        <rect x="460" y="60" width="430" height="70" rx="8" fill="none" stroke="#f59e0b" stroke-dasharray="4,3"/>
+                        <text x="675" y="52" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="700">후공정 (BEOL)</text>
+
+                        <g font-size="9" fill="#e5e7eb">
+                            <rect x="20" y="80" width="80" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="60" y="100" text-anchor="middle">① 웨이퍼</text>
+                            <rect x="108" y="80" width="80" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="148" y="100" text-anchor="middle">② 산화</text>
+                            <rect x="196" y="80" width="80" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="236" y="100" text-anchor="middle">③ 포토</text>
+                            <rect x="284" y="80" width="76" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="322" y="94" text-anchor="middle">④ 식각/</text>
+                            <text x="322" y="106" text-anchor="middle">증착/주입</text>
+                            <rect x="368" y="80" width="72" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="404" y="100" text-anchor="middle">⑤ 배선</text>
+
+                            <rect x="470" y="80" width="90" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="515" y="100" text-anchor="middle">⑥ EDS</text>
+                            <rect x="568" y="80" width="90" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="613" y="100" text-anchor="middle">⑦ 다이싱</text>
+                            <rect x="666" y="80" width="90" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="711" y="100" text-anchor="middle">⑧ 본딩/몰딩</text>
+                            <rect x="764" y="80" width="110" height="34" fill="#111827" stroke="#374151"/>
+                            <text x="819" y="100" text-anchor="middle">⑨ 최종 테스트</text>
+                        </g>
+
+                        <path d="M100 97 L106 97 M188 97 L194 97 M276 97 L282 97 M360 97 L366 97" stroke="#6366f1" stroke-width="1.5"/>
+                        <path d="M440 97 L468 97" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="2,2"/>
+                        <path d="M560 97 L566 97 M658 97 L664 97 M756 97 L762 97" stroke="#f59e0b" stroke-width="1.5"/>
+
+                        <text x="450" y="150" text-anchor="middle" fill="#9ca3af" font-size="10">④는 식각 → 증착 → 이온주입을 여러 번 반복하며 회로 층을 쌓아 올리는 구간이다</text>
+                        <text x="450" y="168" text-anchor="middle" fill="#9ca3af" font-size="10">(아래 목록에서 각 공정 이름을 클릭하면 상세 설명 페이지로 이동한다)</text>
+                    </svg>
+                </div>
+
+                <ul>
+                   <li><a href="./semiconductor_wafer.html" class="detail-btn">
+                        ① 웨이퍼 제조 공정 </a>
+                    </li>
+                    <li><a href="./semiconductor_oxidation.html" class="detail-btn">
+                        ② 산화 공정(Oxidation)</a>
+                    </li>
+                    <li><a href="./semiconductor_photolithography.html" class="detail-btn">
+                        ③ 포토 공정 (Photolithography)</a>
+                    </li>
+                    <li><a href="./semiconductor_etching.html" class="detail-btn">
+                        ④ 식각 공정(Etching)</a>
+                    </li>
+                    <li><a href="./semiconductor_deposition.html" class="detail-btn">
+                        ④ 증착 공정(Deposition)</a>
+                    </li>
+                    <li><a href="./semiconductor_ion_implantation.html" class="detail-btn">
+                        ④ 이온 주입 공정(Ion Implantation)</a>
+                    </li>
+                    <li><a href="./semiconductor_metal_interconnect.html" class="detail-btn">
+                        ⑤ 금속 배선 공정(Metal Interconnect)</a>
+                    </li>
+                    <li><a href="./semiconductor_electrical_die_sorting.html" class="detail-btn">
+                        ⑥ EDS 공정(Electrical Die Sorting)</a>
+                    </li>
+                    <li><a href="./semiconductor_packaging.html" class="detail-btn">
+                        ⑦~⑨ 패키징 공정(Packaging)</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 전공정과 후공정의 비교</h2>
+            <div class="card">
+                <h3 class="sub-title-h3">전공정 (FEOL) : 웨이퍼 제조 공정 ~ 금속 배선 공정</h3>
+                <ul>
+                    <li>주로 미국 or 일본의 기술력 있는 회사 (국내 회사들도 있음)</li>
+                    <li>기술 구현이 어려우면서 수익성이 높음</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 class="sub-title-h3">후공정 (BEOL) : EDS 공정 ~ 패키징 공정</h3>
+                <ul>
+                    <li>우리나라 산업의 대부분 (삼성전자, SK하이닉스 등)</li>
+                </ul>
+            </div>
+
+            <table class="compare-table">
+                <tr><th>구분</th><th>전공정 (FEOL)</th><th>후공정 (BEOL)</th></tr>
+                <tr><td>범위</td><td>웨이퍼 제조 ~ 금속 배선</td><td>EDS ~ 패키징</td></tr>
+                <tr><td>주요 목표</td><td>웨이퍼 위에 트랜지스터·회로 형성</td><td>칩 선별, 보호, 최종 검증</td></tr>
+                <tr><td>대표 검사 항목</td><td>오버레이/CD 측정, 막두께 계측, 패턴 결함 검사</td><td>전기적 특성 테스트, 와이어본딩/범프 검사, 패키지 외관 검사</td></tr>
+            </table>
+
+            <div class="card">
+                <h3 class="sub-title-h3">산업 용어</h3>
+                <ul>
+                    <li> IDM (Integrated Device Manufacturer) </li>
+                        <li-desc>"혼자 다 하는 회사"</li-desc>
+                        <li-desc>설계 + 제조(공정) + 패키징/테스트까지 전부 직접 수행</li-desc>
+                        <li-desc>즉, 반도체를 기획부터 생산까지 통합 운영</li-desc>
+                        <li-desc>대표 기업 : 삼성전자, 인텔 등</li-desc>
+                    <li-desc></li-desc>
+                    <li> Fabless (팹리스) </li>
+                        <li-desc>"설계만 하는 회사"</li-desc>
+                        <li-desc>반도체 설계(디자인)만 하고 실제 생산은 파운드리에 맡김</li-desc>
+                        <li-desc>대표 기업 : NVIDIA, Qualcomm</li-desc>
+                        <li-desc>Fab은 Fabrication의 약자로 단순 공장의 의미보단 생산 라인으로 이해</li-desc>
+                    <li-desc></li-desc>
+                    <li> Foundry (파운드리) </li>
+                        <li-desc>"생산만 하는 회사(반도체 공장)"</li-desc>
+                        <li-desc>팹리스가 설계한 칩을 대신 만들어주는 역할</li-desc>
+                        <li-desc>고객사 설계를 기반으로 웨이퍼 생산</li-desc>
+                        <li-desc>대표 기업 : TSMC, 삼성전자(파운드리 사업도 운영)</li-desc>
+                </ul>
+            </div>
+            <div class="card">
+                <h3 class="sub-title-h3">전공정 국내 소부장 업체</h3>
+                <div class="vc-wrap">
+                    <div class="vc-col">
+                        <div class="vc-col-header">웨이퍼/CMP</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">SK실트론</div>
+                            <div class="vc-item">케이씨텍</div>
+                            <div class="vc-item">SKC엔펄스</div>
+                            <div class="vc-item">솔브레인</div>
+                            <div class="vc-item">동진쎄미켐</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">산화/어닐링</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">AP시스템</div>
+                            <div class="vc-item">이오테크닉스</div>
+                            <div class="vc-item">디아이티</div>
+                            <div class="vc-item">HPSP</div>
+                            <div class="vc-item">예스티</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">포토</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">동진쎄미켐</div>
+                            <div class="vc-item">에스앤에스텍</div>
+                            <div class="vc-item">에프에스티</div>
+                            <div class="vc-item">이엔에프테크놀로지</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">식각</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">브이엠</div>
+                            <div class="vc-item">피에스케이</div>
+                            <div class="vc-item">이엔에프테크놀로지</div>
+                            <div class="vc-item">솔브레인</div>
+                            <div class="vc-item">티씨케이</div>
+                            <div class="vc-item">원익QnC</div>
+                            <div class="vc-item">하나머티리얼즈</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">세정</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">코미코</div>
+                            <div class="vc-item">한솔아이원스</div>
+                            <div class="vc-item">제우스</div>
+                            <div class="vc-item">케이씨텍</div>
+                            <div class="vc-item">엘티씨</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">증착</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">원익IPS</div>
+                            <div class="vc-item">유진테크</div>
+                            <div class="vc-item">테스</div>
+                            <div class="vc-item">주성엔지니어링</div>
+                            <div class="vc-item">한솔케미칼</div>
+                            <div class="vc-item">솔브레인</div>
+                            <div class="vc-item">덕산테코피아</div>
+                            <div class="vc-item">디엔에프</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">인프라</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">신성이엔지</div>
+                            <div class="vc-item">한양이엔지</div>
+                            <div class="vc-item">엘오티베큠</div>
+                            <div class="vc-item">GST</div>
+                            <div class="vc-item">유니셈</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="sub-title-h3">후공정 국내 소부장 업체</h3>
+                <div class="vc-wrap">
+                    <div class="vc-col">
+                        <div class="vc-col-header">테스트 장비</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">테크윙</div>
+                            <div class="vc-item">와이씨</div>
+                            <div class="vc-item">디아이</div>
+                            <div class="vc-item">네오셈</div>
+                            <div class="vc-item">엑시콘</div>
+                            <div class="vc-item">유니테스트</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">패키징 및 절단 장비</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">이오테크닉스</div>
+                            <div class="vc-item">한미반도체</div>
+                            <div class="vc-item">프로텍</div>
+                            <div class="vc-item">에스티아이</div>
+                            <div class="vc-item">피에스케이홀딩스</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">패키징 소재/소켓</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">덕산하이메탈</div>
+                            <div class="vc-item">엠케이전자</div>
+                            <div class="vc-item">리노공업</div>
+                            <div class="vc-item">ISC</div>
+                            <div class="vc-item">티에스이</div>
+                            <div class="vc-item">티에프이</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">기판</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">삼성전기</div>
+                            <div class="vc-item">LG이노텍</div>
+                            <div class="vc-item">대덕전자</div>
+                            <div class="vc-item">해성디에스</div>
+                            <div class="vc-item">심텍</div>
+                            <div class="vc-item">이수페타시스</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">OSAT</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">하나마이크론</div>
+                            <div class="vc-item">두산테스나</div>
+                            <div class="vc-item">SFA반도체</div>
+                            <div class="vc-item">한양디지텍</div>
+                            <div class="vc-item">네패스</div>
+                            <div class="vc-item">네패스아크</div>
+                            <div class="vc-item">LB세미콘</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">검사/계측 장비</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">파크시스템스</div>
+                            <div class="vc-item">넥스틴</div>
+                            <div class="vc-item">인텍플러스</div>
+                            <div class="vc-item">펨트론</div>
+                            <div class="vc-item">오로스테크놀로지</div>
+                        </div>
+                    </div>
+                    <div class="vc-col">
+                        <div class="vc-col-header">IP/디자인하우스</div>
+                        <div class="vc-col-body">
+                            <div class="vc-item">파두</div>
+                            <div class="vc-item">제주반도체</div>
+                            <div class="vc-item">칩스앤미디어</div>
+                            <div class="vc-item">오픈엣지테크놀로지</div>
+                            <div class="vc-item">가온칩스</div>
+                            <div class="vc-item">에이직랜드</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="sub-title-h3">🔍 개발자 노트 : 반도체 전체 공정과 머신비전의 관계 한눈에 보기</h3>
+                <div class="note">
+                    각 공정 상세 페이지에 담긴 개발자 노트를 한 흐름으로 이으면, 반도체 제조는 처음부터 끝까지 광학 계측·검사
+                    장비 없이는 돌아가지 않는 산업이라는 것을 알 수 있다. 웨이퍼 단계의 파티클·정렬 검사로 시작해서, 포토 공정의
+                    오버레이/CD 측정, 식각 공정의 플라즈마 광학 종료점 검출(OES), 증착 공정의 두께·균일도 계측, 이온주입의 도즈
+                    모니터링, 금속 배선의 단선/브릿지 검사, EDS의 프로브 마크 검사, 그리고 마지막 패키징 단계의 와이어본딩·범프·
+                    몰딩 결함 검사까지 — 공정 하나하나 직후마다 전용 비전/광학 검사 장비가 배치된다. 머신비전 개발자 입장에서는
+                    "지금 만들고 있는 알고리즘이 9대 공정 중 어느 단계, 어떤 결함 유형을 겨냥하는지"를 먼저 파악하는 것이 실무
+                    이해의 출발점이 된다.
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+<footer>
+    <p>© 2026 Smay Portfolio</p>
+</footer>
+</html>
