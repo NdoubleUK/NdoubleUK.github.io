@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디스플레이 응용 분야</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+    nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    nav h3 { font-size:18px; }
+    nav a { text-decoration:none; color:var(--sub); transition:0.3s; }
+    nav a:hover { color:var(--text); }
+    section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+    .section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+    .card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+    .card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .card h3 { margin-bottom:10px; }
+    .card ul { padding-left:20px; }
+    .card li { margin-bottom:8px; color:var(--sub); }
+    .card li-desc { margin-top:4px; font-size:13px; color:var(--sub); padding-left:10px; display:block; }
+    .compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+    .compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); }
+    .compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+    .note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+    .note strong { color:var(--primary); }
+    .svg-box { margin:16px 0; text-align:center; }
+    .svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+    .tag.lcd { background:rgba(59,130,246,0.15); color:#60a5fa; }
+    .tag.oled { background:rgba(16,185,129,0.15); color:#34d399; }
+    .tag.micro { background:rgba(245,158,11,0.15); color:#fbbf24; }
+    .tag.future { background:rgba(168,85,247,0.15); color:#c084fc; }
+    .detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+    .detail-btn:hover { background:var(--primary); color:white; }
+    .breadcrumb { font-size:13px; color:var(--sub); padding:10px 20px; max-width:1100px; margin:auto; }
+    .breadcrumb a { color:var(--sub); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--text); }
+    .breadcrumb span { margin:0 6px; font-size:12px; }
+    footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h3>디스플레이 응용 분야</h3>
+    <div style="display:flex;gap:24px;">
+      <a href="../../index.html">Home</a>
+      <a href="../study.html">Study Archive</a>
+      <a href="./display_introduction.html">디스플레이 공정</a>
+    </div>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../study.html">Study Archive</a>
+  <span>›</span>
+  <a href="./display_introduction.html">디스플레이 공정의 이해</a>
+  <span>›</span>
+  응용 분야
+</div>
+
+<section>
+
+  <div class="section">
+    <h2>1. 스마트폰·태블릿</h2>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>스마트폰 시장 트렌드</h3>
+      <ul>
+        <li>2024년 스마트폰 시장에서 OLED 점유율 51% 돌파 — LCD 역전 달성</li>
+        <li>AMOLED 채택 이유: 얇은 두께, 낮은 소비전력(배터리 절감), 높은 명암비, HDR 지원, 폴더블 가능</li>
+        <li>플래그십: 삼성 AMOLED, 애플 Super Retina XDR(OLED), LTPO 가변 주사율(1~120Hz)으로 소비전력 최적화</li>
+        <li>중저가: IPS-LCD 여전히 사용 — 비용 우위로 보급형 라인업 유지</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span><span class="tag oled">OLED</span>태블릿 경쟁</h3>
+      <ul>
+        <li>대형화로 인해 Mini-LED LCD(애플 iPad Pro 구형) vs OLED(애플 iPad Pro 신형) 구도</li>
+        <li>태블릿 OLED: 탠덤(Tandem) 적층 구조 — 수명 연장 및 고휘도 달성</li>
+        <li>삼성 Galaxy Tab: AMOLED로 플래그십 대응, 일반 라인은 LCD 유지</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. TV·모니터</h2>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>TV 시장</h3>
+      <ul>
+        <li><strong>OLED TV</strong>: 완벽한 블랙, 무한 명암비, 넓은 시야각. 번인(Burn-in) 관리 필요</li>
+        <li>LG WOLED(WRGB 방식), 삼성 QD-OLED가 프리미엄 시장 양분</li>
+        <li><strong>Mini-LED TV</strong>: OLED에 근접한 화질, 더 높은 최대 휘도, 가격 경쟁력. 삼성 Neo QLED, TCL 등</li>
+        <li>일반 LCD(QLED): 가성비 우선 중대형 TV 시장에서 여전히 주류</li>
+        <li>8K 디스플레이: 해상도 경쟁보다 HDR·색영역·주사율로 화질 트렌드 이동 중</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span><span class="tag oled">OLED</span>모니터 용도별 선택</h3>
+      <ul>
+        <li><strong>게이밍 모니터</strong>: TN/IPS 고주사율(144~360Hz), 낮은 응답속도 우선. OLED 게이밍 모니터(0.1ms) 등장</li>
+        <li><strong>디자인·색보정</strong>: IPS 광색역(DCI-P3 98%+), 하드웨어 캘리브레이션 지원</li>
+        <li><strong>전문가용</strong>: OLED 명암비, Dolby Vision Pro / HDR1000 인증 모니터</li>
+        <li><strong>사무용</strong>: IPS 60~75Hz, 눈 편안함(PWM-free) 중시</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. 자동차 (Automotive Display)</h2>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span>차량용 디스플레이 구성</h3>
+      <ul>
+        <li><strong>클러스터(계기판)</strong>: 속도·RPM·경고등 표시. 고신뢰성·저반사 코팅 필수</li>
+        <li><strong>CID(Center Infotainment Display)</strong>: 내비, 음악, 차량 설정 UI. 대형화 추세 (10~17인치+)</li>
+        <li><strong>HUD(Head-Up Display)</strong>: 윈드실드에 주행 정보 투영. AR-HUD로 진화 중</li>
+        <li><strong>ADAS 카메라 디스플레이</strong>: 후방·측방 카메라 영상 실시간 표시</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span><span class="tag micro">MicroLED</span>요구 조건 및 트렌드</h3>
+      <ul>
+        <li>동작 온도: -40°C ~ 85°C, 진동·충격 내구성 필수</li>
+        <li>차량 신뢰성 규격: AEC-Q100, ISO 26262 기능 안전</li>
+        <li>직사광선 시인성: 500~1,000nit 이상 고휘도 요구</li>
+        <li><strong>트렌드</strong>: 파노라마형 대형 터치스크린(테슬라·BYD 방식), 필라 투 필라 연속 디스플레이</li>
+        <li>기술: IPS-LCD(현재 주류), Micro-OLED(HUD 고해상도), 투명 디스플레이(윈드실드 HUD)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. AR/VR·웨어러블</h2>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span><span class="tag oled">OLED</span>VR 헤드셋</h3>
+      <ul>
+        <li>고해상도·저지연 필수 — 눈과 가까워 PPI 3,000+ 필요 (일반 TV는 50~100PPI)</li>
+        <li>Meta Quest 시리즈: LCD → OLED → Pancake 렌즈 + LCD로 진화 (폼팩터·화질 균형)</li>
+        <li><strong>Apple Vision Pro</strong>: Micro-OLED (Sony 공급) 적용 — 눈앞 23mm 거리에서 4K 급 초고해상도 구현</li>
+        <li>멀미(VR Sickness) 저감: 응답속도·주사율 향상(90~120Hz+), 낮은 지연(20ms 이하)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span><span class="tag future">AR</span>AR 글래스</h3>
+      <ul>
+        <li>투명 웨이브가이드(Waveguide) + Micro LED 광원 방식이 주류 지향</li>
+        <li>무게·전력 제약 극심: 하루 종일 착용 고려, 배터리·방열 설계 난관</li>
+        <li>현재: Microsoft HoloLens(LCoS), Magic Leap, Meta Orion(Micro LED 프로토타입)</li>
+        <li>FOV(Field of View) 확대, 눈 추적(Eye Tracking), 손 인식 기술 통합 과제</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>스마트워치·웨어러블</h3>
+      <ul>
+        <li>AMOLED 원형/사각형 디스플레이: 높은 색재현율, 얇은 두께, 개별 픽셀 OFF로 저전력</li>
+        <li><strong>AOD(Always-On Display)</strong>: 초저전력 상시 시간·알림 표시 필수 기능</li>
+        <li>LTPO TFT 적용으로 AOD 시 1Hz 미만 구동 → 배터리 수명 2~3배 향상</li>
+        <li>외부 센서 통합: 심박·혈중산소·체온 센서 배치로 디스플레이 면적 최적화 필요</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5. 차세대 폼팩터</h2>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>폴더블(Foldable)</h3>
+      <ul>
+        <li>플렉시블 AMOLED + UTG(Ultra-Thin Glass, 30~50μm) 커버 조합</li>
+        <li>힌지(Hinge) 내구성: 20만 회 이상 폴딩 테스트 기준</li>
+        <li>크리스(접힌 자국, Crease) 관리: 패널 수율·설계 최적화 핵심 과제</li>
+        <li>적용: 삼성 Galaxy Z Fold/Flip, Huawei Mate X 시리즈, 폴더블 노트북</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag future">Future</span>롤러블(Rollable)</h3>
+      <ul>
+        <li>화면이 말리는(roll) 구조 — 스크롤 시 화면 면적 확장</li>
+        <li>LG 롤러블 TV(OLED R), 스마트폰 시제품(Oppo X 2021, TCL 등) 발표</li>
+        <li>곡률 반경·반복 굴곡 내구성이 폴더블보다 더 큰 과제</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag future">Future</span>투명(Transparent) 디스플레이</h3>
+      <ul>
+        <li>투과율 40~60% 달성 목표 — 빛이 화면을 통과하면서 영상 표시</li>
+        <li>응용: 쇼윈도 광고판, 자동차 윈드실드 HUD, 스마트 미러, 냉장고 도어</li>
+        <li>기술: 투명 OLED(LG), 투명 Micro LED — 전극·배선의 투명화가 핵심</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span>마이크로 디스플레이</h3>
+      <ul>
+        <li>AR/VR용 초소형 고해상도 디스플레이 패널</li>
+        <li><strong>LCoS(Liquid Crystal on Silicon)</strong>: 반사형, 고해상도. HoloLens 등</li>
+        <li><strong>DMD(Digital Micromirror Device)</strong>: TI DLP 기반, 프로젝터·HUD</li>
+        <li><strong>Micro-OLED</strong>: 실리콘 기판 위 OLED, Apple Vision Pro 적용</li>
+        <li><strong>Micro-LED</strong>: 차세대 — 높은 휘도·긴 수명 기대, 현재 연구 단계</li>
+      </ul>
+
+      <div class="svg-box">
+        <svg viewBox="0 0 1040 260" xmlns="http://www.w3.org/2000/svg">
+          <text x="520" y="30" text-anchor="middle" fill="#e5e7eb" font-size="15" font-weight="700" font-family="sans-serif">디스플레이 응용 분야 맵</text>
+          <!-- Center -->
+          <circle cx="520" cy="140" r="48" fill="rgba(99,102,241,0.2)" stroke="#6366f1" stroke-width="2"/>
+          <text x="520" y="135" text-anchor="middle" fill="#a5b4fc" font-size="12" font-weight="700" font-family="sans-serif">디스플레이</text>
+          <text x="520" y="153" text-anchor="middle" fill="#a5b4fc" font-size="12" font-weight="700" font-family="sans-serif">기술</text>
+          <!-- Smartphone -->
+          <ellipse cx="155" cy="80" rx="80" ry="30" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="155" y="75" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700" font-family="sans-serif">스마트폰·태블릿</text>
+          <text x="155" y="93" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="sans-serif">AMOLED 주류</text>
+          <line x1="233" y1="95" x2="475" y2="127" stroke="#374151" stroke-width="1.5" stroke-dasharray="4"/>
+          <!-- TV Monitor -->
+          <ellipse cx="885" cy="80" rx="80" ry="30" fill="rgba(59,130,246,0.12)" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="885" y="75" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="700" font-family="sans-serif">TV·모니터</text>
+          <text x="885" y="93" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="sans-serif">OLED/Mini-LED</text>
+          <line x1="807" y1="95" x2="565" y2="127" stroke="#374151" stroke-width="1.5" stroke-dasharray="4"/>
+          <!-- Automotive -->
+          <ellipse cx="155" cy="200" rx="80" ry="30" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="155" y="195" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700" font-family="sans-serif">자동차</text>
+          <text x="155" y="213" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="sans-serif">IPS-LCD 주류</text>
+          <line x1="233" y1="187" x2="475" y2="155" stroke="#374151" stroke-width="1.5" stroke-dasharray="4"/>
+          <!-- AR/VR -->
+          <ellipse cx="885" cy="200" rx="80" ry="30" fill="rgba(168,85,247,0.12)" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="885" y="195" text-anchor="middle" fill="#c084fc" font-size="12" font-weight="700" font-family="sans-serif">AR/VR·웨어러블</text>
+          <text x="885" y="213" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="sans-serif">Micro-OLED/LED</text>
+          <line x1="807" y1="187" x2="565" y2="155" stroke="#374151" stroke-width="1.5" stroke-dasharray="4"/>
+          <!-- Foldable -->
+          <ellipse cx="520" cy="240" rx="80" ry="24" fill="rgba(236,72,153,0.12)" stroke="#ec4899" stroke-width="1.5"/>
+          <text x="520" y="236" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="700" font-family="sans-serif">차세대 폼팩터</text>
+          <text x="520" y="253" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="sans-serif">폴더블·롤러블·투명</text>
+          <line x1="520" y1="216" x2="520" y2="188" stroke="#374151" stroke-width="1.5" stroke-dasharray="4"/>
+        </svg>
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="display_panel_type.html" class="detail-btn">← 이전: 패널 종류</a>
+        <a href="display_terms.html" class="detail-btn">다음: 주요 용어 →</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  © 2026 NDoubleUK · 디스플레이 공정의 이해
+</footer>
+
+</body>
+</html>

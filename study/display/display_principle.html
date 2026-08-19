@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디스플레이 원리</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+    nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    nav h3 { font-size:18px; }
+    nav ul { list-style:none; display:flex; gap:20px; }
+    nav a { text-decoration:none; color:var(--sub); transition:0.3s; }
+    nav a:hover { color:var(--text); }
+    section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+    .section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+    .hero { text-align:center; padding:140px 20px 100px; }
+    .hero h2 { font-size:36px; font-weight:700; margin-bottom:15px; }
+    .hero p { color:var(--sub); font-size:18px; }
+    .btn { display:inline-block; margin-top:30px; padding:12px 24px; border-radius:999px; background:var(--primary); color:white; text-decoration:none; transition:0.3s; }
+    .btn:hover { opacity:0.8; }
+    .card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+    .card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .card h3 { margin-bottom:10px; }
+    .card ul { padding-left:20px; }
+    .card li { margin-bottom:8px; color:var(--sub); }
+    .card li-desc { margin-top:4px; font-size:13px; color:var(--sub); padding-left:10px; display:block; }
+    .toc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-top:6px; }
+    .toc-card { background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:22px; transition:0.3s; display:flex; flex-direction:column; }
+    .toc-card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .toc-card .toc-index { font-size:12px; color:var(--primary); font-weight:700; letter-spacing:1px; }
+    .toc-card h3 { margin:6px 0 8px; font-size:18px; color:var(--text); }
+    .toc-card p { color:var(--sub); font-size:13.5px; flex-grow:1; }
+    .compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+    .compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); }
+    .compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+    .note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+    .note strong { color:var(--primary); }
+    .svg-box { margin:16px 0; text-align:center; }
+    .svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+    .tag.lcd { background:rgba(59,130,246,0.15); color:#60a5fa; }
+    .tag.oled { background:rgba(16,185,129,0.15); color:#34d399; }
+    .tag.micro { background:rgba(245,158,11,0.15); color:#fbbf24; }
+    .detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+    .detail-btn:hover { background:var(--primary); color:white; }
+    .breadcrumb { font-size:13px; color:var(--sub); padding:10px 20px; max-width:1100px; margin:auto; }
+    .breadcrumb a { color:var(--sub); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--text); }
+    .breadcrumb span { margin:0 6px; font-size:12px; }
+    footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+    .nav-btns { display:flex; justify-content:space-between; margin-top:20px; flex-wrap:wrap; gap:10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h3>디스플레이 원리</h3>
+    <ul>
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../study.html">Study Archive</a></li>
+      <li><a href="display_introduction.html">개요</a></li>
+      <li><a href="display_material.html">소재</a></li>
+      <li><a href="display_process.html">공정</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../study.html">Study Archive</a>
+  <span>›</span>
+  <a href="./display_introduction.html">디스플레이 공정의 이해</a>
+  <span>›</span>
+  원리
+</div>
+
+<div class="hero">
+  <h2>디스플레이 원리</h2>
+  <p>LCD · OLED · 색 재현 · 픽셀 구동 방식의 핵심 원리를 레이어 구조와 함께 이해합니다</p>
+</div>
+
+<!-- Section 1: LCD 작동 원리 -->
+<section id="lcd">
+  <div class="section">
+    <h2>1. LCD 작동 원리</h2>
+    <div class="card">
+      <span class="tag lcd">LCD</span>
+      <ul style="margin-top:12px;">
+        <li>LCD(Liquid Crystal Display)는 스스로 빛을 내지 않음 — BLU(백라이트 유닛)의 빛을 액정층으로 제어하는 투과형 디스플레이</li>
+        <li>편광판 ① → 액정층 → 편광판 ② 구조. 액정에 전압이 없으면 빛이 차단되거나 통과 (모드에 따라 다름 — TN/IPS/VA)</li>
+        <li>전압 인가 시 액정 분자 배열이 변해 빛의 투과량 조절 → 픽셀별 명암 제어</li>
+        <li>컬러필터(R·G·B)를 통과시켜 색 표현 — 백색광을 3원색으로 분리하는 방식</li>
+        <li>백라이트: 과거 CCFL(냉음극 형광등) → 현재 LED 엣지형 / 직하형(Local Dimming 가능)</li>
+      </ul>
+      <div class="note">
+        <strong>핵심 구조:</strong> BLU → 하부 편광판 → TFT 기판(전극·액정층 포함) → 컬러필터 기판 → 상부 편광판 → 시청자. 두 편광판은 90° 직교 배치가 기본.
+      </div>
+    </div>
+
+    <div class="svg-box">
+      <svg viewBox="0 0 1040 240" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard, sans-serif">
+        <rect width="1040" height="240" fill="#0b1120"/>
+
+        <!-- Light source arrow (left) -->
+        <text x="28" y="118" fill="#fbbf24" font-size="11" font-weight="700">빛</text>
+        <line x1="20" y1="125" x2="50" y2="125" stroke="#fbbf24" stroke-width="2"/>
+        <polygon points="50,121 60,125 50,129" fill="#fbbf24"/>
+
+        <!-- Layer definitions: x start = 65, each layer w=140, gap=10 -->
+        <!-- Layer 1: BLU -->
+        <rect x="65" y="70" width="130" height="110" rx="8" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="130" y="118" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="700">BLU</text>
+        <text x="130" y="135" text-anchor="middle" fill="#64748b" font-size="10">백라이트 유닛</text>
+        <text x="130" y="150" text-anchor="middle" fill="#64748b" font-size="10">LED 광원</text>
+
+        <!-- Arrow -->
+        <line x1="198" y1="125" x2="215" y2="125" stroke="#475569" stroke-width="1.5"/>
+        <polygon points="215,121 225,125 215,129" fill="#475569"/>
+
+        <!-- Layer 2: 편광판1 -->
+        <rect x="228" y="70" width="90" height="110" rx="8" fill="#1a2035" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="273" y="118" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="700">편광판 ①</text>
+        <text x="273" y="135" text-anchor="middle" fill="#64748b" font-size="10">하부 편광판</text>
+        <text x="273" y="150" text-anchor="middle" fill="#64748b" font-size="10">0° 방향</text>
+
+        <line x1="321" y1="125" x2="338" y2="125" stroke="#475569" stroke-width="1.5"/>
+        <polygon points="338,121 348,125 338,129" fill="#475569"/>
+
+        <!-- Layer 3: TFT 기판 + 액정 -->
+        <rect x="351" y="55" width="160" height="140" rx="8" fill="#1a2535" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="431" y="105" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700">TFT 기판</text>
+        <text x="431" y="120" text-anchor="middle" fill="#64748b" font-size="10">전극 (ITO)</text>
+        <rect x="371" y="128" width="120" height="28" rx="4" fill="#2d1b69" stroke="#7c3aed" stroke-width="1"/>
+        <text x="431" y="147" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">액정층 (LC)</text>
+        <text x="431" y="174" text-anchor="middle" fill="#64748b" font-size="10">전압으로 배열 제어</text>
+
+        <line x1="514" y1="125" x2="531" y2="125" stroke="#475569" stroke-width="1.5"/>
+        <polygon points="531,121 541,125 531,129" fill="#475569"/>
+
+        <!-- Layer 4: 컬러필터 기판 -->
+        <rect x="544" y="70" width="130" height="110" rx="8" fill="#1a2035" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="609" y="108" text-anchor="middle" fill="#f9a8d4" font-size="11" font-weight="700">컬러필터</text>
+        <text x="609" y="123" text-anchor="middle" fill="#64748b" font-size="10">CF 기판</text>
+        <!-- RGB strips -->
+        <rect x="560" y="133" width="26" height="18" rx="3" fill="rgba(239,68,68,0.5)" stroke="#ef4444" stroke-width="1"/>
+        <text x="573" y="146" text-anchor="middle" fill="#fca5a5" font-size="10">R</text>
+        <rect x="591" y="133" width="26" height="18" rx="3" fill="rgba(34,197,94,0.5)" stroke="#22c55e" stroke-width="1"/>
+        <text x="604" y="146" text-anchor="middle" fill="#86efac" font-size="10">G</text>
+        <rect x="622" y="133" width="26" height="18" rx="3" fill="rgba(59,130,246,0.5)" stroke="#3b82f6" stroke-width="1"/>
+        <text x="635" y="146" text-anchor="middle" fill="#93c5fd" font-size="10">B</text>
+
+        <line x1="677" y1="125" x2="694" y2="125" stroke="#475569" stroke-width="1.5"/>
+        <polygon points="694,121 704,125 694,129" fill="#475569"/>
+
+        <!-- Layer 5: 편광판2 -->
+        <rect x="707" y="70" width="90" height="110" rx="8" fill="#1a2035" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="752" y="118" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="700">편광판 ②</text>
+        <text x="752" y="135" text-anchor="middle" fill="#64748b" font-size="10">상부 편광판</text>
+        <text x="752" y="150" text-anchor="middle" fill="#64748b" font-size="10">90° 방향</text>
+
+        <line x1="800" y1="125" x2="817" y2="125" stroke="#fbbf24" stroke-width="2"/>
+        <polygon points="817,121 827,125 817,129" fill="#fbbf24"/>
+
+        <!-- Viewer -->
+        <circle cx="880" cy="108" r="24" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="880" y="100" text-anchor="middle" font-size="18">👁</text>
+        <text x="880" y="148" text-anchor="middle" fill="#94a3b8" font-size="11">시청자</text>
+
+        <!-- Caption -->
+        <text x="520" y="225" text-anchor="middle" fill="#475569" font-size="11">LCD 레이어 단면 구조 (좌 → 우: 광원에서 시청자 방향)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: OLED 작동 원리 -->
+<section id="oled">
+  <div class="section">
+    <h2>2. OLED 작동 원리</h2>
+    <div class="card">
+      <span class="tag oled">OLED</span>
+      <ul style="margin-top:12px;">
+        <li>OLED(Organic Light-Emitting Diode): 유기물에 전류를 흘리면 자체 발광 — 백라이트 불필요</li>
+        <li>구조: 기판 → 양극(ITO) → HIL(정공주입층) → HTL(정공수송층) → EML(발광층) → ETL(전자수송층) → EIL(전자주입층) → 음극(Al)</li>
+        <li>발광 원리: 양극에서 정공(+), 음극에서 전자(-) 주입 → EML에서 결합 → 엑시톤(Exciton) 생성 → 빛 방출</li>
+        <li>R·G·B 각 서브픽셀에 다른 유기물 사용 (FMM 증착 방식) 또는 White OLED + 컬러필터 방식 (대형 패널)</li>
+        <li>완전한 블랙 표현 가능 (개별 픽셀 OFF), 명암비 이론상 무한대 — LCD 대비 압도적인 화질</li>
+      </ul>
+      <div class="note">
+        <strong>핵심 원리:</strong> 전자와 정공이 EML에서 만나 엑시톤을 형성하고, 엑시톤이 기저 상태로 전이할 때 에너지가 빛으로 방출됩니다. 유기물 종류에 따라 발광 파장(색)이 결정됩니다.
+      </div>
+    </div>
+
+    <div class="svg-box">
+      <svg viewBox="0 0 1040 260" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard, sans-serif">
+        <rect width="1040" height="260" fill="#0b1120"/>
+
+        <!-- Title -->
+        <text x="520" y="30" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="600">OLED 유기층 단면 구조</text>
+
+        <!-- Layers stacked vertically, centered -->
+        <!-- Substrate -->
+        <rect x="120" y="45" width="800" height="28" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="520" y="64" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="600">기판 (Glass / PI)</text>
+
+        <!-- Anode -->
+        <rect x="120" y="78" width="800" height="24" rx="5" fill="#1a2035" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="520" y="95" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="600">양극 — Anode (ITO, 투명 전극)</text>
+
+        <!-- HIL -->
+        <rect x="120" y="107" width="800" height="22" rx="5" fill="#2d1b69" stroke="#7c3aed" stroke-width="1.2"/>
+        <text x="520" y="122" text-anchor="middle" fill="#a78bfa" font-size="11">HIL — 정공 주입층 (Hole Injection Layer)</text>
+
+        <!-- HTL -->
+        <rect x="120" y="134" width="800" height="22" rx="5" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="520" y="149" text-anchor="middle" fill="#818cf8" font-size="11">HTL — 정공 수송층 (Hole Transport Layer)</text>
+
+        <!-- EML (발광층 - highlighted) -->
+        <rect x="120" y="161" width="800" height="28" rx="6" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+        <text x="520" y="180" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="700">EML — 발광층 (Emission Layer)  ★ R · G · B 유기물</text>
+        <!-- Glow effect -->
+        <ellipse cx="520" cy="175" rx="80" ry="8" fill="rgba(34,197,94,0.12)"/>
+
+        <!-- ETL -->
+        <rect x="120" y="194" width="800" height="22" rx="5" fill="#1c2536" stroke="#38bdf8" stroke-width="1.2"/>
+        <text x="520" y="209" text-anchor="middle" fill="#7dd3fc" font-size="11">ETL — 전자 수송층 (Electron Transport Layer)</text>
+
+        <!-- EIL -->
+        <rect x="120" y="221" width="800" height="20" rx="5" fill="#1e2d3d" stroke="#0ea5e9" stroke-width="1.2"/>
+        <text x="520" y="235" text-anchor="middle" fill="#7dd3fc" font-size="11">EIL — 전자 주입층 (Electron Injection Layer)</text>
+
+        <!-- Cathode -->
+        <rect x="120" y="246" width="800" height="0" rx="0"/>
+        <!-- Arrows: hole from left, electron from right -->
+        <line x1="55" y1="95" x2="118" y2="175" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="116,172 120,180 109,176" fill="#f472b6"/>
+        <text x="30" y="92" fill="#f472b6" font-size="10" font-weight="600">정공(+)</text>
+        <text x="14" y="104" fill="#f472b6" font-size="10">양극에서</text>
+
+        <line x1="985" y1="240" x2="922" y2="175" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="923,178 920,170 930,174" fill="#38bdf8"/>
+        <text x="964" y="237" fill="#38bdf8" font-size="10" font-weight="600">전자(-)</text>
+        <text x="963" y="249" fill="#38bdf8" font-size="10">음극에서</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: 색 재현 원리 -->
+<section id="color">
+  <div class="section">
+    <h2>3. 색 재현 원리</h2>
+    <div class="card">
+      <ul>
+        <li>모든 디스플레이는 R·G·B 서브픽셀 조합으로 색 표현 (가산혼합 원리 — 세 색이 합쳐지면 흰색)</li>
+        <li>색재현율(Color Gamut): sRGB / DCI-P3 / BT.2020 기준으로 표현 가능한 색의 범위를 정의. 수치가 높을수록 더 넓은 색공간 커버</li>
+        <li>컬러필터(LCD): 백색광을 R·G·B로 분리 — 광효율 손실 발생 (대부분의 빛이 필터에서 흡수됨)</li>
+        <li>OLED: R·G·B 유기물이 직접 발광 — 순도 높은 색표현 가능, 광효율 우수</li>
+        <li>Quantum Dot(QD): BLU의 청색광을 QD 필름이 변환하여 순도 높은 R·G 생성 → 색재현율 향상 (QD-OLED, QD-LCD 모두 적용)</li>
+      </ul>
+      <div class="note">
+        <strong>색재현율 기준:</strong> sRGB (일반 모니터 표준) &lt; DCI-P3 (영화관 / 프리미엄 스마트폰) &lt; BT.2020 (차세대 방송 표준). OLED는 DCI-P3 기준 100%+, Micro LED는 BT.2020까지 커버 가능.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: 픽셀 구동 방식 -->
+<section id="driving">
+  <div class="section">
+    <h2>4. 픽셀 구동 방식 (PM vs AM)</h2>
+    <div class="card">
+      <ul>
+        <li><strong style="color:var(--text)">PMOLED (Passive Matrix):</strong> 행·열 스캔으로 순차 구동. 소규모·저해상도 웨어러블용. 회로 단순하나 고해상도 시 소비전력 급등</li>
+        <li><strong style="color:var(--text)">AMOLED (Active Matrix):</strong> 각 픽셀에 TFT(박막트랜지스터) 내장 → 독립 구동. 대형·고해상도·고주사율 패널에 필수</li>
+        <li><strong style="color:var(--text)">TFT 종류 — a-Si (비정질 실리콘):</strong> 공정 단순, 원가 저렴. 전자 이동도 낮아 (약 1 cm²/Vs) 스마트폰 OLED에는 부적합</li>
+        <li><strong style="color:var(--text)">TFT 종류 — LTPS (저온폴리실리콘):</strong> 이동도 높음 (50~100 cm²/Vs). 스마트폰 AMOLED에 주로 사용. 공정 온도 400°C 이하</li>
+        <li><strong style="color:var(--text)">TFT 종류 — Oxide (IGZO):</strong> In-Ga-Zn-O 산화물 반도체. 균일성 우수, 누설 전류 낮음. 대형 TV·모니터용 OLED/LCD에 적합</li>
+      </ul>
+
+      <table class="compare-table" style="margin-top:18px;">
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th><span class="tag oled">PMOLED</span></th>
+            <th><span class="tag oled">AMOLED</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>구동 방식</td>
+            <td>행·열 순차 스캔 (패시브)</td>
+            <td>픽셀 내 TFT 독립 구동 (액티브)</td>
+          </tr>
+          <tr>
+            <td>TFT 유무</td>
+            <td>없음</td>
+            <td>픽셀마다 TFT (2T1C 이상)</td>
+          </tr>
+          <tr>
+            <td>해상도 한계</td>
+            <td>저해상도 (128×128 수준)</td>
+            <td>고해상도 (4K+ 가능)</td>
+          </tr>
+          <tr>
+            <td>소비 전력</td>
+            <td>해상도 증가 시 급증</td>
+            <td>상대적으로 효율적</td>
+          </tr>
+          <tr>
+            <td>주요 용도</td>
+            <td>스마트 밴드, 간단 기기 UI</td>
+            <td>스마트폰, TV, 모니터</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>LTPS vs Oxide:</strong> LTPS는 높은 이동도 덕분에 스마트폰 소형 고해상도에 유리. Oxide(IGZO)는 대형 패널에서 균일한 특성을 보여 55인치 이상 TV 패널에 주로 채용.
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <a href="display_introduction.html" class="detail-btn">← 이전: 개요</a>
+      <a href="display_material.html" class="detail-btn">다음: 소재 →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 NDoubleUK · 디스플레이 공정의 이해
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디스플레이 소재</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+    nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    nav h3 { font-size:18px; }
+    nav ul { list-style:none; display:flex; gap:20px; }
+    nav a { text-decoration:none; color:var(--sub); transition:0.3s; }
+    nav a:hover { color:var(--text); }
+    section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+    .section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+    .card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+    .card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .card h3 { margin-bottom:10px; }
+    .card ul { padding-left:20px; }
+    .card li { margin-bottom:8px; color:var(--sub); }
+    .card li-desc { margin-top:4px; font-size:13px; color:var(--sub); padding-left:10px; display:block; }
+    .compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+    .compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); }
+    .compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+    .note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+    .note strong { color:var(--primary); }
+    .svg-box { margin:16px 0; text-align:center; }
+    .svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+    .tag.lcd { background:rgba(59,130,246,0.15); color:#60a5fa; }
+    .tag.oled { background:rgba(16,185,129,0.15); color:#34d399; }
+    .detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+    .detail-btn:hover { background:var(--primary); color:white; }
+    .breadcrumb { font-size:13px; color:var(--sub); padding:10px 20px; max-width:1100px; margin:auto; }
+    .breadcrumb a { color:var(--sub); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--text); }
+    .breadcrumb span { margin:0 6px; font-size:12px; }
+    footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h3>디스플레이 소재</h3>
+    <ul>
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../study.html">Study</a></li>
+      <li><a href="./display_introduction.html">디스플레이 공정</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../study.html">Study Archive</a>
+  <span>›</span>
+  <a href="./display_introduction.html">디스플레이 공정의 이해</a>
+  <span>›</span>
+  소재
+</div>
+
+<section>
+  <!-- Section 1 -->
+  <div class="section">
+    <h2>1. 소재 분류 개요</h2>
+    <div class="card">
+      <h3>디스플레이 소재의 구분</h3>
+      <ul>
+        <li>디스플레이 소재는 LCD/OLED에 따라 크게 달라지며, <strong>공통 소재</strong>(기판, TFT, 드라이버IC)와 <strong>고유 소재</strong>(액정/유기물, 봉지재 등)로 구분된다.</li>
+        <li>소재의 선택이 디스플레이의 핵심 성능 — 밝기·색재현율·수명·유연성 — 을 결정한다.</li>
+        <li><span class="tag lcd">LCD</span> 빛을 차단·투과시켜 제어하는 방식: 백라이트 필수</li>
+        <li><span class="tag oled">OLED</span> 유기물이 직접 빛을 생성하는 자발광 방식: 백라이트 불필요</li>
+      </ul>
+      <div class="note">
+        <strong>핵심 개념:</strong> "LCD는 빛을 '제어'하고 OLED는 빛을 '생성'한다 — 이 차이가 소재 선택의 핵심"
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <h2>2. LCD 핵심 소재</h2>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> 백라이트 유닛 (BLU, Backlight Unit)</h3>
+      <ul>
+        <li>LED 광원 + 도광판 + 확산판 + 프리즘 시트로 구성된 광원 어셈블리.</li>
+        <li><strong>엣지형</strong>: 패널 테두리에 LED 배치 → 슬림 설계 가능, 균일도 다소 낮음.</li>
+        <li><strong>직하형</strong>: 패널 전면에 LED 배치 → 로컬디밍(Local Dimming) 구현에 필수.</li>
+        <li>로컬디밍: 영역별 밝기를 독립 제어 → 명암비 향상.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> 편광판 (Polarizer)</h3>
+      <ul>
+        <li>TAC(삼아세트산셀룰로스) 필름 + PVA(폴리비닐알코올) 이중 구조.</li>
+        <li>LCD 패널 전면·후면 총 2장 필요. 빛의 진동 방향을 특정 방향으로만 통과시킨다.</li>
+        <li>고온·습기 환경에 취약 — 편광판 내구성이 패널 수명을 결정하는 주요 인자 중 하나.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> 액정 (Liquid Crystal)</h3>
+      <ul>
+        <li>고체와 액체의 중간 상태 물질. 전압에 따라 분자 배열이 변화하며 빛의 투과량을 조절.</li>
+        <li><strong>TN (Twisted Nematic)</strong>: 응답속도 빠름, 시야각 좁음. 저가형 모니터.</li>
+        <li><strong>IPS (In-Plane Switching)</strong>: 광시야각, 정확한 색재현. 스마트폰·고급 모니터.</li>
+        <li><strong>VA (Vertical Alignment)</strong>: 높은 명암비, IPS보다 시야각 다소 좁음. TV.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> 컬러필터 (Color Filter, CF)</h3>
+      <ul>
+        <li>R·G·B 수지를 마이크로미터 단위로 패터닝하여 각 서브픽셀에 형성.</li>
+        <li>BLU의 백색광을 R·G·B 세 색으로 분리하여 컬러 이미지 구현.</li>
+        <li>컬러필터를 통과할 때 광효율의 일부 손실이 발생 — OLED 대비 휘도 효율 불리.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> TFT 기판 (Array Substrate)</h3>
+      <ul>
+        <li>각 픽셀 위치에 TFT(박막 트랜지스터) 스위칭 소자 + 투명전극(ITO) 형성.</li>
+        <li>a-Si(비정질 실리콘) → LTPS(저온 다결정 실리콘) → Oxide(IGZO 등) 순으로 기술 진화.</li>
+        <li>이동도: a-Si ≈ 1 cm²/Vs, LTPS ≈ 100 cm²/Vs, Oxide ≈ 10~30 cm²/Vs.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> 글래스 기판 (Glass Substrate)</h3>
+      <ul>
+        <li>저알칼리 보로실리케이트 유리. 두께 0.4~0.7mm 수준.</li>
+        <li>열팽창 계수(CTE) 제어가 고온 공정에서의 치수 안정성을 결정하는 핵심 요소.</li>
+        <li>대형 세대(10.5G 이상)로 갈수록 기판 크기 3370×2940mm — 취급·운반이 공정의 난제.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <h2>3. OLED 핵심 소재</h2>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> ITO 양극 (Indium Tin Oxide Anode)</h3>
+      <ul>
+        <li>투명 전도성 산화물(TCO). 정공(Hole) 주입을 위해 높은 일함수(Work Function, ≥4.7eV) 요구.</li>
+        <li>인듐(In) 원소 의존도가 높아 수급 불안정이 지속적인 비용 문제로 작용.</li>
+        <li>대체 소재 연구 활발: IZO, CNT, 그래핀 계열 등.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> 유기물 다층 구조 (Organic Multi-Layer Stack)</h3>
+      <ul>
+        <li>HIL(정공주입층) → HTL(정공수송층) → EML(발광층) → ETL(전자수송층) → EIL(전자주입층) 순 적층.</li>
+        <li>각 층의 두께는 10~100nm 수준의 초박막. 진공 열증착으로 형성.</li>
+        <li>EML(발광층)의 유기 발광 도판트(Dopant)가 R·G·B 각각의 발광 색을 결정.</li>
+        <li>청색(B) 유기 도판트의 수명이 가장 짧아 OLED 패널 수명 개선의 핵심 과제.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> 음극 (Cathode)</h3>
+      <ul>
+        <li>알루미늄(Al) 또는 마그네슘-은(Mg:Ag) 합금 사용.</li>
+        <li>낮은 일함수(≤4.3eV)로 전자 주입이 용이.</li>
+        <li>탑 에미션(Top Emission) 구조에서는 음극을 반투명 박막으로 구성.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> 봉지재 (Encapsulation)</h3>
+      <ul>
+        <li>OLED 수명을 결정하는 가장 핵심적인 소재 — 유기물이 수분·산소에 극도로 취약하여 Dark Spot 발생.</li>
+        <li><strong>리지드(Rigid) OLED</strong>: 봉지 유리 + UV 경화 실런트 방식.</li>
+        <li><strong>플렉시블(Flexible) OLED</strong>: TFE(Thin Film Encapsulation) — 무기막/유기막 다층 교번 박막으로 수분 차단.</li>
+        <li>요구 수준: 수분 투과율(WVTR) 10⁻⁶ g/m²/day 이하.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> PI (폴리이미드) 기판</h3>
+      <ul>
+        <li>플렉시블 OLED의 기판 소재. 기존 유리 기판을 대체.</li>
+        <li>열안정성·내화학성 우수. 두께 10~20μm 수준으로 초박형 구현 가능.</li>
+        <li>유리 캐리어 위에 PI를 코팅 후 공정 진행 → 완료 후 레이저로 분리(LLO 공정).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> FMM (Fine Metal Mask)</h3>
+      <ul>
+        <li>유기물 증착 시 R·G·B 서브픽셀 패터닝에 사용하는 인바(Invar) 합금 금속 마스크.</li>
+        <li>마스크 처짐(Sagging)과 열팽창이 고해상도 증착의 물리적 한계를 야기.</li>
+        <li>고해상도(≥500ppi) 구현을 위해 마스크 인장(Tension) 기술 및 오픈 마스크 방식 등 연구 중.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <h2>4. 공통 소재 및 LCD vs OLED 비교</h2>
+
+    <div class="card">
+      <h3>공통 핵심 소재</h3>
+      <ul>
+        <li><strong>OCA (Optical Clear Adhesive)</strong>: 터치패널과 커버유리 접착에 사용. 광투과율 99% 이상 요구. 기포·이물 없는 무결점 합착이 핵심.</li>
+        <li><strong>드라이버IC (DDI, Display Driver IC)</strong>: 영상 신호를 픽셀 구동 전압으로 변환. COG(Chip-On-Glass) 또는 COF(Chip-On-Film) 방식으로 실장.</li>
+        <li><strong>커버유리</strong>: 강화유리(고릴라 글래스 등). 표면 경도 향상 및 지문 방지 방오(Anti-Fingerprint) 코팅 처리.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>LCD vs OLED 소재 비교표</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>소재 항목</th>
+            <th><span class="tag lcd">LCD</span></th>
+            <th><span class="tag oled">OLED</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>광원</td>
+            <td>BLU (LED 백라이트 유닛) 필수</td>
+            <td>자발광 — 백라이트 불필요</td>
+          </tr>
+          <tr>
+            <td>기판</td>
+            <td>저알칼리 유리 (0.4~0.7mm)</td>
+            <td>유리 또는 PI(폴리이미드, 플렉시블용)</td>
+          </tr>
+          <tr>
+            <td>컬러 구현</td>
+            <td>컬러필터 (R·G·B 수지 패터닝)</td>
+            <td>R·G·B 유기 발광 도판트 (또는 W+CF)</td>
+          </tr>
+          <tr>
+            <td>봉지</td>
+            <td>불필요 (밀봉 구조로 액정 보호)</td>
+            <td>필수 — 봉지 유리 또는 TFE 박막</td>
+          </tr>
+          <tr>
+            <td>특이 소재</td>
+            <td>편광판 2장, 액정, 배향막</td>
+            <td>FMM, 유기물 다층, ITO 양극, PI 기판</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">
+      <a href="./display_principle.html" class="detail-btn">← 이전: 원리</a>
+      <a href="./display_process.html" class="detail-btn">다음: 제조 공정 →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 NDoubleUK &middot; 디스플레이 공정의 이해
+</footer>
+
+</body>
+</html>

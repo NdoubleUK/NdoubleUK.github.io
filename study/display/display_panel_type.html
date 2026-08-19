@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디스플레이 패널 종류</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+    nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    nav h3 { font-size:18px; }
+    nav a { text-decoration:none; color:var(--sub); transition:0.3s; }
+    nav a:hover { color:var(--text); }
+    section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+    .section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+    .card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+    .card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .card h3 { margin-bottom:10px; }
+    .card ul { padding-left:20px; }
+    .card li { margin-bottom:8px; color:var(--sub); }
+    .card li-desc { margin-top:4px; font-size:13px; color:var(--sub); padding-left:10px; display:block; }
+    .compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+    .compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); }
+    .compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+    .note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+    .note strong { color:var(--primary); }
+    .svg-box { margin:16px 0; text-align:center; }
+    .svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+    .tag.lcd { background:rgba(59,130,246,0.15); color:#60a5fa; }
+    .tag.oled { background:rgba(16,185,129,0.15); color:#34d399; }
+    .tag.micro { background:rgba(245,158,11,0.15); color:#fbbf24; }
+    .tag.future { background:rgba(168,85,247,0.15); color:#c084fc; }
+    .detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+    .detail-btn:hover { background:var(--primary); color:white; }
+    .breadcrumb { font-size:13px; color:var(--sub); padding:10px 20px; max-width:1100px; margin:auto; }
+    .breadcrumb a { color:var(--sub); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--text); }
+    .breadcrumb span { margin:0 6px; font-size:12px; }
+    footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h3>디스플레이 패널 종류</h3>
+    <div style="display:flex;gap:24px;">
+      <a href="../../index.html">Home</a>
+      <a href="../study.html">Study Archive</a>
+      <a href="./display_introduction.html">디스플레이 공정</a>
+    </div>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../study.html">Study Archive</a>
+  <span>›</span>
+  <a href="./display_introduction.html">디스플레이 공정의 이해</a>
+  <span>›</span>
+  패널 종류
+</div>
+
+<section>
+
+  <div class="section">
+    <h2>1. LCD 계열</h2>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span>TN (Twisted Nematic)</h3>
+      <ul>
+        <li>가장 오래된 액정 배열 방식. 액정이 나선형으로 비틀려 배열</li>
+        <li>빠른 응답속도 (1ms 수준), 생산 비용 저렴</li>
+        <li>시야각 좁음 (상하좌우 색감·밝기 변화 큼), 색재현율 낮음 (sRGB 72% 수준)</li>
+        <li>현재 사용처: 일부 저가 게이밍 모니터 (초고주사율 제품군)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span>IPS (In-Plane Switching)</h3>
+      <ul>
+        <li>액정이 기판 면에 평행하게(in-plane) 배열 — 시야각 문제 해결</li>
+        <li>광시야각 178°, 색정확도 우수 (DCI-P3 커버 가능), 색온도 안정적</li>
+        <li>응답속도 TN 대비 느림 (4~8ms), 백라이트 누광으로 완전한 블랙 어려움</li>
+        <li>사용처: 스마트폰, 디자인·색보정용 모니터, 태블릿</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span>VA (Vertical Alignment)</h3>
+      <ul>
+        <li>액정이 전압 미인가 시 기판에 수직 배열 → 빛 차단 효율 극대화</li>
+        <li>블랙 표현 탁월, 정적 명암비 3,000:1 이상 (IPS 대비 3~5배)</li>
+        <li>측면 시야각에서 색감·밝기 변화 발생 (IPS보다 열위)</li>
+        <li>사용처: TV(주류), 곡면 모니터</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span>Mini-LED BLU + LCD</h3>
+      <ul>
+        <li>백라이트 유닛을 수천~수만 개의 소형 Mini LED로 구성</li>
+        <li>로컬 디밍(Local Dimming) 영역을 세밀하게 분할 → 명암비 대폭 향상</li>
+        <li>OLED와 일반 LCD 중간적 성격: 고휘도·높은 명암비, LCD의 내구성·가격 유지</li>
+        <li>사용처: 애플 ProMotion 디스플레이 (iPad Pro, MacBook Pro), 삼성 Neo QLED TV</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. OLED 계열</h2>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>PMOLED (Passive Matrix OLED)</h3>
+      <ul>
+        <li>행·열(Row·Column) 전극을 순차 스캔하여 픽셀 발광 제어</li>
+        <li>구조 단순 → 제조 비용 낮음. 단, 대형화 시 전력소모·밝기 불균일 급증</li>
+        <li>사용처: 스마트밴드, 이어버드 케이스, 소형 웨어러블 보조 화면</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>AMOLED (Active Matrix OLED)</h3>
+      <ul>
+        <li>TFT(박막트랜지스터) 백플레인으로 각 픽셀을 독립적으로 구동</li>
+        <li>완전한 블랙(픽셀 OFF), 이론상 무한 명암비, 낮은 소비전력(검은 화면 시)</li>
+        <li>0.1ms 미만 응답속도, HDR·고주사율 지원 용이</li>
+        <li>사용처: 스마트폰(주류), OLED TV, 모니터</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>리지드(Rigid) AMOLED</h3>
+      <ul>
+        <li>유리(Glass) 기판 사용. 평판 형태의 고정된 디스플레이</li>
+        <li>AMOLED의 화질 장점 그대로 유지하면서 내구성·제조 안정성 확보</li>
+        <li>사용처: 일반 스마트폰, OLED 모니터</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>플렉시블(Flexible) / 폴더블(Foldable) AMOLED</h3>
+      <ul>
+        <li>PI(폴리이미드) 기판 사용 → 구부림·접힘 가능. TFE(박막 봉지) 적용</li>
+        <li>UTG(Ultra-Thin Glass) 또는 CPI 커버로 표면 보호</li>
+        <li>폴더블·롤러블·커브드 폼팩터 구현 가능</li>
+        <li>사용처: 삼성 Galaxy Fold/Flip, Motorola Razr, 폴더블 태블릿</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>QD-OLED (Quantum Dot OLED)</h3>
+      <ul>
+        <li>청색(Blue) OLED를 광원으로 사용, 양자점(Quantum Dot) 색변환층으로 R·G 생성</li>
+        <li>색재현율 DCI-P3 90%+ 달성, 색순도 극대화, 광시야각</li>
+        <li>OLED 번인 특성 여전히 존재, 청색 열화 주의</li>
+        <li>사용처: 삼성 QD-OLED TV, 소니 BRAVIA XR OLED</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag oled">OLED</span>WOLED (White OLED + CF)</h3>
+      <ul>
+        <li>백색(White) OLED 광원 위에 컬러필터(CF)를 조합하여 색 구현</li>
+        <li>대면적 패널 제조에 유리 (증착 마스크 정밀도 요구 낮음)</li>
+        <li>컬러필터로 인한 광효율 손실 일부 존재</li>
+        <li>사용처: LG OLED TV (WRGB 방식), 대형 OLED 사이니지</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. Micro LED (차세대)</h2>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span>구조 및 원리</h3>
+      <ul>
+        <li>수 μm(마이크로미터) 크기의 무기 LED 소자를 기판에 대량 전사(Mass Transfer)하는 구조</li>
+        <li>각 픽셀이 자체 발광 — OLED처럼 백라이트 불필요, LCD·OLED 한계 동시 극복</li>
+        <li>무기 재료 사용 → 번인(Burn-in) 없음, 열화 속도 극히 낮음</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span>장점</h3>
+      <ul>
+        <li>최대 휘도 10,000nit 이상 달성 가능 (OLED 대비 10~20배)</li>
+        <li>응답속도 ns(나노초) 수준 — OLED 0.1ms보다 훨씬 빠름</li>
+        <li>수명 100,000시간 이상 (OLED 대비 2~5배)</li>
+        <li>번인 없음, 야외 직사광선 하에서도 선명한 화질</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span>핵심 과제</h3>
+      <ul>
+        <li><strong>대량 전사(Mass Transfer) 수율</strong>: 수백만 개의 마이크로 LED를 99.9999% 이상 수율로 기판에 이식해야 상업화 가능</li>
+        <li>전사 후 개별 픽셀 결함 수리(Repair) 공정 필수</li>
+        <li>R·G·B 삼색 LED의 효율 균형 맞추기 어려움 (특히 녹색 효율)</li>
+        <li>소자 크기 소형화 시 전류 효율 저하 (Droop 현상)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="tag micro">MicroLED</span>현황 및 전망 (2025~)</h3>
+      <ul>
+        <li>2025년 현재: 스마트워치·소형 AR 기기 위주 초기 양산 단계</li>
+        <li>주요 업체: AUO, Tianma, PlayNitride, 삼성(더 월 상업용), 애플(Watch 검토 중)</li>
+        <li>향후 로드맵: 대형 TV → AR 헤드셋 → 투명 디스플레이 → 자동차 HUD 확장 기대</li>
+      </ul>
+    </div>
+
+    <div class="svg-box">
+      <svg viewBox="0 0 1040 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.6"/>
+            <stop offset="50%" style="stop-color:#10b981;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.8"/>
+          </linearGradient>
+        </defs>
+        <text x="520" y="32" text-anchor="middle" fill="#e5e7eb" font-size="15" font-weight="700" font-family="sans-serif">패널 기술 진화 로드맵</text>
+        <!-- LCD -->
+        <rect x="40" y="55" width="190" height="60" rx="10" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="135" y="82" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700" font-family="sans-serif">LCD (TN/IPS/VA)</text>
+        <text x="135" y="101" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="sans-serif">BLU 의존 / 저비용</text>
+        <!-- Arrow -->
+        <line x1="230" y1="85" x2="290" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arr)"/>
+        <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4b5563"/></marker></defs>
+        <!-- Mini-LED -->
+        <rect x="295" y="55" width="190" height="60" rx="10" fill="rgba(59,130,246,0.25)" stroke="#60a5fa" stroke-width="1.5"/>
+        <text x="390" y="82" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="700" font-family="sans-serif">Mini-LED LCD</text>
+        <text x="390" y="101" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="sans-serif">로컬 디밍 / 고명암비</text>
+        <!-- Arrow -->
+        <line x1="485" y1="85" x2="545" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arr)"/>
+        <!-- OLED -->
+        <rect x="550" y="55" width="190" height="60" rx="10" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
+        <text x="645" y="82" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700" font-family="sans-serif">AMOLED / QD-OLED</text>
+        <text x="645" y="101" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="sans-serif">자체 발광 / 무한 명암비</text>
+        <!-- Arrow -->
+        <line x1="740" y1="85" x2="800" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arr)"/>
+        <!-- MicroLED -->
+        <rect x="805" y="55" width="195" height="60" rx="10" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="902" y="82" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700" font-family="sans-serif">Micro LED</text>
+        <text x="902" y="101" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="sans-serif">무기 LED / 초고휘도</text>
+        <!-- Bottom bar -->
+        <rect x="40" y="145" width="960" height="14" rx="7" fill="url(#g1)" opacity="0.5"/>
+        <text x="40" y="178" fill="#9ca3af" font-size="11" font-family="sans-serif">낮은 비용 / 성숙 기술</text>
+        <text x="520" y="178" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="sans-serif">화질·성능 향상</text>
+        <text x="1000" y="178" text-anchor="end" fill="#9ca3af" font-size="11" font-family="sans-serif">미래 기술 / 고비용</text>
+        <text x="40" y="200" fill="#6b7280" font-size="10" font-family="sans-serif">1980s~</text>
+        <text x="295" y="200" fill="#6b7280" font-size="10" font-family="sans-serif">2020s~</text>
+        <text x="550" y="200" fill="#6b7280" font-size="10" font-family="sans-serif">2010s~(주류)</text>
+        <text x="805" y="200" fill="#6b7280" font-size="10" font-family="sans-serif">2025~(초기 양산)</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. 종합 비교표</h2>
+    <div class="card">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>TN-LCD</th>
+            <th>IPS-LCD</th>
+            <th>VA-LCD</th>
+            <th>AMOLED</th>
+            <th>QD-OLED</th>
+            <th>MicroLED</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>구동 방식</td>
+            <td>BLU + 액정</td>
+            <td>BLU + 액정</td>
+            <td>BLU + 액정</td>
+            <td>자체 발광 (TFT)</td>
+            <td>자체 발광 (QD)</td>
+            <td>자체 발광 (무기)</td>
+          </tr>
+          <tr>
+            <td>명암비</td>
+            <td>700~1,000:1</td>
+            <td>1,000~1,500:1</td>
+            <td>3,000~6,000:1</td>
+            <td>무한대 (이론)</td>
+            <td>무한대 (이론)</td>
+            <td>무한대 (이론)</td>
+          </tr>
+          <tr>
+            <td>색재현율</td>
+            <td>sRGB 72%</td>
+            <td>DCI-P3 80~95%</td>
+            <td>DCI-P3 85~90%</td>
+            <td>DCI-P3 95%+</td>
+            <td>DCI-P3 90%+</td>
+            <td>BT.2020 95%+</td>
+          </tr>
+          <tr>
+            <td>응답속도</td>
+            <td>1ms</td>
+            <td>4~8ms</td>
+            <td>4~10ms</td>
+            <td>&lt;0.1ms</td>
+            <td>&lt;0.1ms</td>
+            <td>ns 수준</td>
+          </tr>
+          <tr>
+            <td>두께</td>
+            <td>중간</td>
+            <td>중간</td>
+            <td>중간</td>
+            <td>매우 얇음</td>
+            <td>매우 얇음</td>
+            <td>매우 얇음</td>
+          </tr>
+          <tr>
+            <td>유연성</td>
+            <td>불가</td>
+            <td>불가</td>
+            <td>불가</td>
+            <td>가능 (플렉시블)</td>
+            <td>제한적</td>
+            <td>연구 중</td>
+          </tr>
+          <tr>
+            <td>번인(Burn-in)</td>
+            <td>없음</td>
+            <td>없음</td>
+            <td>없음</td>
+            <td>있음 (관리 필요)</td>
+            <td>있음 (관리 필요)</td>
+            <td>없음</td>
+          </tr>
+          <tr>
+            <td>최대 휘도</td>
+            <td>250~500nit</td>
+            <td>250~600nit</td>
+            <td>300~600nit</td>
+            <td>800~2,000nit</td>
+            <td>1,000~2,000nit</td>
+            <td>10,000nit+</td>
+          </tr>
+          <tr>
+            <td>수명</td>
+            <td>매우 길다</td>
+            <td>매우 길다</td>
+            <td>매우 길다</td>
+            <td>20,000~50,000h</td>
+            <td>20,000~50,000h</td>
+            <td>100,000h+</td>
+          </tr>
+          <tr>
+            <td>주요 용도</td>
+            <td>게이밍 모니터</td>
+            <td>스마트폰, 디자인</td>
+            <td>TV, 곡면 모니터</td>
+            <td>스마트폰, TV</td>
+            <td>프리미엄 TV</td>
+            <td>AR, 프리미엄</td>
+          </tr>
+          <tr>
+            <td>상대 가격</td>
+            <td>최저</td>
+            <td>낮음~중간</td>
+            <td>중간</td>
+            <td>높음</td>
+            <td>매우 높음</td>
+            <td>초고가</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>핵심 포인트:</strong> 패널 기술은 어느 하나가 절대 우위가 아니라 용도에 따라 최적이 다르다 — 스마트폰: AMOLED, TV: OLED/Mini-LED, 초고성능 및 미래: MicroLED 방향으로 진화 중
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="display_process.html" class="detail-btn">← 이전: 제조 공정</a>
+        <a href="display_application.html" class="detail-btn">다음: 응용 분야 →</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  © 2026 NDoubleUK · 디스플레이 공정의 이해
+</footer>
+
+</body>
+</html>

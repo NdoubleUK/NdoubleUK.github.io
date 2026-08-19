@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디스플레이 제조 공정</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+    nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    nav h3 { font-size:18px; }
+    nav ul { list-style:none; display:flex; gap:20px; }
+    nav a { text-decoration:none; color:var(--sub); transition:0.3s; }
+    nav a:hover { color:var(--text); }
+    section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+    .section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+    .card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+    .card:hover { transform:translateY(-6px); border-color:var(--primary); }
+    .card h3 { margin-bottom:10px; }
+    .card ul { padding-left:20px; }
+    .card li { margin-bottom:8px; color:var(--sub); }
+    .card li-desc { margin-top:4px; font-size:13px; color:var(--sub); padding-left:10px; display:block; }
+    .compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+    .compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); }
+    .compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+    .note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+    .note strong { color:var(--primary); }
+    .svg-box { margin:16px 0; text-align:center; }
+    .svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+    .tag.lcd { background:rgba(59,130,246,0.15); color:#60a5fa; }
+    .tag.oled { background:rgba(16,185,129,0.15); color:#34d399; }
+    .detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+    .detail-btn:hover { background:var(--primary); color:white; }
+    .breadcrumb { font-size:13px; color:var(--sub); padding:10px 20px; max-width:1100px; margin:auto; }
+    .breadcrumb a { color:var(--sub); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--text); }
+    .breadcrumb span { margin:0 6px; font-size:12px; }
+    footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h3>디스플레이 제조 공정</h3>
+    <ul>
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../study.html">Study</a></li>
+      <li><a href="./display_introduction.html">디스플레이 공정</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">Home</a>
+  <span>›</span>
+  <a href="../study.html">Study Archive</a>
+  <span>›</span>
+  <a href="./display_introduction.html">디스플레이 공정의 이해</a>
+  <span>›</span>
+  제조 공정
+</div>
+
+<section>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <h2>1. 공정 개요</h2>
+    <div class="card">
+      <h3>3단계 공정 구조</h3>
+      <ul>
+        <li>디스플레이 제조는 크게 <strong>어레이(Array) → 셀(Cell) → 모듈(Module)</strong> 3단계로 구성된다.</li>
+        <li><strong>어레이</strong>: TFT 기판 제작. 반도체 공정과 유사한 포토리소그래피·식각·증착 과정.</li>
+        <li><strong>셀</strong>: LCD는 액정 주입 및 두 기판 합착, OLED는 유기물 증착과 봉지 공정 수행.</li>
+        <li><strong>모듈</strong>: 편광판, 드라이버IC, BLU(LCD), 커버유리 등을 조립하여 완성품 패널 완성.</li>
+      </ul>
+
+      <div class="svg-box">
+        <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background -->
+          <rect width="900" height="260" fill="#0b1120" rx="10"/>
+
+          <!-- Array Box -->
+          <rect x="60" y="60" width="200" height="140" rx="12" fill="#111827" stroke="#6366f1" stroke-width="1.5"/>
+          <!-- Array icon: circuit lines -->
+          <rect x="100" y="85" width="60" height="40" rx="4" fill="none" stroke="#6366f1" stroke-width="1.2"/>
+          <line x1="100" y1="100" x2="80" y2="100" stroke="#6366f1" stroke-width="1.2"/>
+          <line x1="160" y1="100" x2="180" y2="100" stroke="#6366f1" stroke-width="1.2"/>
+          <line x1="130" y1="85" x2="130" y2="70" stroke="#6366f1" stroke-width="1.2"/>
+          <line x1="130" y1="125" x2="130" y2="140" stroke="#6366f1" stroke-width="1.2"/>
+          <circle cx="130" cy="105" r="6" fill="#6366f1" opacity="0.7"/>
+          <text x="160" y="152" font-size="11" fill="#6366f1" text-anchor="middle" font-family="sans-serif">① Array</text>
+          <text x="160" y="170" font-size="13" fill="#e5e7eb" text-anchor="middle" font-family="sans-serif" font-weight="700">어레이</text>
+          <text x="160" y="186" font-size="11" fill="#9ca3af" text-anchor="middle" font-family="sans-serif">TFT 기판 제작</text>
+          <text x="160" y="200" font-size="10" fill="#9ca3af" text-anchor="middle" font-family="sans-serif">포토리소그래피 · 식각 · 증착</text>
+
+          <!-- Arrow 1 -->
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#6366f1"/>
+            </marker>
+          </defs>
+          <line x1="262" y1="130" x2="336" y2="130" stroke="#6366f1" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="299" y="122" font-size="10" fill="#6366f1" text-anchor="middle" font-family="sans-serif">반제품 기판</text>
+
+          <!-- Cell Box -->
+          <rect x="338" y="60" width="224" height="140" rx="12" fill="#111827" stroke="#818cf8" stroke-width="1.5"/>
+          <!-- Cell icon: layers -->
+          <rect x="388" y="78" width="76" height="12" rx="3" fill="#3b82f6" opacity="0.6"/>
+          <rect x="388" y="93" width="76" height="12" rx="3" fill="#6366f1" opacity="0.7"/>
+          <rect x="388" y="108" width="76" height="12" rx="3" fill="#10b981" opacity="0.6"/>
+          <rect x="388" y="123" width="76" height="12" rx="3" fill="#818cf8" opacity="0.5"/>
+          <text x="450" y="152" font-size="11" fill="#818cf8" text-anchor="middle" font-family="sans-serif">② Cell</text>
+          <text x="450" y="170" font-size="13" fill="#e5e7eb" text-anchor="middle" font-family="sans-serif" font-weight="700">셀</text>
+          <text x="450" y="186" font-size="11" fill="#9ca3af" text-anchor="middle" font-family="sans-serif">LCD: 액정 주입 · 합착</text>
+          <text x="450" y="200" font-size="10" fill="#9ca3af" text-anchor="middle" font-family="sans-serif">OLED: 유기물 증착 · 봉지</text>
+
+          <!-- Arrow 2 -->
+          <line x1="564" y1="130" x2="638" y2="130" stroke="#6366f1" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="601" y="122" font-size="10" fill="#6366f1" text-anchor="middle" font-family="sans-serif">셀 패널</text>
+
+          <!-- Module Box -->
+          <rect x="640" y="60" width="200" height="140" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.5"/>
+          <!-- Module icon: assembled panel -->
+          <rect x="670" y="78" width="110" height="70" rx="5" fill="none" stroke="#34d399" stroke-width="1.2"/>
+          <rect x="676" y="84" width="98" height="58" rx="3" fill="#0f2a1a" opacity="0.8"/>
+          <rect x="692" y="92" width="16" height="8" rx="2" fill="#34d399" opacity="0.7"/>
+          <rect x="712" y="92" width="16" height="8" rx="2" fill="#3b82f6" opacity="0.7"/>
+          <rect x="732" y="92" width="16" height="8" rx="2" fill="#ef4444" opacity="0.7"/>
+          <line x1="680" y1="110" x2="768" y2="110" stroke="#34d399" stroke-width="0.8" opacity="0.4"/>
+          <line x1="680" y1="120" x2="768" y2="120" stroke="#34d399" stroke-width="0.8" opacity="0.4"/>
+          <line x1="680" y1="130" x2="768" y2="130" stroke="#34d399" stroke-width="0.8" opacity="0.4"/>
+          <text x="740" y="165" font-size="11" fill="#34d399" text-anchor="middle" font-family="sans-serif">③ Module</text>
+          <text x="740" y="183" font-size="13" fill="#e5e7eb" text-anchor="middle" font-family="sans-serif" font-weight="700">모듈</text>
+          <text x="740" y="199" font-size="11" fill="#9ca3af" text-anchor="middle" font-family="sans-serif">드라이버IC · BLU · 커버유리</text>
+
+          <!-- Bottom label -->
+          <text x="450" y="248" font-size="11" fill="#4b5563" text-anchor="middle" font-family="sans-serif">디스플레이 제조 3단계 공정 흐름</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <h2>2. 어레이(TFT) 공정</h2>
+    <div class="card">
+      <h3>공정 흐름</h3>
+      <ul>
+        <li><strong>세정 → 금속 증착(스퍼터링) → 포토리소그래피 → 식각 → 절연막 증착 → 반복</strong> (보통 5~7 mask layer).</li>
+        <li>목표: 각 픽셀에 TFT(스위칭 소자) + 투명전극(ITO) 형성.</li>
+        <li>핵심 장비: 스퍼터링 장비, CVD(화학기상증착), 포토레지스트 코터, 식각기(드라이/웨트).</li>
+        <li>LCD와 OLED 어레이 공정은 유사하나, OLED는 TFT 위에 ITO 양극까지 추가 형성.</li>
+        <li>공정 중 AOI(자동광학검사)로 단락·미연결·이물 등 결함을 실시간 검사.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>포토리소그래피 상세</h3>
+      <ul>
+        <li><strong>PR 도포</strong>: 기판에 감광성 수지(Photo Resist) 스핀 코팅.</li>
+        <li><strong>노광</strong>: 마스크(Reticle)를 통해 UV 또는 EUV 광원으로 패턴 전사.</li>
+        <li><strong>현상</strong>: 노광된 영역의 PR 제거(양성 PR 기준) → 원하는 패턴 남김.</li>
+        <li><strong>식각</strong>: 드라이(플라즈마) 또는 웨트(화학액) 방식으로 하부막 제거.</li>
+        <li><strong>PR 제거(Stripping)</strong>: 잔여 PR 세정 제거 후 다음 층 공정 진행.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <h2>3. 셀(Cell) 공정 — LCD vs OLED</h2>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> LCD 셀 공정</h3>
+      <ul>
+        <li><strong>배향막 도포</strong>: 폴리이미드(PI) 배향막을 TFT 기판과 CF 기판 양쪽에 도포.</li>
+        <li><strong>러빙(Rubbing)</strong>: 천 롤러로 배향막 표면을 문질러 액정 분자의 초기 배향 방향 설정.</li>
+        <li><strong>실런트 도포</strong>: 패널 테두리에 에폭시 실런트 도포 — 두 기판을 봉지하고 액정 누출 방지.</li>
+        <li><strong>합착</strong>: TFT 기판 + CF 기판을 정밀 정렬 후 가압 합착.</li>
+        <li><strong>액정 주입(ODF)</strong>: One Drop Fill 방식 — 합착 전 기판 위에 액정 일정량 적하, 진공 합착 시 퍼짐.</li>
+        <li><strong>UV 경화</strong>: 실런트에 UV 조사하여 경화 → 패널 봉지 완료.</li>
+        <li>ODF 방식: 대면적 패널에서 액정 낭비 최소화, 균일한 셀 갭(Cell Gap) 유지.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> OLED 셀 공정</h3>
+      <ul>
+        <li><strong>FMM 마스크 세팅</strong>: 인바 합금 Fine Metal Mask를 TFT 기판 위에 정밀 정렬.</li>
+        <li><strong>유기물 열증착(Evaporation)</strong>: 진공 챔버(10⁻⁶ torr 이하)에서 HIL/HTL/EML/ETL/EIL 순 증착.</li>
+        <li><strong>음극 증착</strong>: Al 또는 Mg:Ag 합금 증착으로 음극 형성.</li>
+        <li><strong>봉지(Encapsulation)</strong>: 리지드 → 봉지 유리 합착, 플렉시블 → TFE 무기/유기 다층 박막.</li>
+        <li><strong>절단(스크라이빙)</strong>: 대형 원장 기판을 개별 패널 크기로 절단.</li>
+        <li>증착 진공도: 10⁻⁶ torr 이하. 수분·파티클 1개도 Dark Spot의 직접 원인이 됨.</li>
+        <li>봉지 요구 사양: WVTR 10⁻⁶ g/m²/day 이하 — 디스플레이 공정 전체에서 가장 까다로운 스펙 중 하나.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <h2>4. 모듈(Module) 공정</h2>
+
+    <div class="card">
+      <h3><span class="tag lcd">LCD</span> LCD 모듈 공정</h3>
+      <ul>
+        <li>편광판 부착 (전면·후면 각 1장, 흡수축 방향 수직 교차).</li>
+        <li>드라이버IC(DDI) 본딩: COG(Chip-On-Glass) 또는 COF(Chip-On-Film) 방식.</li>
+        <li>PCB 연결: FPC(연성 회로기판)로 드라이버IC와 메인 보드 연결.</li>
+        <li>BLU 조립: 반사판 + 도광판 + 확산판 + 프리즘 시트 + LED 바 순으로 적층 조립.</li>
+        <li>터치패널 OCA 접착: 에어갭 없이 완전 합착(Full Lamination).</li>
+        <li>커버유리 합착 및 최종 검사.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag oled">OLED</span> OLED 모듈 공정</h3>
+      <ul>
+        <li>원편광판(Circular Polarizer) 부착 1장 — 외부광 반사 방지용 (Lambda/4 + Linear Polarizer 조합).</li>
+        <li>COF 드라이버IC: 플렉시블 패널의 특성상 COF 방식으로 벤딩 영역에 실장.</li>
+        <li>FPCB 연결: 유연한 연성 기판으로 패널 배면으로 벤딩.</li>
+        <li>터치 OCA 합착: 유리 또는 폴리머 터치 레이어를 OCA로 부착.</li>
+        <li>커버유리 또는 UTG(Ultra-Thin Glass, 두께 30~100μm) 합착.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <h2>5. 검사 공정</h2>
+
+    <div class="card">
+      <h3>단계별 검사 항목</h3>
+      <ul>
+        <li><strong>어레이 검사</strong>: TFT 전기 특성 검사(프로브 접촉), 인라인 AOI(자동광학검사)로 단락·Open·이물 확인.</li>
+        <li><strong>셀 검사</strong>: 전 픽셀 ON/OFF 점등 검사, 화질 검사(Mura·Dark Spot·Line 결함 확인).</li>
+        <li><strong>모듈 검사</strong>: 색도·휘도 측정, 터치 응답 확인, 영상 신호 입력 후 화질 최종 확인.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>주요 불량 유형</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>불량 유형</th>
+            <th>설명</th>
+            <th>주 발생 공정</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dot 결함</td>
+            <td>특정 픽셀이 항상 켜지거나(Bright Dot) 꺼진(Dark Dot) 점 결함</td>
+            <td>어레이, 셀</td>
+          </tr>
+          <tr>
+            <td>Line 결함</td>
+            <td>행 또는 열 전체가 불량 — TFT 게이트/데이터 라인 단선</td>
+            <td>어레이</td>
+          </tr>
+          <tr>
+            <td>Mura</td>
+            <td>휘도 불균일. 국소적 밝기 차이가 면 얼룩으로 보임</td>
+            <td>셀, 모듈</td>
+          </tr>
+          <tr>
+            <td>Dark Spot</td>
+            <td>OLED 유기물 열화 — 수분/파티클 침투로 발광층 손상</td>
+            <td>OLED 셀 (봉지 불량)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <strong>클린룸 필수:</strong> 디스플레이 공정에서 파티클 1μm 크기 하나가 Dark Spot이나 단락으로 이어질 수 있어, 반도체 수준의 클린룸(Class 1~10) 환경이 필수다. 현대 팹에서는 AOI + AI 딥러닝 기반 불량 자동 분류 시스템 도입이 확산되고 있다.
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">
+      <a href="./display_material.html" class="detail-btn">← 이전: 소재</a>
+      <a href="./display_panel_type.html" class="detail-btn">다음: 패널 종류 →</a>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  &copy; 2026 NDoubleUK &middot; 디스플레이 공정의 이해
+</footer>
+
+</body>
+</html>
