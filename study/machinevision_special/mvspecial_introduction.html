@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>머신비전 특화 - 검사 알고리즘 스터디</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --primary: #6366f1;
+            --text: #e5e7eb;
+            --sub: #9ca3af;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1f2937;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h3 { font-size: 18px; }
+
+        section {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 20px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 140px 20px 100px;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: var(--sub);
+            font-size: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            transition: 0.3s;
+            margin-bottom: 14px;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+        }
+
+        .card h3 { margin-bottom: 10px; }
+        .card ul { padding-left: 20px; }
+        .card li { margin-bottom: 8px; color: var(--sub); }
+
+        .note {
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .note strong { color: var(--primary); }
+
+        .svg-box { margin: 16px 0; text-align: center; }
+        .svg-box svg {
+            width: 100%;
+            max-width: 1040px;
+            height: auto;
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+            margin-top: 6px;
+        }
+
+        .toc-card {
+            background: var(--card);
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 22px;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toc-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+        }
+
+        .toc-card.disabled:hover { transform: none; border-color: #1f2937; }
+
+        .toc-card .toc-index {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .toc-card h3 { margin: 6px 0 8px; font-size: 18px; color: var(--text); }
+        .toc-card p { color: var(--sub); font-size: 13.5px; flex-grow: 1; }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        .tag.ready { background: rgba(16,185,129,0.15); color: #34d399; }
+        .tag.soon { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+        .detail-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 10px;
+          padding: 6px 12px;
+          font-size: 13px;
+          color: var(--primary);
+          border: 1px solid var(--primary);
+          border-radius: 999px;
+          text-decoration: none;
+          transition: 0.2s;
+          align-self: flex-start;
+        }
+
+        .detail-btn:hover { background: var(--primary); color: white; }
+
+        .breadcrumb { font-size: 13px; color: var(--sub); }
+        .breadcrumb a { color: var(--sub); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--text); }
+        .breadcrumb span { margin: 0 6px; font-size: 12px; }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1f2937;
+            color: var(--sub);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb" style="padding:10px 20px; max-width:1100px; margin:auto;">
+                <a href="../../index.html">Home</a>
+                <span>›</span>
+                <a href="../study.html">Study Archive</a>
+                <span>›</span>
+                <span>머신비전 특화</span>
+            </div>
+        </div>
+
+        <nav>
+            <h3>머신비전 특화 - 검사 알고리즘 스터디</h3>
+        </nav>
+    </header>
+
+    <section id="section">
+        <div class="section">
+            <h2>1. 개요</h2>
+            <div class="card">
+                <ul>
+                <li>이 스터디는 반도체 · 2차전지 · 디스플레이 업종의 <strong>Final Exterior Inspection(최종 외관검사)</strong> 장비에서 실제로 사용하는 <strong>검사 알고리즘 설계 로직</strong>을 다룸</li>
+                <li>「머신 비전의 이해」가 카메라·렌즈·조명 등 <strong>광학 시스템</strong>을 다뤘다면, 이 스터디는 그 위에서 동작하는 <strong>영상처리·판정 알고리즘</strong>에 집중함</li>
+                <li>검사 알고리즘은 크게 두 갈래로 발전해 옴 : <strong>① Rule-based(규칙 기반) 2D 알고리즘</strong>과 <strong>② 3D(높이 정보 기반) 알고리즘</strong></li>
+                <li>신입 개발자가 결함 검출 로직을 스스로 설계할 수 있는 역량을 목표로, "왜 이 처리를 하는가"에 초점을 맞춰 정리함</li>
+                </ul>
+
+                <div class="note">
+                    <strong>학습 순서</strong><br>
+                    2D Rule-based 알고리즘(현재 작성 완료) → 3D 알고리즘(추후 추가 예정) 순으로 확장할 예정입니다. 아래 목차에서 완료된 항목부터 학습을 시작하세요.
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 학습 흐름</h2>
+            <div class="toc-grid">
+                <div class="toc-card">
+                    <span class="tag ready">✅ 학습 가능</span>
+                    <div class="toc-index">CHAPTER 01</div>
+                    <h3>2D Rule-based 검사 알고리즘</h3>
+                    <p>Image Input → Align → Preprocessing → Binarization → Blob Analysis → Feature 추출/비교 → 판정까지, 규칙 기반 2D 외관검사의 전체 Flow와 각 단계의 영상처리 개념을 정리</p>
+                    <a href="mvspecial_2d_algorithm.html" class="detail-btn"><span class="arrow">→</span> 자세히 보기</a>
+                </div>
+
+                <div class="toc-card disabled" style="opacity:0.6;">
+                    <span class="tag soon">🚧 추후 추가</span>
+                    <div class="toc-index">CHAPTER 02</div>
+                    <h3>3D 검사 알고리즘</h3>
+                    <p>Point Cloud, 높이(Height) 정보 기반 결함 검출, 3D 정합(Registration), 단차·요철·평탄도 검사 알고리즘 등을 다룰 예정 (준비 중)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디</p>
+    </footer>
+</body>
+</html>

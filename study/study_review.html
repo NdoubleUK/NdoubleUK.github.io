@@ -234,7 +234,7 @@
 <div class="hero">
   <h2>스터디 검토 리포트</h2>
   <p>반도체 / 2차전지 / 디스플레이 / 머신 비전 스터디 현황 및 검토</p>
-  <div class="date">최종 검토일: 2026-08-19 (7차 — 디스플레이 공정 7개 파일 신규 생성)</div>
+  <div class="date">최종 검토일: 2026-08-19 (10차 — 사내 IPVM 라이브러리 연동 핵심 포인트 추가)</div>
 </div>
 
 <!-- 진행 현황 -->
@@ -244,11 +244,11 @@
   <div class="status-grid">
     <div class="status-card">
       <div class="label">전체 HTML 파일 수</div>
-      <div class="value">36</div>
+      <div class="value">43</div>
     </div>
     <div class="status-card">
       <div class="label">내용 작성 완료</div>
-      <div class="value green">34</div>
+      <div class="value green">41</div>
     </div>
     <div class="status-card">
       <div class="label">미작성(플레이스홀더)</div>
@@ -514,6 +514,55 @@
         <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
         <td>4차 신규 작성 확인</td>
       </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_introduction.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>8차 신규 생성 — 검사 알고리즘 스터디 허브 (2D 완료, 3D 추후 추가)</td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_algorithm.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>8차 생성 → <span style="color:var(--primary);font-size:12px;">9차 전체 흐름 개요 페이지로 재구성, 세부 챕터 5개 링크 추가</span></td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_align.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>9차 신규 생성 — 정렬 알고리즘 상세 (NCC/SSD, Sub-pixel 보간)</td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_preprocessing.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>9차 신규 생성 — 전처리 알고리즘 상세 (Gaussian/Median Filter, CLAHE, Morphology)</td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_binarization.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>9차 신규 생성 — 이진화 알고리즘 상세 (Otsu's Method 계산 절차, Adaptive Threshold)</td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_blob.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>9차 신규 생성 — Blob 분석 상세 (Two-pass/Union-Find, Feature 공식)</td>
+      </tr>
+      <tr>
+        <td>머신비전 특화</td>
+        <td>mvspecial_2d_decision.html</td>
+        <td><span class="badge done">완료</span></td>
+        <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+        <td>9차 신규 생성 — 판정 로직 상세 (Golden Template 비교, 규칙 조합)</td>
+      </tr>
     </tbody>
   </table>
 </section>
@@ -522,6 +571,55 @@
 <section id="history">
   <h2 class="section-title">📋 수정 이력</h2>
   <ul class="history-list">
+
+    <li class="history-item">
+      <div class="history-round">10차</div>
+      <div class="history-date">2026-08-19</div>
+      <div class="history-content">
+        <div class="title">사내 IPVM 라이브러리 연동 "핵심 포인트" 추가 <span class="history-badge fix">5개 파일 수정</span></div>
+        <ul>
+          <li>연결된 iVisionMadangSDK 폴더의 include 헤더(Algorithm/ImageProcessing.h, TemplateMatching.h, Blob_Attribute.h, DataFitting.h 등)와 Reference Manual 분석</li>
+          <li>정렬·전처리·이진화·Blob·판정 5개 세부 챕터 각각에 "핵심 포인트 — 사내 IPVM 라이브러리 연동" 박스 신규 추가</li>
+          <li>⚠️ 보안 고려 — 공개 GitHub Pages 사이트임을 감안해 함수 시그니처·파라미터·내부 클래스 구조는 제외하고 <strong>함수명만</strong> 노출 (사용자 확인 후 결정)</li>
+          <li>예 : Otsu → <code>GetThreshold_Otsu()</code>, Adaptive Threshold → <code>BinarizeAdaptive()</code>, Blob 두께/궤적 → <code>GetBlobThicknessLocus()</code> 등 실제 함수명과 매핑</li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="history-item">
+      <div class="history-round">9차</div>
+      <div class="history-date">2026-08-19</div>
+      <div class="history-content">
+        <div class="title">2D 검사 알고리즘 세부 챕터 5개 심화 추가 <span class="history-badge fix">5개 파일 생성 + 1개 재구성</span></div>
+        <ul>
+          <li>사용자 피드백 반영 — 특정 Flow 설명을 그대로 옮기지 않고, "스터디 자료" 관점에서 각 단계의 계산 원리를 독립적으로 재정리</li>
+          <li>mvspecial_2d_algorithm.html을 전체 흐름 개요 + 세부 챕터 목차 페이지로 재구성</li>
+          <li>mvspecial_2d_align.html — Template Matching(NCC/SSD 수식), Edge 기반 정렬, Sub-pixel 보간(Parabolic/Centroid), Affine Transform</li>
+          <li>mvspecial_2d_preprocessing.html — Gaussian/Median Filter 동작 원리, Shading Correction, CLAHE 5단계 절차, Morphology 연산</li>
+          <li>mvspecial_2d_binarization.html — Otsu's Method 계산 절차(클래스 간 분산 수식), Adaptive Thresholding 국소 임계값 계산</li>
+          <li>mvspecial_2d_blob.html — Connected Component Labeling(Two-pass/Union-Find), Feature 계산 공식(Circularity 등)</li>
+          <li>mvspecial_2d_decision.html — Golden Template 차영상/XOR 비교, Feature 규칙 조합, 등급 분류</li>
+          <li>references.html에 Otsu/CLAHE/Subpixel/Union-Find 등 원전 자료 7건 추가</li>
+          <li>전체 파일 수 38 → 43, 완료 36 → 41</li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="history-item">
+      <div class="history-round">8차</div>
+      <div class="history-date">2026-08-19</div>
+      <div class="history-content">
+        <div class="title">머신비전 특화 - 검사 알고리즘 스터디 신규 추가 <span class="history-badge fix">2개 파일 생성</span></div>
+        <ul>
+          <li>machinevision_special/ 폴더 신규 생성 — 기존 「머신 비전의 이해」(광학 시스템)와 별도의 심화 카테고리</li>
+          <li>mvspecial_introduction.html — 허브 페이지, 2D(완료)/3D(추후 추가) 확장형 목차 구조</li>
+          <li>mvspecial_2d_algorithm.html — Rule-based 2D 검사 Flow 전체 정리 (Image Input → Align → Preprocessing → Binarization → Blob Analysis → Feature 추출/비교 → 판정)</li>
+          <li>결함 유형별(이물·스크래치·얼룩·패턴오류) 검출 전략 요약표 포함</li>
+          <li>study.html에 「머신비전 특화」 카드 추가, references.html에 관련 자료 7건 추가</li>
+          <li>전체 파일 수 36 → 38, 완료 34 → 36</li>
+        </ul>
+      </div>
+    </li>
 
     <li class="history-item">
       <div class="history-round">7차</div>
@@ -991,7 +1089,7 @@
 </section>
 
 <footer>
-  <p>© 2026 NDoubleUK · 스터디 검토 리포트 · 1차: 2026-06-22 · 2차: 2026-06-24 · 3차: 2026-06-24 · 4차: 2026-08-19 · 5차: 2026-08-19 · 6차: 2026-08-19 · 7차: 2026-08-19</p>
+  <p>© 2026 NDoubleUK · 스터디 검토 리포트 · 1차: 2026-06-22 · 2차: 2026-06-24 · 3차: 2026-06-24 · 4차: 2026-08-19 · 5차: 2026-08-19 · 6차: 2026-08-19 · 7차: 2026-08-19 · 8차: 2026-08-19 · 9차: 2026-08-19 · 10차: 2026-08-19</p>
 </footer>
 
 </body>

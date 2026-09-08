@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>판정 로직 알고리즘 상세</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+nav h3 { font-size:18px; }
+section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+.section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+.card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+.card:hover { transform:translateY(-6px); border-color:var(--primary); }
+.card h3 { margin-bottom:10px; margin-top:18px; }
+.card h3:first-child { margin-top:0; }
+.card ul { padding-left:20px; }
+.card li { margin-bottom:8px; color:var(--sub); }
+.compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:13.5px; }
+.compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); vertical-align:top; }
+.compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+.note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+.note strong { color:var(--primary); }
+.ipvm-tag { display:flex; align-items:flex-start; gap:8px; background:rgba(245,158,11,0.06); border-left:3px solid #f59e0b; border-radius:6px; padding:9px 12px; margin:10px 0 16px; font-size:13px; color:var(--sub); line-height:1.55; }
+.ipvm-tag .ipvm-label { flex-shrink:0; font-weight:700; color:#f59e0b; font-size:11px; background:rgba(245,158,11,0.15); padding:2px 7px; border-radius:4px; white-space:nowrap; }
+.ipvm-tag code { background:#0b1120; border:1px solid #1f2937; border-radius:4px; padding:1px 6px; font-family:'Courier New',monospace; color:#fbbf24; font-size:12.5px; }
+.svg-box { margin:16px 0; text-align:center; }
+.svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+.formula-box { background:#0b1120; border:1px solid #1f2937; border-radius:8px; padding:16px 20px; margin:14px 0; font-family:'Courier New',monospace; font-size:14px; color:#a5b4fc; text-align:center; overflow-x:auto; }
+.tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+.tag.concept { background:rgba(99,102,241,0.15); color:#818cf8; }
+.detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+.detail-btn:hover { background:var(--primary); color:white; }
+.arrow { transition:transform 0.2s; }
+.detail-btn:hover .arrow { transform:translateX(3px); }
+.breadcrumb { font-size:13px; color:var(--sub); }
+.breadcrumb a { color:var(--sub); text-decoration:none; }
+.breadcrumb a:hover { color:var(--text); }
+.breadcrumb span { margin:0 6px; font-size:12px; }
+footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+.nav-footer { display:flex; justify-content:space-between; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+<h3>판정 로직 알고리즘 상세</h3>
+</nav>
+</header>
+
+<div class="breadcrumb" style="padding:10px 20px; max-width:1100px; margin:auto;">
+    <a href="../../index.html">Home</a>
+    <span>›</span>
+    <a href="../study.html">Study Archive</a>
+    <span>›</span>
+    <a href="./mvspecial_introduction.html">머신비전 특화</a>
+    <span>›</span>
+    <a href="./mvspecial_2d_algorithm.html">2D Rule-based 검사 알고리즘</a>
+    <span>›</span>
+    <span>판정 로직 알고리즘</span>
+</div>
+
+<section>
+
+<div class="section">
+<h2>1. Golden Template 비교 — 정상 기준과 어떻게 비교하는가</h2>
+<div class="card">
+<span class="tag concept">Golden Template</span><span class="tag concept">Difference Image</span><span class="tag concept">XOR 비교</span>
+
+<h3>화소 단위 비교라는 발상</h3>
+<p style="color:var(--sub);">Rule-based 판정의 가장 기초적인 접근은, 사전에 등록해 둔 양품 기준 영상인 Golden Template과, Align 단계를 거쳐 좌표가 정렬된 검사 영상을 화소(픽셀) 단위로 나란히 비교하는 것이다. "정상은 이렇게 생겼다"는 기준을 영상 그 자체로 들고 있다가, 지금 들어온 영상이 그 기준과 얼마나, 어디서 다른지를 직접 대조하는 방식이라고 볼 수 있다. 이 비교에서 실제로 많이 쓰이는 두 가지 방식이 차영상 방식과 XOR 비교 방식이다.</p>
+
+<h3>차영상(Difference Image) 방식</h3>
+<p style="color:var(--sub);">차영상 방식은 두 영상에서 서로 대응하는 위치의 픽셀 밝기값을 빼고, 그 결과에 절대값을 취해서 밝기 차이의 크기만 남기는 방식이다. 검사 영상이 기준 영상보다 더 밝든 더 어둡든 상관없이, "차이가 얼마나 나는가"만 중요하기 때문에 절대값 처리가 필요하다.</p>
+<div class="formula-box">Diff(x,y) = | I_검사(x,y) − I_기준(x,y) |</div>
+<p style="color:var(--sub);">이렇게 만들어진 차영상은 픽셀 값이 클수록 두 영상 사이의 차이가 크다는 뜻이 되고, 여기에 임계값(Threshold)을 적용하면 노이즈 수준의 미세한 차이는 걸러내고 유의미하게 차이가 큰 영역만 결함 후보로 추출할 수 있다. 즉 차영상 자체는 "차이의 지도"이고, 임계값 처리는 그 지도에서 진짜 의미 있는 차이만 골라내는 필터 역할을 한다.</p>
+
+<h3>XOR 비교 방식</h3>
+<p style="color:var(--sub);">XOR 비교 방식은 그레이스케일 밝기값을 그대로 비교하는 대신, 검사 영상과 기준 영상을 각각 먼저 이진화(흑/백으로 변환)한 뒤, 두 이진 영상을 배타적 논리합(XOR) 연산으로 비교하는 방식이다. XOR 연산의 특성상 두 영상에서 같은 위치의 픽셀이 둘 다 흰색(전경)이거나 둘 다 검은색(배경)이면 결과는 0(사라짐)이 되고, 한쪽에서만 흰색이고 다른 쪽은 검은색인 경우에만 결과가 1(남음)로 표시된다. 결과적으로 두 영상에서 "패턴이 달라진 부분"만 정확히 남는 셈이다.</p>
+<p style="color:var(--sub);">이 방식은 PCB의 회로 패턴이나 반복되는 정형화된 도형처럼, 영상 자체가 이진화했을 때 뚜렷한 형태를 갖는 대상을 검사할 때 특히 효과적이다. 패턴이 조금이라도 끊기거나, 없어야 할 곳에 패턴이 생기거나, 있어야 할 곳에 패턴이 빠지면 XOR 결과에 바로 흔적이 남기 때문이다.</p>
+
+<h3>왜 Align 정밀도가 그토록 중요한가</h3>
+<p style="color:var(--sub);">차영상 방식이든 XOR 비교 방식이든, 이 비교가 의미를 가지려면 반드시 전제되어야 하는 것이 있는데, 그것이 바로 정밀한 Align이다. 두 영상을 픽셀 단위로 직접 겹쳐서 비교하는 방식이기 때문에, 검사 대상의 위치나 회전이 기준 영상과 좌표 수준에서 조금이라도 어긋나 있으면, 실제로는 결함이 아닌 정상적인 부위의 가장자리나 패턴 경계에서도 "차이가 있다"는 결과가 대량으로 발생하게 된다. 이런 가성 불량(허위 검출, False Positive)은 Rule-based 비교 검사에서 가장 흔하게 발생하는 문제 중 하나이며, 그만큼 Align 단계의 정밀도가 판정 결과의 신뢰도를 사실상 결정한다고 볼 수 있다.</p>
+<div class="ipvm-tag">
+    <span class="ipvm-label">🔧 IPVM</span>
+    <span>차영상 비교는 <code>AbsDiff()</code>, 이진화 후 패턴 비교는 <code>BitwiseXor()</code>로 바로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>BitwiseXor()</code> 옆에 <code>BitwiseAnd()</code>, <code>BitwiseOr()</code>도 나란히 있다는 것 — 이 둘은 차이를 찾는 대신, 여러 ROI(관심영역) 마스크를 겹치거나(AND) 합치는(OR) 용도로 쓰인다. 예를 들어 "이 영역이면서 동시에 저 영역"처럼 복수 조건의 검사 범위를 조합해야 할 때, 별도의 좌표 연산 없이 이진 마스크 두 장을 AND 연산 한 번으로 처리할 수 있다.</span>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>2. Feature 임계값 기반 규칙 조합</h2>
+<div class="card">
+<span class="tag concept">Feature Threshold</span><span class="tag concept">AND/OR 규칙</span>
+
+<h3>하나의 Feature만으로는 부족한 이유</h3>
+<p style="color:var(--sub);">Blob Analysis 단계에서는 검출된 각 영역에 대해 Area(면적), Circularity(원형도), Aspect Ratio(종횡비), Struct Factor(구조 계수) 등 다양한 Feature를 계산해 둔다. 이 각각의 Feature에 대해 사전에 정상 범위를 벗어난다고 판단할 허용 범위(Threshold)를 정의해 둘 수 있는데, 문제는 이 중 어느 하나의 Feature만 보고 판단하면 서로 다른 종류의 결함을 구분해내기가 어렵다는 점이다. 예를 들어 면적이 큰 이물과 면적이 큰 얼룩은 Area 값만으로는 구분되지 않는다.</p>
+
+<h3>AND/OR 논리로 규칙을 구성하기</h3>
+<p style="color:var(--sub);">그래서 실무에서는 여러 Feature 조건을 AND(그리고) 또는 OR(또는) 논리로 조합해서, 결함 유형별로 별도의 판정 규칙(Rule)을 구성하는 방식을 사용한다. 이렇게 하면 각 결함 유형이 가지는 고유한 형상적 특징을 여러 Feature의 조합으로 표현할 수 있다.</p>
+<ul>
+<li>예시 : (Area &gt; A_min) AND (Circularity &gt; C_min) 조건을 모두 만족하면 → 이물로 분류. 면적이 일정 크기 이상이면서 동시에 뭉쳐진 형태(원형에 가까운 형태)를 보이는 영역을 이물의 전형적인 형상으로 규정한 것이다.</li>
+<li>예시 : (Aspect Ratio &gt; R_min) AND (Struct Factor &gt; S_min) 조건을 모두 만족하면 → 스크래치로 분류. 한쪽으로 길게 늘어진 형태(종횡비가 큰 형태)이면서 동시에 구조적으로 선형적인 특징을 보이는 영역을 스크래치의 전형적인 형상으로 규정한 것이다.</li>
+</ul>
+
+<h3>규칙에 해당하지 않으면 양품</h3>
+<p style="color:var(--sub);">이렇게 결함 유형별로 정의해 둔 여러 규칙들 중 어느 하나에도 해당하지 않는 영역은, 특별히 이상하다고 판단할 근거가 없으므로 최종적으로 정상(양품)으로 판정한다. 즉 Rule-based 판정은 "정상이라고 확신할 수 있는 조건"을 정의하는 것이 아니라, "이런 조건을 만족하면 불량이다"라는 조건들을 나열해두고, 그 어느 것에도 걸리지 않는 경우를 정상으로 간주하는 소거법에 가까운 구조를 가진다.</p>
+</div>
+</div>
+
+<div class="section">
+<h2>3. 결함 등급 분류와 후속 처리 연계</h2>
+<div class="card">
+<span class="tag concept">Critical / Major / Minor</span><span class="tag concept">판정 근거 저장</span>
+
+<h3>결함을 등급으로 세분화하는 이유</h3>
+<p style="color:var(--sub);">모든 결함이 동일한 심각도를 갖는 것은 아니다. 같은 스크래치라도 크기가 크고 제품 핵심 영역에 위치한 경우와, 크기가 작고 비핵심 영역에 위치한 경우는 실제 제품 품질에 미치는 영향이 전혀 다르다. 그래서 검출된 결함의 크기, 위치, 유형 등을 종합적으로 고려해 Critical(치명) / Major(주요) / Minor(경미)와 같은 등급으로 세분화하는 것이 일반적이다.</p>
+
+<h3>등급별 후속 조치 자동 연계</h3>
+<p style="color:var(--sub);">이렇게 등급을 나누는 이유는 등급마다 서로 다른 후속 조치를 자동으로 연계하기 위함이다. 예를 들어 Critical 등급으로 판정된 제품은 즉시 폐기 라인으로 이송하도록 설정하고, Major 등급은 사람이 다시 한 번 확인할 수 있도록 재검사 대기 상태로 분류하며, Minor 등급은 제품 흐름을 막지 않고 통과시키되 판정 이력에는 기록을 남겨두는 식으로 등급별 처리 경로를 미리 설계해 둔다. 이런 연계 체계가 갖춰져 있으면, 검사 설비가 단순히 양/불 판정만 내리는 것이 아니라 실제 생산 라인의 흐름 제어와 직접 맞물려 동작할 수 있다.</p>
+
+<h3>판정 근거를 함께 저장해두는 것의 가치</h3>
+<p style="color:var(--sub);">단순히 "불량이다"라는 결과만 남기는 것이 아니라, 구체적으로 어떤 Feature가 어떤 임계값을 얼마나 초과했기 때문에 불량으로 판정되었는지를 함께 저장해두면, 이후 공정 개선이나 임계값 재조정 작업을 할 때 감이 아니라 데이터에 기반해서 판단할 수 있게 된다. 예를 들어 특정 임계값 근처에서 판정이 반복적으로 갈리는 경우가 데이터로 확인된다면, 해당 임계값을 재검토해야 한다는 신호로 활용할 수 있다.</p>
+</div>
+</div>
+
+<div class="section">
+<h2>4. Rule 기반 판정을 설계할 때의 실무 팁</h2>
+<div class="card">
+<span class="tag concept">통계적 임계값 설정</span><span class="tag concept">규칙 우선순위</span><span class="tag concept">설명 가능성</span>
+
+<h3>임계값은 감이 아니라 데이터로 정한다</h3>
+<p style="color:var(--sub);">임계값을 설계자의 감이나 대략적인 추측으로 정하는 것은 실무에서 지양해야 할 방식이다. 이상적인 방법은 실제로 확보된 양품 샘플들과 불량 샘플들 각각에서 관심 있는 Feature 값을 계산해보고, 그 값들의 분포를 통계적으로 분석하는 것이다. 예를 들어 양품 샘플들의 Feature 값 분포와 불량 샘플들의 Feature 값 분포를 그려보면, 두 분포가 겹치지 않고 갈라지는 지점이 보이는 경우가 많은데, 바로 그 지점을 임계값으로 설정하는 것이 데이터에 근거한 합리적인 접근이다.</p>
+<div class="ipvm-tag">
+    <span class="ipvm-label">🔧 IPVM</span>
+    <span>샘플 분포 분석에는 <code>GetMean()</code>, <code>GetMeanStdev()</code>, <code>GetMinMax()</code>, <code>GetCount()</code>, <code>GetSum()</code>이 그대로 쓰인다 — 양품/불량 샘플 각각에 대해 이 함수들로 Feature 값의 평균·표준편차·최소최대를 구해두면, 두 분포가 갈라지는 지점을 감이 아니라 숫자로 확인할 수 있다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 여기에 더해 <code>GetNormL1()</code>, <code>GetNormL2()</code>, <code>GetNormDiffL1()</code>도 지원된다는 것 — 이 함수들은 픽셀 하나하나의 차이가 아니라, 영상(또는 영역) 전체의 차이를 L1/L2 노름이라는 스칼라 값 하나로 요약해준다. 즉 "어디가 다른가"는 차영상으로 보고, "전체적으로 얼마나 다른가"는 노름 값 하나로 판단하는 식으로 두 접근을 상호 보완적으로 쓸 수 있다.</span>
+</div>
+
+<h3>규칙이 늘어날수록 생기는 충돌, 우선순위로 대비하기</h3>
+<p style="color:var(--sub);">검출해야 할 결함 유형의 종류가 늘어날수록, 그에 대응하는 판정 규칙의 개수도 함께 늘어난다. 규칙이 많아지면, 하나의 검출 영역이 서로 다른 두 개 이상의 규칙 조건을 동시에 만족시키는 상황도 생길 수 있다. 이런 경우를 대비해서, 어떤 규칙이 다른 규칙보다 우선해서 적용되어야 하는지 규칙 간 우선순위(Priority)를 미리 정해두는 것이 설계 단계에서 반드시 챙겨야 할 부분이다. 우선순위 체계 없이 규칙을 계속 추가하다 보면, 실제 판정 시점에 어떤 결과가 나올지 예측하기 어려운 상황이 발생할 수 있다.</p>
+
+<h3>Rule-based 판정의 근본적인 강점 : 설명 가능성</h3>
+<p style="color:var(--sub);">Rule-based 판정이 가지는 가장 큰 가치는, 특정 판정 결과가 나온 이유를 사람이 그대로 설명할 수 있다는 점이다. "이 영역은 Area가 A_min을 초과하고 Circularity도 C_min을 초과했기 때문에 이물로 판정되었다"는 식으로, 판정 근거를 명확한 언어로 되짚을 수 있다. 이는 딥러닝 기반 판정이 흔히 갖고 있는 블랙박스 문제, 즉 왜 그런 결과가 나왔는지 내부 동작을 사람이 명확히 설명하기 어려운 문제와 뚜렷하게 대비되는 Rule-based 판정만의 핵심 강점이다.</p>
+
+<table class="compare-table">
+<tr><th>항목</th><th>Rule-based 판정</th><th>딥러닝 기반 판정</th></tr>
+<tr><td>판정 근거</td><td>어떤 Feature가 어떤 임계값을 초과했는지 명시적으로 확인 가능</td><td>내부 가중치 연산 결과이므로 근거를 직접 추적하기 어려움</td></tr>
+<tr><td>설명 가능성</td><td>높음 — 사람이 판정 논리를 그대로 설명할 수 있음</td><td>낮음 — 블랙박스 구조로 결과 해석에 별도 기법 필요</td></tr>
+<tr><td>신규 결함 대응</td><td>새로운 결함 유형마다 규칙을 새로 정의해야 함</td><td>충분한 학습 데이터가 있다면 별도 규칙 정의 없이 대응 가능</td></tr>
+<tr><td>구축 난이도</td><td>결함 유형이 많아질수록 규칙 설계·관리 부담 증가</td><td>초기 데이터 수집과 학습 인프라 구축 부담이 큼</td></tr>
+</table>
+
+<div class="note"><strong>핵심 요약</strong> — Rule-based 판정의 핵심은 명확성입니다. 어떤 Feature가 어떤 기준을 얼마나 초과했는지 설명할 수 있다는 것은, 품질 이력 관리와 공정 개선에서 큰 실무적 가치를 가집니다.</div>
+</div>
+</div>
+
+<div class="nav-footer">
+<a href="./mvspecial_2d_blob.html" class="detail-btn">← 이전: Blob 분석 알고리즘 상세</a>
+<a href="./mvspecial_2d_algorithm.html" class="detail-btn">처음으로: 전체 흐름 개요 <span class="arrow">→</span></a>
+</div>
+
+</section>
+
+<footer>
+© 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디
+</footer>
+
+</body>
+</html>

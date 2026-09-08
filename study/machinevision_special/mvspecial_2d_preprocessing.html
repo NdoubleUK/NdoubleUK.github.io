@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전처리 알고리즘 상세</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0f172a; --card:#111827; --primary:#6366f1; --text:#e5e7eb; --sub:#9ca3af; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+header { position:sticky; top:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-bottom:1px solid #1f2937; z-index:100; }
+nav { max-width:1100px; margin:auto; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+nav h3 { font-size:18px; }
+section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; }
+.section h2 { font-size:22px; margin-bottom:15px; border-left:4px solid var(--primary); padding-left:10px; }
+.card { background:var(--card); padding:25px; border-radius:16px; border:1px solid #1f2937; transition:0.3s; margin-bottom:14px; }
+.card:hover { transform:translateY(-6px); border-color:var(--primary); }
+.card h3 { margin-bottom:10px; margin-top:18px; }
+.card h3:first-child { margin-top:0; }
+.card ul { padding-left:20px; }
+.card li { margin-bottom:8px; color:var(--sub); }
+.compare-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:13.5px; }
+.compare-table th, .compare-table td { border:1px solid #1f2937; padding:10px 12px; text-align:left; color:var(--sub); vertical-align:top; }
+.compare-table th { color:var(--text); background:rgba(99,102,241,0.1); }
+.note { background:rgba(99,102,241,0.08); border-left:4px solid var(--primary); border-radius:8px; padding:14px 16px; margin:16px 0; font-size:14px; color:var(--text); }
+.note strong { color:var(--primary); }
+.ipvm-tag { display:flex; align-items:flex-start; gap:8px; background:rgba(245,158,11,0.06); border-left:3px solid #f59e0b; border-radius:6px; padding:9px 12px; margin:10px 0 16px; font-size:13px; color:var(--sub); line-height:1.55; }
+.ipvm-tag .ipvm-label { flex-shrink:0; font-weight:700; color:#f59e0b; font-size:11px; background:rgba(245,158,11,0.15); padding:2px 7px; border-radius:4px; white-space:nowrap; }
+.ipvm-tag code { background:#0b1120; border:1px solid #1f2937; border-radius:4px; padding:1px 6px; font-family:'Courier New',monospace; color:#fbbf24; font-size:12.5px; }
+.svg-box { margin:16px 0; text-align:center; }
+.svg-box svg { width:100%; max-width:1040px; height:auto; background:#0b1120; border:1px solid #1f2937; border-radius:10px; }
+.formula-box { background:#0b1120; border:1px solid #1f2937; border-radius:8px; padding:16px 20px; margin:14px 0; font-family:'Courier New',monospace; font-size:14px; color:#a5b4fc; text-align:center; overflow-x:auto; }
+.tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; margin-right:6px; margin-bottom:6px; }
+.tag.concept { background:rgba(99,102,241,0.15); color:#818cf8; }
+.detail-btn { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; font-size:13px; color:var(--primary); border:1px solid var(--primary); border-radius:999px; text-decoration:none; transition:0.2s; }
+.detail-btn:hover { background:var(--primary); color:white; }
+.arrow { transition:transform 0.2s; }
+.detail-btn:hover .arrow { transform:translateX(3px); }
+.breadcrumb { font-size:13px; color:var(--sub); }
+.breadcrumb a { color:var(--sub); text-decoration:none; }
+.breadcrumb a:hover { color:var(--text); }
+.breadcrumb span { margin:0 6px; font-size:12px; }
+footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
+.nav-footer { display:flex; justify-content:space-between; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <h3>전처리 알고리즘 상세</h3>
+    </nav>
+    <div class="breadcrumb" style="padding:10px 20px; max-width:1100px; margin:auto;">
+        <a href="../../index.html">Home</a>
+        <span>›</span>
+        <a href="../study.html">Study Archive</a>
+        <span>›</span>
+        <a href="./mvspecial_introduction.html">머신비전 특화</a>
+        <span>›</span>
+        <a href="./mvspecial_2d_algorithm.html">2D Rule-based 검사 알고리즘</a>
+        <span>›</span>
+        <span>전처리 알고리즘</span>
+    </div>
+</header>
+
+<section>
+
+    <div class="section">
+        <h2>1. Gaussian Filter — 어떻게 영상을 부드럽게 만드는가</h2>
+        <div class="card">
+            <span class="tag concept">Convolution</span>
+            <span class="tag concept">σ (시그마)</span>
+            <p style="color:var(--sub); margin-top:10px;">
+                Gaussian Filter의 핵심 동작 원리는 컨볼루션(Convolution) 연산이다. 영상의 각 픽셀마다 그 주변에 작은 크기의 커널(Kernel, 가중치 행렬)을 씌우고,
+                커널이 덮고 있는 영역 내 픽셀 값들의 가중 평균을 계산해 그 결과로 중심 픽셀의 값을 대체하는 방식으로 영상 전체를 훑어나간다.
+            </p>
+            <p style="color:var(--sub); margin-top:10px;">
+                이때 커널을 구성하는 가중치 값들은 가우시안 함수(정규분포)를 이산적인 격자 위에 샘플링해서 만들어진다. 정규분포는 중심에서 값이 가장 크고
+                중심에서 멀어질수록 값이 완만하게 작아지는 종 모양(bell shape)을 가지는데, 이 특성이 그대로 커널에 반영되어 커널 중심에는 가장 큰 가중치가,
+                중심에서 멀리 떨어진 위치에는 상대적으로 작은 가중치가 배정된다. 즉 중심 픽셀에 가까운 이웃일수록 결과에 더 크게 기여하고, 멀리 있는 이웃일수록 기여도가 줄어든다.
+            </p>
+            <h3>표준편차(σ, 시그마)의 역할</h3>
+            <p style="color:var(--sub);">
+                가우시안 함수의 퍼짐 정도를 결정하는 파라미터가 표준편차 σ다. σ 값이 작으면 정규분포 곡선이 뾰족해지면서 커널 중심의 가중치가 상대적으로 매우 커지고
+                주변 가중치는 작아지기 때문에, 결과적으로 스무딩(블러) 효과가 약하게 나타난다. 반대로 σ 값이 커질수록 곡선이 완만해져 커널 전체의 가중치가
+                고르게 퍼지게 되고, 그만큼 주변 픽셀들의 영향력이 커져 스무딩 효과가 강해진다.
+            </p>
+            <h3>실무 팁 — 커널 크기의 결정</h3>
+            <p style="color:var(--sub);">
+                가우시안 함수는 수학적으로는 양쪽으로 무한히 뻗어나가는 곡선이지만, 실제로는 중심에서 σ의 3배 범위를 벗어나면 함수 값이 거의 0에 가까워지기 때문에
+                그 지점에서 커널을 잘라내어 사용해도 결과에 미치는 영향은 무시할 만하다. 예를 들어 σ=1로 설정한다면, 실무에서는 대략 7×7 크기의 커널을 사용하는 것이 일반적이다.
+            </p>
+            <h3>평균(Mean) 필터와의 차이</h3>
+            <p style="color:var(--sub);">
+                평균 필터는 커널 내 모든 픽셀에 동일한 가중치를 부여해 단순 평균을 취하는 반면, Gaussian Filter는 중심에 가중치가 몰려 있다는 점이 근본적으로 다르다.
+                이 차이 때문에 Gaussian Filter는 평균 필터보다 엣지(경계선) 부분을 상대적으로 덜 뭉개는 특성을 가지며, 노이즈를 줄이면서도 형상의 구조 정보를 어느 정도 보존할 수 있다.
+            </p>
+            <div class="ipvm-tag">
+                <span class="ipvm-label">🔧 IPVM</span>
+                <span><code>GaussFilter3x3()</code>, <code>GaussFilter5x5()</code>로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 σ를 자유롭게 지정하는 범용 함수가 아니라 3×3/5×5 두 가지 고정 커널 크기로만 제공된다는 것 — 실시간 검사 라인에서는 임의 크기 커널의 유연성보다 고정 크기 커널의 실행 속도가 더 중요하기 때문에, 자주 쓰이는 두 사이즈만 최적화해 제공하는 실무적 설계로 보인다.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Median Filter — Salt&amp;Pepper 노이즈에 강한 이유</h2>
+        <div class="card">
+            <p style="color:var(--sub);">
+                Median Filter는 각 픽셀을 중심으로 작은 윈도우(예 : 3×3, 5×5)를 씌운 뒤, 그 윈도우 내부에 포함된 밝기 값들을 크기 순서대로 정렬하고,
+                정렬된 값들 중 정중앙에 위치한 중간값(Median)으로 중심 픽셀의 값을 치환하는 방식으로 동작한다.
+            </p>
+            <p style="color:var(--sub); margin-top:10px;">
+                Gaussian Filter가 윈도우 내 값들의 "평균"을 계산하는 것과 달리, Median Filter는 "정렬 후 중간값을 선택"하는 방식을 취한다는 점이 근본적인 차이다.
+                이 차이가 Salt&amp;Pepper 노이즈(점처럼 극단적으로 밝거나 어두운 화소가 무작위로 섞인 노이즈)에 특히 효과적인 이유를 설명해준다.
+                극단적으로 튀는 값은 정렬을 하면 값의 크기 순서상 맨 앞이나 맨 뒤, 즉 양 끝으로 밀려나게 되고, 최종적으로 선택되는 것은 정중앙의 값이기 때문에
+                이런 극단값들은 결과에 거의 영향을 주지 않는다. 반면 평균을 계산하는 방식이었다면 극단값 하나가 전체 평균을 크게 왜곡시킬 수 있다는 점에서,
+                이는 평균 기반 필터와 Median Filter 사이의 근본적인 차이점이다.
+            </p>
+            <div class="ipvm-tag">
+                <span class="ipvm-label">🔧 IPVM</span>
+                <span><code>MedianFilter3x3()</code>, <code>MedianFilter5x5()</code>, 그리고 커널 크기를 자유롭게 지정하는 <code>MedianFilter()</code>가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>MedianFilter1x3()</code>·<code>MedianFilter3x1()</code>처럼 가로 방향 또는 세로 방향으로만 좁게 동작하는 <strong>방향성 커널</strong>이 별도로 존재한다는 것 — 예를 들어 라인스캔 방식으로 촬영해 세로 줄무늬성 노이즈가 반복되는 영상이라면, 2차원 정사각 커널보다 1×3(가로) 커널이 형상을 덜 뭉개면서 그 방향의 노이즈만 선택적으로 제거할 수 있다.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Shading Correction — 조명 불균일을 수학적으로 보정하는 원리</h2>
+        <div class="card">
+            <h3>Flat-field Correction 방식</h3>
+            <p style="color:var(--sub);">
+                검사 조명이나 렌즈 특성상 시야(FOV) 전체에 걸쳐 완벽하게 균일한 밝기를 만드는 것은 현실적으로 어렵다. 대개 중앙부는 밝고 가장자리로 갈수록
+                어두워지는 것과 같은 조명 불균일이 항상 존재한다. Flat-field Correction은 이를 보정하기 위해, 검사 대상 없이 배경이나 균일한 기준판만을
+                촬영한 기준 영상(Flat-field Image)을 사전에 확보해두는 방식이다. 이 기준 영상에는 검사 대상의 형상 정보 없이 순수하게 조명과 렌즈에 의한
+                밝기 불균일 패턴만 담겨 있다.
+            </p>
+            <p style="color:var(--sub); margin-top:10px;">
+                실제 검사 영상을 이 기준 영상으로 픽셀 단위로 나누는(Division) 연산을 수행하면, 두 영상에 공통으로 존재하는 조명의 밝고 어두운 분포 패턴이
+                상쇄되어 사라지고, 검사 대상 자체의 상대적인 밝기 비율만 남게 된다. 이렇게 함으로써 "원래 조명이 어둡게 비치던 부분"을 결함으로 잘못 판정하는
+                오류를 방지할 수 있다.
+            </p>
+            <div class="ipvm-tag">
+                <span class="ipvm-label">🔧 IPVM</span>
+                <span><code>MakeBackgroundImage()</code>, <code>MakePositiveContrastImage()</code>, <code>MakeNegativeContrastImage()</code>가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 함수들이 별도의 기준(Flat-field) 영상을 미리 촬영해둘 필요 없이, 적분영상(Integral Image, <code>IntegralInclusive()</code>)을 이용해 원본 영상 자체에서 국소 윈도우 단위의 배경을 실시간으로 추정하도록 설계되어 있다는 점이다 — 적분영상을 쓰면 윈도우 크기와 무관하게 각 픽셀의 국소 평균을 덧셈 몇 번으로 구할 수 있어, 매번 별도의 기준 촬영 없이도 조명 보정을 빠르게 수행할 수 있다.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Histogram Equalization과 CLAHE</h2>
+        <div class="card">
+            <h3>Histogram Equalization(히스토그램 평활화)</h3>
+            <p style="color:var(--sub);">
+                히스토그램 평활화는 영상 전체의 밝기 분포(히스토그램)를 누적분포함수(CDF, Cumulative Distribution Function)를 기반으로 재매핑함으로써
+                대비를 균등하게 강화하는 기법이다. 특정 밝기 구간에 픽셀이 몰려 있어 대비가 낮아 보이는 영상도, 이 방식을 적용하면 밝기 값들이 전체 범위에
+                고르게 재분배되어 시각적인 대비가 뚜렷해진다.
+            </p>
+            <p style="color:var(--sub);">
+                다만 이 방식은 영상 전체를 하나의 히스토그램으로 취급해 일괄적으로 처리하기 때문에, 국소적으로 노이즈가 섞여 있는 영역까지 함께 과도하게
+                증폭시켜버릴 수 있다는 단점이 있다.
+            </p>
+
+            <h3>CLAHE(Contrast Limited Adaptive Histogram Equalization)</h3>
+            <p style="color:var(--sub);">
+                CLAHE는 이러한 전역 처리의 단점을 개선한 방식으로, 다음과 같은 절차로 동작한다.
+            </p>
+            <ul>
+                <li>영상을 작은 타일(Tile, 보통 8×8 구획 등)로 나눈다.</li>
+                <li>각 타일마다 독립적으로 히스토그램을 계산한다.</li>
+                <li>Clip Limit(클립 한계) : 특정 밝기 구간에 픽셀이 지나치게 몰려 히스토그램이 뾰족한 봉우리를 이루면, 그 초과분을 잘라내어 다른 밝기 구간에 고르게 재분배한다. 이 과정을 거치면 노이즈가 과도하게 증폭되는 것을 방지할 수 있다.</li>
+                <li>이렇게 조정된 히스토그램으로부터 계산된 CDF를 이용해 각 타일 내부의 픽셀 값들을 평활화된 값으로 매핑한다.</li>
+                <li>타일 단위로 독립 처리를 하다 보면 타일 경계에서 밝기가 부자연스럽게 단절되는 현상이 생기는데, 이를 Bilinear Interpolation(양선형 보간)으로 부드럽게 이어붙여 자연스러운 결과를 만든다.</li>
+            </ul>
+            <div class="note">
+                <strong>핵심 포인트</strong> : CLAHE는 "국소적으로 대비를 높이되, 국소적으로 과도해지지 않도록 제한한다"는 두 가지 목표를 Clip Limit와 타일 분할이라는 장치로 동시에 달성한다.
+            </div>
+            <div class="ipvm-tag">
+                <span class="ipvm-label">🔧 IPVM</span>
+                <span>히스토그램 평활화는 <code>EqualizeHistogram()</code>, <code>MakeHistogram()</code>으로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 타일 분할·Clip Limit 개념의 CLAHE 전용 함수는 별도로 존재하지 않는다는 것 — 즉 국소 대비 강화가 필요한 화면이라면, 전역 히스토그램 평활화 대신 앞서 다룬 <code>MakeBackgroundImage()</code> 계열(국소 배경 추정)이나 Adaptive 계열 함수를 조합해 유사한 효과를 직접 구성해야 한다.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. Morphology 연산 — 구조요소 기반 형태 처리</h2>
+        <div class="card">
+            <p style="color:var(--sub);">
+                Morphology 연산은 구조요소(Structuring Element)라는 작은 기준 모양 — 예를 들어 3×3 정사각형이나 원형 형태 — 을 정의하고,
+                이 구조요소를 영상의 모든 위치에 차례로 대입해가며 연산을 수행하는 방식으로 동작한다.
+            </p>
+            <h3>Erosion(침식)</h3>
+            <p style="color:var(--sub);">
+                Erosion은 구조요소가 겹치는 영역 안에 있는 픽셀 값들 중 가장 어두운(최소) 값으로 중심 픽셀을 대체하는 연산이다. 이 연산을 적용하면
+                밝은 영역(전경)의 경계가 안쪽으로 깎여 들어가며, 특히 구조요소보다 작은 크기의 노이즈성 점들은 침식 과정에서 완전히 사라지게 된다.
+            </p>
+            <h3>Dilation(팽창)</h3>
+            <p style="color:var(--sub);">
+                Dilation은 반대로 구조요소가 겹치는 영역 안에서 가장 밝은(최대) 값으로 중심 픽셀을 대체하는 연산이다. 이 연산을 적용하면
+                전경 영역이 바깥쪽으로 확장되며, 끊어져 있던 부분들이 서로 이어지는 효과가 나타난다.
+            </p>
+            <h3>Opening(열림 연산)과 Closing(닫힘 연산)</h3>
+            <p style="color:var(--sub);">
+                Opening은 Erosion을 먼저 적용한 뒤 Dilation을 적용하는 순서로 이루어진다. Erosion 단계에서 작은 노이즈성 점들을 제거한 뒤,
+                다시 Dilation을 적용해 축소되었던 전경 객체의 크기를 원래에 가깝게 복원한다. 결과적으로 작은 노이즈는 제거하면서도 원래 객체의 크기와 형태는 최대한 유지할 수 있다.
+            </p>
+            <p style="color:var(--sub); margin-top:10px;">
+                Closing은 그 반대 순서로, Dilation을 먼저 적용한 뒤 Erosion을 적용한다. Dilation 단계에서 결함이나 객체 내부에 있던 작은 구멍이나
+                끊긴 틈을 메운 뒤, 다시 Erosion을 적용해 부풀려졌던 객체의 크기를 원래 크기에 가깝게 되돌린다. 이를 통해 내부의 작은 결손을 채우면서도
+                전체적인 형태와 크기는 원본과 유사하게 유지할 수 있다.
+            </p>
+            <div class="ipvm-tag">
+                <span class="ipvm-label">🔧 IPVM</span>
+                <span><code>Erode()</code>, <code>Dilate()</code>(가변 커널)와 <code>Erode3x3()</code>, <code>Dilate3x3()</code>(고정 커널)로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이번 챕터에서 다루지 않은 스무딩 필터들도 함께 준비되어 있다는 것 — <code>BilateralFilter()</code>는 밝기 차이가 큰 경계는 보존하면서 평탄한 영역만 부드럽게 처리하는 엣지 보존형 필터이고, <code>WienerFilter()</code>는 영상의 노이즈 수준을 통계적으로 추정해 적응적으로 스무딩 강도를 조절하며, <code>PeronaMalickFilter()</code>는 반복적으로 확산시키되 엣지 근처에서는 확산을 억제하는 비등방(anisotropic) 확산 필터다. 상황에 따라 Gaussian·Median보다 더 정교한 결과가 필요할 때 선택할 수 있는 대안들이다.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a class="detail-btn" href="./mvspecial_2d_align.html"><span class="arrow">←</span> 이전: 정렬(Align) 알고리즘 상세</a>
+        <a class="detail-btn" href="./mvspecial_2d_binarization.html">다음: 이진화 알고리즘 상세 <span class="arrow">→</span></a>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디
+</footer>
+
+</body>
+</html>

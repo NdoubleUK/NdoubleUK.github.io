@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blob 분석 및 Feature 추출 알고리즘 상세</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --primary: #6366f1;
+            --text: #e5e7eb;
+            --sub: #9ca3af;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1f2937;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h3 { font-size: 18px; }
+
+        section {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 20px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            transition: 0.3s;
+            margin-bottom: 14px;
+        }
+
+        .card:hover { transform: translateY(-6px); border-color: var(--primary); }
+        .card h3 { margin-bottom: 10px; margin-top: 18px; }
+        .card h3:first-child { margin-top: 0; }
+        .card ul { padding-left: 20px; }
+        .card li { margin-bottom: 8px; color: var(--sub); }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 13.5px;
+        }
+        .compare-table th, .compare-table td {
+            border: 1px solid #1f2937;
+            padding: 10px 12px;
+            text-align: left;
+            color: var(--sub);
+            vertical-align: top;
+        }
+        .compare-table th { color: var(--text); background: rgba(99, 102, 241, 0.1); }
+
+        .note {
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .note strong { color: var(--primary); }
+        .ipvm-tag { display: flex; align-items: flex-start; gap: 8px; background: rgba(245,158,11,0.06); border-left: 3px solid #f59e0b; border-radius: 6px; padding: 9px 12px; margin: 10px 0 16px; font-size: 13px; color: var(--sub); line-height: 1.55; }
+        .ipvm-tag .ipvm-label { flex-shrink: 0; font-weight: 700; color: #f59e0b; font-size: 11px; background: rgba(245,158,11,0.15); padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+        .ipvm-tag code { background: #0b1120; border: 1px solid #1f2937; border-radius: 4px; padding: 1px 6px; font-family: 'Courier New', monospace; color: #fbbf24; font-size: 12.5px; }
+
+        .svg-box { margin: 16px 0; text-align: center; }
+        .svg-box svg {
+            width: 100%;
+            max-width: 1040px;
+            height: auto;
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+        }
+
+        .formula-box {
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 14px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #a5b4fc;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        .tag.concept { background: rgba(99,102,241,0.15); color: #818cf8; }
+
+        .detail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 999px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .detail-btn:hover { background: var(--primary); color: white; }
+        .arrow { transition: transform 0.2s; }
+        .detail-btn:hover .arrow { transform: translateX(3px); }
+
+        .breadcrumb { font-size: 13px; color: var(--sub); }
+        .breadcrumb a { color: var(--sub); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--text); }
+        .breadcrumb span { margin: 0 6px; font-size: 12px; }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1f2937;
+            color: var(--sub);
+            font-size: 13px;
+        }
+
+        .nav-footer { display: flex; justify-content: space-between; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb" style="padding:10px 20px; max-width:1100px; margin:auto;">
+                <a href="../../index.html">Home</a>
+                <span>›</span>
+                <a href="../study.html">Study Archive</a>
+                <span>›</span>
+                <a href="./mvspecial_introduction.html">머신비전 특화</a>
+                <span>›</span>
+                <a href="./mvspecial_2d_algorithm.html">2D Rule-based 검사 알고리즘</a>
+                <span>›</span>
+                <span>Blob 분석 알고리즘</span>
+            </div>
+        </div>
+
+        <nav>
+            <h3>Blob 분석 및 Feature 추출 알고리즘 상세</h3>
+        </nav>
+    </header>
+
+    <section id="section">
+
+        <div class="section">
+            <h2>1. Connected Component Labeling — Blob을 구분해내는 계산 절차</h2>
+            <div class="card">
+                <p>이진화된 영상에는 흰 픽셀들이 여기저기 흩어져 있을 뿐, 그 자체로는 "이것이 하나의 결함이다"라는 정보를 담고 있지 않다. Connected Component Labeling(연결요소 라벨링)의 목표는 서로 붙어있는 흰 픽셀들의 덩어리마다 고유 번호(Label)를 매겨, 각 덩어리를 하나의 개별 객체(Blob)로 식별하는 것이다.</p>
+
+                <h3>연결성 기준</h3>
+                <ul>
+                    <li><strong>4-연결성</strong> : 상하좌우 4방향의 픽셀만 인접한 것으로 인정</li>
+                    <li><strong>8-연결성</strong> : 대각선 방향까지 포함해 8방향을 인접으로 인정 — 4-연결성보다 더 관대하게 픽셀들을 하나의 덩어리로 묶어줌</li>
+                    <li>결함의 형태에 따라 두 기준 중 하나를 선택하는데, 대각선으로 얇게 이어진 스크래치처럼 끊어짐 없이 하나로 묶어야 하는 경우 8-연결성을 쓰는 것이 일반적임</li>
+                </ul>
+
+                <h3>Two-pass(2-패스) 알고리즘의 계산 절차</h3>
+                <ul>
+                    <li><strong>1차 패스(순방향 스캔)</strong> : 영상을 왼쪽 위부터 오른쪽 아래로 순서대로 훑으며, 현재 픽셀의 이미 처리된 인접 픽셀(왼쪽, 위쪽 등)에 라벨이 있으면 그 라벨을 그대로 부여한다. 만약 서로 다른 두 라벨을 가진 인접 픽셀들이 한 픽셀에서 동시에 만나면, "이 두 라벨은 사실 같은 그룹이다"라는 관계를 별도의 자료구조(Union-Find)에 기록해 둔다</li>
+                    <li><strong>2차 패스</strong> : 1차 패스에서 임시로 여러 개의 라벨로 나뉘어 붙여졌던 픽셀들을, 기록해둔 관계를 이용해 각각의 대표 라벨(Root Label)로 통일해 다시 칠한다</li>
+                </ul>
+
+                <div class="note">
+                    <strong>Union-Find(합집합-찾기 자료구조)</strong><br>
+                    여러 개의 임시 라벨이 사실은 하나의 덩어리라는 사실을 효율적으로 관리하는 자료구조이다. "이 라벨의 최종 대표는 누구인가"를 빠르게 찾고(Find), 두 그룹을 하나로 합칠(Union) 수 있게 해준다. 이 구조 덕분에 영상을 여러 번 다시 훑지 않고도, 단 두 번의 스캔만으로 전체 라벨링을 끝낼 수 있다.
+                </div>
+
+                <h3>Flood Fill (다른 접근 방식)</h3>
+                <p>임의의 전경 픽셀 하나에서 시작해, 그 픽셀에 인접한 전경 픽셀들을 재귀적으로 계속 따라가며 하나의 덩어리 전체를 한 번에 채워나가는 방식이다. 개념은 직관적이지만, 큰 영상에서는 재귀 깊이가 깊어지거나 처리 속도 면에서 Two-pass 방식보다 비효율적일 수 있다.</p>
+                <div class="ipvm-tag">
+                    <span class="ipvm-label">🔧 IPVM</span>
+                    <span>기본 라벨링은 <code>DetectBlob()</code> 하나로 제공되며 4/8-연결성을 옵션으로 선택할 수 있다. Flood Fill 방식은 <code>FloodFill()</code>로 별도 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 단순 이진화 후 라벨링 외에도 목적별 전용 함수가 여러 개 준비되어 있다는 것 — <code>DetectDarkBrightBlob()</code>은 배경 대비 어두운 결함(Dark)과 밝은 결함(Bright)을 각각 혹은 동시에(Hybrid) 검출하도록 설계되어 있고, <code>DetectExtremalRegion()</code>은 MSER(Maximally Stable Extremal Region) 방식으로 단순 임계값이 아니라 "밝기 변화가 통계적으로 안정된 영역"을 찾아내 조명이 고르지 않은 환경에서도 결함 후보를 더 안정적으로 검출한다. <code>DetectSoftBlob()</code>은 경계가 흐릿하게 번진 결함을 다루는 용도로 보인다.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Blob의 기본 속성 계산</h2>
+            <div class="card">
+                <ul>
+                    <li><strong>Centroid(무게중심)</strong> : 해당 Blob에 속한 모든 픽셀의 x좌표, y좌표 각각의 평균값</li>
+                    <li><strong>Bounding Box(외접 사각형)</strong> : Blob 전체를 포함하는 가장 작은 사각형</li>
+                    <li><strong>Pixel Count(픽셀 수)</strong> : Blob을 구성하는 픽셀의 총 개수 — 이것이 곧 다음 절에서 다룰 Area(면적)의 기초가 됨</li>
+                </ul>
+                <div class="ipvm-tag">
+                    <span class="ipvm-label">🔧 IPVM</span>
+                    <span>무게중심은 <code>GetBlobMassCenter()</code>로 계산한다.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 형상 Feature 계산 공식</h2>
+            <div class="card">
+                <ul>
+                    <li><strong>Area(면적)</strong> : Blob에 속한 픽셀의 총 개수</li>
+                    <li><strong>Perimeter(둘레)</strong> : Blob의 외곽 경계선을 따라가며 픽셀 간 이동 거리를 누적한 값 — 상하좌우 이동은 1, 대각선 이동은 √2로 계산하는 방식이 일반적으로 쓰임</li>
+                </ul>
+
+                <h3>Circularity(원형성)</h3>
+                <div class="formula-box">
+                    Circularity = 4π × Area / Perimeter²
+                </div>
+                <p>완전한 원에 가까울수록 1에 근접하고, 모양이 길쭉하거나 불규칙할수록 1에서 멀어진다. 둥근 형태의 이물을 판별하는 핵심 지표로 쓰인다.</p>
+
+                <h3>Aspect Ratio(종횡비)</h3>
+                <p>Blob에 외접하는 최소 회전 사각형(Minimum Bounding Rectangle)을 구하거나, 주성분분석(PCA)으로 Blob의 장축·단축 방향을 구한 뒤, 그 비율(장축 길이 ÷ 단축 길이)을 계산한다. 길쭉한 스크래치를 판별하는 핵심 지표로 쓰인다.</p>
+                <div class="ipvm-tag">
+                    <span class="ipvm-label">🔧 IPVM</span>
+                    <span><code>GetBlobWidthLength()</code>가 Width/Length를 직접 반환해주므로, 이 값들의 비율을 그대로 Aspect Ratio로 사용할 수 있다.</span>
+                </div>
+
+                <h3>Rectangularity(직각성)</h3>
+                <p>Blob의 면적이 그 Bounding Box 면적에서 차지하는 비율이다. 사각형에 가까운 형태(패턴 결함, 깨짐 등)를 판별하는 데 활용된다.</p>
+
+                <h3>Struct Factor(직선성 팩터)</h3>
+                <p>Blob의 주축 방향을 따라 픽셀들이 얼마나 일관되게 좁고 길게 분포하는지를 정량화한 지표이다. 직선형인 스크래치와, 형태가 불규칙한 이물을 구분하는 데 사용된다.</p>
+                <div class="ipvm-tag">
+                    <span class="ipvm-label">🔧 IPVM</span>
+                    <span><code>GetBlobThicknessLocus()</code>가 정확히 이 개념을 구현한 함수다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이름 그대로 Thickness(두께)와 Locus(궤적, Blob의 중심선)를 함께 계산한다는 것 — Blob의 중심선을 따라가며 그 지점마다 두께를 측정해, 두께가 얇고 균일하게 유지된 채로 길게 이어지면 스크래치, 두께가 불균일하거나 국소적으로 뭉쳐 있으면 이물로 구분하는 실무적 지표다. 일반화된 "직선성"이라는 개념을 "중심선 + 두께 분포"라는 더 구체적이고 계산 가능한 형태로 구현한 사례로 볼 수 있다. 여기에 더해 <code>GetBlobEdgeEnergy()</code>(Blob 경계의 뚜렷함 정도)와 <code>GetBlobContrast()</code>(배경 대비 핵심/평균 대비, 이물처럼 국소적으로 진한 결함과 얼룩처럼 은은하게 퍼진 결함을 구분)까지 있어, Area·Circularity·Aspect Ratio만으로는 부족한 판별력을 보완하는 부가 Feature들이 실무에서 함께 활용되고 있음을 알 수 있다.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. 왜 여러 Feature를 조합해야 하는가</h2>
+            <div class="card">
+                <ul>
+                    <li>Area 하나만으로는 "크고 둥근 이물"과 "크고 긴 스크래치"를 구분할 수 없다 — 두 결함 모두 면적이 클 수 있기 때문이다</li>
+                    <li>Circularity(원형성), Aspect Ratio(종횡비), Struct Factor(직선성)를 함께 살펴봐야 형태 기반으로 결함 유형을 신뢰성 있게 나눌 수 있다</li>
+                    <li>다음 챕터(판정 로직)에서는 이렇게 추출한 여러 Feature를 어떻게 규칙으로 조합해 최종 판정을 내리는지 다룸</li>
+                </ul>
+
+                <div class="note">
+                    <strong>핵심 요약</strong><br>
+                    Blob 분석의 본질은 단순히 "덩어리를 찾는 것"이 아니라, 그 덩어리로부터 형태를 정량적으로 설명하는 숫자(Feature)들을 뽑아내는 것이다. 이 숫자들이 조합되어야 비로소 결함 유형을 구분할 수 있는 근거가 된다.
+                </div>
+                <div class="ipvm-tag">
+                    <span class="ipvm-label">🔧 IPVM</span>
+                    <span>Feature 기준의 1차 필터링은 <code>BlobFiltering_SmallerThanArea/SizeX/SizeY()</code>, <code>BlobFiltering_LargerThanArea/SizeX/SizeY()</code>로 바로 적용할 수 있다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>BlobLink()</code>/<code>BlobMerge()</code>가 별도로 있다는 것 — 실제 현장에서는 하나의 결함이 노이즈나 부분적인 가림 때문에 여러 조각의 Blob으로 쪼개져 검출되는 경우가 잦은데, 이 함수들은 거리 기준으로 가까운 Blob들을 판정 전에 다시 하나로 합쳐준다. Area·Aspect Ratio 같은 Feature를 계산하기 전에 "애초에 하나였어야 할 덩어리"를 복원해주는 전처리 성격의 후처리 단계인 셈이다. 이 모든 옵션(연결성, 필터 조건, 병합 거리, 계산할 Feature 종류)은 <code>Blob_Attribute</code> 클래스 하나에 파라미터로 설정해두고 재사용하는 구조로 되어 있다.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card nav-footer">
+            <a href="./mvspecial_2d_binarization.html" class="detail-btn"><span class="arrow">←</span> 이전 : 이진화 알고리즘 상세</a>
+            <a href="./mvspecial_2d_decision.html" class="detail-btn">다음 : 판정 로직 알고리즘 상세 <span class="arrow">→</span></a>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>© 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디</p>
+    </footer>
+</body>
+</html>
