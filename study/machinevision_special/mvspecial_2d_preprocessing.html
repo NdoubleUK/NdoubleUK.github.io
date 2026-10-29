@@ -43,6 +43,22 @@ section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; 
 .breadcrumb span { margin:0 6px; font-size:12px; }
 footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
 .nav-footer { display:flex; justify-content:space-between; margin-top:10px; }
+.demo-box { background:#0b1120; border:1px solid #1f2937; border-radius:12px; padding:16px; margin:16px 0; }
+.demo-head { font-weight:700; color:#a5b4fc; margin-bottom:10px; font-size:14px; }
+.demo-controls { display:flex; flex-wrap:wrap; gap:10px 22px; margin-bottom:12px; font-size:13px; color:var(--sub); }
+.demo-controls label { display:flex; align-items:center; gap:8px; }
+.demo-controls input[type=range] { accent-color:#6366f1; }
+.demo-controls select { background:#111827; color:var(--text); border:1px solid #374151; border-radius:6px; padding:3px 6px; }
+.demo-controls .val { min-width:34px; color:#fbbf24; font-family:'Courier New',monospace; }
+.demo-view { position:relative; width:100%; max-width:640px; margin:0 auto; aspect-ratio:256/160; border-radius:8px; overflow:hidden; border:1px solid #1f2937; cursor:ew-resize; touch-action:none; user-select:none; }
+.demo-view canvas { position:absolute; top:0; left:0; width:100%; height:100%; image-rendering:pixelated; }
+.demo-line { position:absolute; top:0; bottom:0; width:2px; margin-left:-1px; background:#fbbf24; box-shadow:0 0 6px rgba(251,191,36,.8); pointer-events:none; }
+.demo-chip { position:absolute; top:8px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; background:rgba(0,0,0,.65); color:#e5e7eb; pointer-events:none; }
+.demo-chip.l { left:8px; } .demo-chip.r { right:8px; }
+.demo-wipe { display:flex; align-items:center; gap:10px; max-width:640px; margin:10px auto 0; font-size:12px; color:var(--sub); }
+.demo-wipe input { flex:1; accent-color:#f59e0b; }
+.demo-stat { max-width:640px; margin:10px auto 0; font-size:13px; color:var(--text); background:rgba(99,102,241,.08); border-left:3px solid var(--primary); padding:8px 12px; border-radius:6px; }
+.demo-hint { max-width:640px; margin:8px auto 0; font-size:12.5px; color:var(--sub); }
 </style>
 </head>
 <body>
@@ -126,6 +142,7 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 <strong>계산량 팁 — 분리 가능(Separable)</strong> : 2D 가우시안은 1D 가우시안 두 개의 곱으로 분해할 수 있다. 따라서 N×N 커널을 한 번에 적용하는 대신
                 가로 1×N, 세로 N×1을 차례로 적용해도 결과가 같고, 픽셀당 곱셈 횟수가 N²에서 2N으로 줄어든다(예: 7×7이면 49회 → 14회).
             </div>
+            <div id="demo-gauss"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>GaussFilter3x3()</code>, <code>GaussFilter5x5()</code>로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 σ를 자유롭게 지정하는 범용 함수가 아니라 3×3/5×5 두 가지 고정 커널 크기로만 제공된다는 것 — 실시간 검사 라인에서는 임의 크기 커널의 유연성보다 고정 크기 커널의 실행 속도가 더 중요하기 때문에, 자주 쓰이는 두 사이즈만 최적화해 제공하는 실무적 설계로 보인다.</span>
@@ -165,6 +182,7 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 Median은 11로 주변 값과 자연스럽게 이어지는 반면, 평균은 37.8로 주변보다 훨씬 밝은 값이 남는다. 극단값이 몇 개 섞여도 중간값은 거의 움직이지 않는다는 점이 핵심이다
                 (윈도우의 절반 미만이 극단값이면 결과에 영향이 없다).
             </p>
+            <div id="demo-median"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>MedianFilter3x3()</code>, <code>MedianFilter5x5()</code>, 그리고 커널 크기를 자유롭게 지정하는 <code>MedianFilter()</code>가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>MedianFilter1x3()</code>·<code>MedianFilter3x1()</code>처럼 가로 방향 또는 세로 방향으로만 좁게 동작하는 <strong>방향성 커널</strong>이 별도로 존재한다는 것 — 예를 들어 라인스캔 방식으로 촬영해 세로 줄무늬성 노이즈가 반복되는 영상이라면, 2차원 정사각 커널보다 1×3(가로) 커널이 형상을 덜 뭉개면서 그 방향의 노이즈만 선택적으로 제거할 수 있다.</span>
@@ -218,6 +236,7 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
             <p style="color:var(--sub);">
                 영상 전체에 대해 적분영상을 한 번만 만들어 두면, 어떤 크기의 윈도우든 합을 덧셈·뺄셈 4번으로 구할 수 있다. 윈도우 크기와 무관하게 연산량이 일정(O(1))하다는 것이 장점이다.
             </p>
+            <div id="demo-shading"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>MakeBackgroundImage()</code>, <code>MakePositiveContrastImage()</code>, <code>MakeNegativeContrastImage()</code>가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 함수들이 별도의 기준(Flat-field) 영상을 미리 촬영해둘 필요 없이, 적분영상(Integral Image, <code>IntegralInclusive()</code>)을 이용해 원본 영상 자체에서 국소 윈도우 단위의 배경을 실시간으로 추정하도록 설계되어 있다는 점이다 — 적분영상을 쓰면 윈도우 크기와 무관하게 각 픽셀의 국소 평균을 덧셈 몇 번으로 구할 수 있어, 매번 별도의 기준 촬영 없이도 조명 보정을 빠르게 수행할 수 있다.</span>
@@ -292,6 +311,7 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
             <div class="note">
                 <strong>핵심 포인트</strong> : CLAHE는 "국소적으로 대비를 높이되, 국소적으로 과도해지지 않도록 제한한다"는 두 가지 목표를 Clip Limit와 타일 분할이라는 장치로 동시에 달성한다.
             </div>
+            <div id="demo-hist"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span>히스토그램 평활화는 <code>EqualizeHistogram()</code>, <code>MakeHistogram()</code>으로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 타일 분할·Clip Limit 개념의 CLAHE 전용 함수는 별도로 존재하지 않는다는 것 — 즉 국소 대비 강화가 필요한 화면이라면, 전역 히스토그램 평활화 대신 앞서 다룬 <code>MakeBackgroundImage()</code> 계열(국소 배경 추정)이나 Adaptive 계열 함수를 조합해 유사한 효과를 직접 구성해야 한다.</span>
@@ -348,6 +368,7 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
             <p style="color:var(--sub);">
                 Opening은 구조요소보다 작은 돌기·점을 지우고, Closing은 구조요소보다 작은 틈·구멍을 메운다. 구조요소의 크기가 곧 "얼마나 작은 것까지 없앨 것인가"의 기준이 된다.
             </p>
+            <div id="demo-morph"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>Erode()</code>, <code>Dilate()</code>(가변 커널)와 <code>Erode3x3()</code>, <code>Dilate3x3()</code>(고정 커널)로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이번 챕터에서 다루지 않은 스무딩 필터들도 함께 준비되어 있다는 것 — <code>BilateralFilter()</code>는 밝기 차이가 큰 경계는 보존하면서 평탄한 영역만 부드럽게 처리하는 엣지 보존형 필터이고, <code>WienerFilter()</code>는 영상의 노이즈 수준을 통계적으로 추정해 적응적으로 스무딩 강도를 조절하며, <code>PeronaMalickFilter()</code>는 반복적으로 확산시키되 엣지 근처에서는 확산을 억제하는 비등방(anisotropic) 확산 필터다. 상황에 따라 Gaussian·Median보다 더 정교한 결과가 필요할 때 선택할 수 있는 대안들이다.</span>
@@ -366,5 +387,254 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
     © 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디
 </footer>
 
+<script>
+(function () {
+  var W = 256, H = 160, N = W * H;
+
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(r) { var u = 1 - r(), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function cl(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+  function ci(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  /* 검사 대상 모사 장면: 배경(60) / 부품(170) / 홀 / 바 / 스크래치 / 어두운 결함 */
+  function scene() {
+    var a = new Float32Array(N), x, y;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var v = 60;
+      if (x >= 28 && x < 228 && y >= 22 && y < 138) v = 170;
+      if ((x - 80) * (x - 80) + (y - 80) * (y - 80) <= 14 * 14) v = 50;
+      if (x >= 120 && x < 210 && ((y >= 38 && y < 46) || (y >= 54 && y < 62))) v = 110;
+      var ax = 110, ay = 104, bx = 200, by = 120, dx = bx - ax, dy = by - ay;
+      var t = ci(((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy), 0, 1);
+      var ex = x - (ax + t * dx), ey = y - (ay + t * dy);
+      if (ex * ex + ey * ey < 1.2 * 1.2) v = 225;
+      if ((x - 175) * (x - 175) + (y - 88) * (y - 88) <= 16) v = 40;
+      a[y * W + x] = v;
+    }
+    return a;
+  }
+  function stdRegion(a, x0, y0, x1, y1) {
+    var s = 0, s2 = 0, n = 0, x, y;
+    for (y = y0; y < y1; y++) for (x = x0; x < x1; x++) { var v = a[y * W + x]; s += v; s2 += v * v; n++; }
+    var m = s / n; return Math.sqrt(Math.max(0, s2 / n - m * m));
+  }
+  function meanRegion(a, x0, y0, x1, y1) {
+    var s = 0, n = 0, x, y;
+    for (y = y0; y < y1; y++) for (x = x0; x < x1; x++) { s += a[y * W + x]; n++; }
+    return s / n;
+  }
+  function f1(v) { return v.toFixed(1); }
+
+  /* ---------- 필터 구현 ---------- */
+  function gaussBlur(src, sigma) {
+    var r = Math.max(1, Math.ceil(3 * sigma)), k = [], sum = 0, i, x, y;
+    for (i = -r; i <= r; i++) { var g = Math.exp(-i * i / (2 * sigma * sigma)); k.push(g); sum += g; }
+    for (i = 0; i < k.length; i++) k[i] /= sum;
+    var tmp = new Float32Array(N), out = new Float32Array(N);
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var s = 0; for (i = -r; i <= r; i++) s += k[i + r] * src[y * W + ci(x + i, 0, W - 1)]; tmp[y * W + x] = s; }
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var s2 = 0; for (i = -r; i <= r; i++) s2 += k[i + r] * tmp[ci(y + i, 0, H - 1) * W + x]; out[y * W + x] = s2; }
+    return { img: out, r: r };
+  }
+  function medianF(src, n) {
+    var r = (n - 1) >> 1, out = new Float32Array(N), buf = new Float32Array(n * n), x, y, i, j;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var c = 0;
+      for (j = -r; j <= r; j++) for (i = -r; i <= r; i++) buf[c++] = src[ci(y + j, 0, H - 1) * W + ci(x + i, 0, W - 1)];
+      buf.sort(); out[y * W + x] = buf[(n * n - 1) >> 1];
+    }
+    return out;
+  }
+  function integral(src) {
+    var S = new Float64Array((W + 1) * (H + 1)), x, y;
+    for (y = 1; y <= H; y++) { var row = 0; for (x = 1; x <= W; x++) { row += src[(y - 1) * W + (x - 1)]; S[y * (W + 1) + x] = S[(y - 1) * (W + 1) + x] + row; } }
+    return S;
+  }
+  function boxMean(src, r) {
+    var S = integral(src), out = new Float32Array(N), x, y;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var x0 = Math.max(0, x - r), x1 = Math.min(W, x + r + 1), y0 = Math.max(0, y - r), y1 = Math.min(H, y + r + 1);
+      var sum = S[y1 * (W + 1) + x1] - S[y0 * (W + 1) + x1] - S[y1 * (W + 1) + x0] + S[y0 * (W + 1) + x0];
+      out[y * W + x] = sum / ((x1 - x0) * (y1 - y0));
+    }
+    return out;
+  }
+  function histEq(src) {
+    var h = new Float64Array(256), i, cdf = new Float64Array(256), lut = new Float32Array(256);
+    for (i = 0; i < N; i++) h[Math.round(ci(src[i], 0, 255))]++;
+    var s = 0, cmin = 0, found = false;
+    for (i = 0; i < 256; i++) { s += h[i]; cdf[i] = s; if (!found && h[i] > 0) { cmin = h[i]; found = true; } }
+    for (i = 0; i < 256; i++) lut[i] = Math.max(0, Math.round((cdf[i] - cmin) / (N - cmin) * 255));
+    var out = new Float32Array(N);
+    for (i = 0; i < N; i++) out[i] = lut[Math.round(ci(src[i], 0, 255))];
+    return out;
+  }
+  function clahe(src, gx, clipFactor) {
+    var gy = Math.max(1, Math.round(gx * H / W)), luts = new Float32Array(gx * gy * 256), tx, ty, x, y, i;
+    for (ty = 0; ty < gy; ty++) for (tx = 0; tx < gx; tx++) {
+      var x0 = Math.floor(tx * W / gx), x1 = Math.floor((tx + 1) * W / gx), y0 = Math.floor(ty * H / gy), y1 = Math.floor((ty + 1) * H / gy);
+      var h = new Float64Array(256), n = 0;
+      for (y = y0; y < y1; y++) for (x = x0; x < x1; x++) { h[Math.round(ci(src[y * W + x], 0, 255))]++; n++; }
+      var clip = Math.max(1, clipFactor * n / 256), excess = 0;
+      for (i = 0; i < 256; i++) if (h[i] > clip) { excess += h[i] - clip; h[i] = clip; }
+      var add = excess / 256, cum = 0, base = (ty * gx + tx) * 256;
+      for (i = 0; i < 256; i++) { h[i] += add; cum += h[i]; luts[base + i] = 255 * cum / n; }
+    }
+    var out = new Float32Array(N), tw = W / gx, th = H / gy;
+    for (y = 0; y < H; y++) {
+      var fy = (y + 0.5) / th - 0.5, yy0 = Math.floor(fy), v = fy - yy0, ya = ci(yy0, 0, gy - 1), yb = ci(yy0 + 1, 0, gy - 1);
+      for (x = 0; x < W; x++) {
+        var fx = (x + 0.5) / tw - 0.5, xx0 = Math.floor(fx), u = fx - xx0, xa = ci(xx0, 0, gx - 1), xb = ci(xx0 + 1, 0, gx - 1);
+        var g = Math.round(ci(src[y * W + x], 0, 255));
+        out[y * W + x] = (1 - u) * (1 - v) * luts[(ya * gx + xa) * 256 + g] + u * (1 - v) * luts[(ya * gx + xb) * 256 + g] + (1 - u) * v * luts[(yb * gx + xa) * 256 + g] + u * v * luts[(yb * gx + xb) * 256 + g];
+      }
+    }
+    return out;
+  }
+  function morph1(src, n, isMax) {
+    var r = (n - 1) >> 1, tmp = new Float32Array(N), out = new Float32Array(N), x, y, i;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var m = isMax ? 0 : 255; for (i = -r; i <= r; i++) { var v = src[y * W + ci(x + i, 0, W - 1)]; m = isMax ? Math.max(m, v) : Math.min(m, v); } tmp[y * W + x] = m; }
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var m2 = isMax ? 0 : 255; for (i = -r; i <= r; i++) { var v2 = tmp[ci(y + i, 0, H - 1) * W + x]; m2 = isMax ? Math.max(m2, v2) : Math.min(m2, v2); } out[y * W + x] = m2; }
+    return out;
+  }
+
+  /* ---------- 데모용 원본 영상 ---------- */
+  var clean = scene();
+  var noisyG = (function () { var r = rng(11), a = new Float32Array(N), i; for (i = 0; i < N; i++) a[i] = cl(clean[i] + gauss(r) * 18); return a; })();
+  var noisySP = (function () { var r = rng(23), a = new Float32Array(N), i; for (i = 0; i < N; i++) { var p = r(); a[i] = p < 0.03 ? 0 : p > 0.97 ? 255 : clean[i]; } return a; })();
+  var illum = (function () { var f = new Float32Array(N), x, y; for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var dx = (x - W / 2) / (W / 2), dy = (y - H / 2) / (H / 2); f[y * W + x] = 1 - 0.35 * (dx * dx + dy * dy); } return f; })();
+  var shaded = (function () { var r = rng(31), a = new Float32Array(N), i; for (i = 0; i < N; i++) a[i] = cl(clean[i] * illum[i] + gauss(r) * 2); return a; })();
+  var lowc = (function () { var r = rng(47), a = new Float32Array(N), i; for (i = 0; i < N; i++) a[i] = cl(95 + clean[i] * 0.2 + gauss(r) * 2.5); return a; })();
+  var binary = (function () {
+    var a = new Float32Array(N), r = rng(59), x, y, i;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var v = 0;
+      if (x >= 24 && x < 112 && y >= 22 && y < 92) v = 255;
+      if ((x - 180) * (x - 180) + (y - 62) * (y - 62) <= 36 * 36) v = 255;
+      if (x >= 50 && x < 210 && y >= 118 && y < 124) v = 255;
+      if (x >= 68 && x < 70 && y >= 22 && y < 92) v = 0;
+      a[y * W + x] = v;
+    }
+    for (i = 0; i < 150; i++) { var px = Math.floor(r() * W), py = Math.floor(r() * H); if (a[py * W + px] === 0) { a[py * W + px] = 255; if (i % 4 === 0 && px + 1 < W && py + 1 < H) { a[py * W + px + 1] = 255; a[(py + 1) * W + px] = 255; a[(py + 1) * W + px + 1] = 255; } } }
+    for (i = 0; i < 90; i++) { var qx = 26 + Math.floor(r() * 84), qy = 24 + Math.floor(r() * 66); a[qy * W + qx] = 0; }
+    for (i = 0; i < 60; i++) { var sx = 150 + Math.floor(r() * 60), sy = 40 + Math.floor(r() * 44); if ((sx - 180) * (sx - 180) + (sy - 62) * (sy - 62) <= 34 * 34) a[sy * W + sx] = 0; }
+    return a;
+  })();
+
+  /* ---------- 데모 정의 ---------- */
+  var demos = [
+    {
+      id: 'demo-gauss', src: noisyG,
+      controls: [{ k: 'sigma', label: 'σ (시그마)', min: 0.3, max: 4, step: 0.1, value: 1.0 }],
+      run: function (s, p) { var g = gaussBlur(s, p.sigma); return { img: g.img, note: '커널 ' + (2 * g.r + 1) + '×' + (2 * g.r + 1) + ' (≈ 3σ 범위)' }; },
+      stat: function (s, o) { return '평탄 배경 영역의 노이즈(표준편차) : <b>' + f1(stdRegion(s, 4, 4, 24, 18)) + '</b> → <b>' + f1(stdRegion(o.img, 4, 4, 24, 18)) + '</b> &nbsp;|&nbsp; ' + o.note; },
+      hint: 'σ를 키울수록 노이즈는 줄지만 엣지(부품 경계, 스크래치, 결함)도 함께 번집니다. 슬라이더를 좌우로 움직이며 가는 스크래치가 먼저 사라지는 것을 확인해 보세요.'
+    },
+    {
+      id: 'demo-median', src: noisySP,
+      controls: [
+        { k: 'mode', label: '필터', type: 'select', options: [['median', 'Median'], ['mean', '평균(Box)']], value: 'median' },
+        { k: 'size', label: '윈도우 크기', min: 3, max: 9, step: 2, value: 3 }
+      ],
+      run: function (s, p) {
+        if (p.mode === 'median') return { img: medianF(s, p.size) };
+        return { img: boxMean(s, (p.size - 1) >> 1) };
+      },
+      stat: function (s, o, p) { var bad = function (a) { var c = 0, i; for (i = 0; i < N; i++) if (Math.abs(a[i] - clean[i]) > 60) c++; return c; }; return '원본과 60 이상 어긋난 픽셀 수(노이즈 잔존) : <b>' + bad(s) + '</b> → <b>' + bad(o.img) + '</b> &nbsp;|&nbsp; ' + (p.mode === 'median' ? 'Median' : '평균') + ' ' + p.size + '×' + p.size; },
+      hint: '필터를 "평균(Box)"로 바꿔서 비교해 보세요. 평균은 노이즈 점이 사라지지 않고 주변으로 번지는 반면, Median은 점이 깨끗하게 사라집니다.'
+    },
+    {
+      id: 'demo-shading', src: shaded,
+      controls: [
+        { k: 'mode', label: '보정 방식', type: 'select', options: [['flat', 'Flat-field (기준영상 사용)'], ['est', '배경 추정 (적분영상 평균)']], value: 'flat' },
+        { k: 'rad', label: '추정 반경 (배경 추정 방식)', min: 10, max: 80, step: 5, value: 40 }
+      ],
+      run: function (s, p) {
+        var out = new Float32Array(N), i, m = 0, ref;
+        if (p.mode === 'flat') ref = illum; else ref = boxMean(s, p.rad);
+        for (i = 0; i < N; i++) m += ref[i]; m /= N;
+        for (i = 0; i < N; i++) out[i] = cl(s[i] / Math.max(ref[i], 1e-3) * m);
+        return { img: out };
+      },
+      stat: function (s, o) { var a = meanRegion(s, 4, 4, 22, 16), b = meanRegion(s, 118, 4, 138, 16), c = meanRegion(o.img, 4, 4, 22, 16), d = meanRegion(o.img, 118, 4, 138, 16); return '같은 배경인데 좌상단 코너 vs 상단 중앙 밝기 : <b>' + f1(a) + ' / ' + f1(b) + '</b> (차 ' + f1(b - a) + ') → <b>' + f1(c) + ' / ' + f1(d) + '</b> (차 ' + f1(d - c) + ')'; },
+      hint: '원본은 가장자리가 어두워 같은 배경인데도 밝기가 다릅니다. 보정 후에는 밝기가 고르게 펴집니다. "배경 추정" 방식에서 반경을 줄이면 부품(큰 객체)까지 배경으로 취급되어 형상 대비가 약해지는 점도 확인해 보세요.'
+    },
+    {
+      id: 'demo-hist', src: lowc,
+      controls: [
+        { k: 'mode', label: '방식', type: 'select', options: [['he', '전역 히스토그램 평활화'], ['clahe', 'CLAHE']], value: 'clahe' },
+        { k: 'clip', label: 'Clip Limit', min: 1, max: 10, step: 0.5, value: 3 },
+        { k: 'grid', label: '타일 분할(가로)', min: 2, max: 10, step: 1, value: 8 }
+      ],
+      run: function (s, p) { return { img: p.mode === 'he' ? histEq(s) : clahe(s, p.grid, p.clip) }; },
+      stat: function (s, o) { var mm = function (a) { var lo = 255, hi = 0, i; for (i = 0; i < N; i++) { if (a[i] < lo) lo = a[i]; if (a[i] > hi) hi = a[i]; } return [Math.round(lo), Math.round(hi)]; }; var a = mm(s), b = mm(o.img); return '밝기 사용 범위 : <b>' + a[0] + '~' + a[1] + '</b> → <b>' + b[0] + '~' + b[1] + '</b> &nbsp;|&nbsp; 평탄 배경 노이즈(표준편차) : <b>' + f1(stdRegion(s, 4, 4, 24, 18)) + '</b> → <b>' + f1(stdRegion(o.img, 4, 4, 24, 18)) + '</b>'; },
+      hint: '원본은 밝기가 95~140 사이에 몰려 대비가 낮습니다. Clip Limit를 키울수록 대비는 강해지지만 배경 노이즈도 함께 증폭됩니다. 전역 방식과 CLAHE의 배경 노이즈 증폭 정도를 비교해 보세요.'
+    },
+    {
+      id: 'demo-morph', src: binary,
+      controls: [
+        { k: 'op', label: '연산', type: 'select', options: [['erode', 'Erosion(침식)'], ['dilate', 'Dilation(팽창)'], ['open', 'Opening'], ['close', 'Closing']], value: 'open' },
+        { k: 'size', label: '구조요소 크기', min: 3, max: 9, step: 2, value: 3 }
+      ],
+      run: function (s, p) {
+        var o;
+        if (p.op === 'erode') o = morph1(s, p.size, false);
+        else if (p.op === 'dilate') o = morph1(s, p.size, true);
+        else if (p.op === 'open') o = morph1(morph1(s, p.size, false), p.size, true);
+        else o = morph1(morph1(s, p.size, true), p.size, false);
+        return { img: o };
+      },
+      stat: function (s, o) { var c = function (a) { var n = 0, i; for (i = 0; i < N; i++) if (a[i] > 127) n++; return n; }; return '전경(흰색) 픽셀 수 : <b>' + c(s) + '</b> → <b>' + c(o.img) + '</b>'; },
+      hint: 'Opening은 흩어진 흰 점(노이즈)을 지우고, Closing은 객체 안의 검은 구멍과 가는 틈을 메웁니다. 크기를 7 이상으로 올리면 아래쪽 가는 바(폭 6)가 Opening에서 사라지는 것도 확인해 보세요.'
+    }
+  ];
+
+  function draw(canvas, arr) {
+    var ctx = canvas.getContext('2d'), im = ctx.createImageData(W, H), i;
+    for (i = 0; i < N; i++) { var v = cl(arr[i]); im.data[4 * i] = v; im.data[4 * i + 1] = v; im.data[4 * i + 2] = v; im.data[4 * i + 3] = 255; }
+    ctx.putImageData(im, 0, 0);
+  }
+
+  demos.forEach(function (cfg) {
+    var box = document.getElementById(cfg.id);
+    if (!box) return;
+    box.className = 'demo-box';
+    box.innerHTML = '<div class="demo-head">🎛️ 직접 확인해보기 — 전/후 비교 (슬라이더 또는 영상을 좌우로 드래그)</div>' +
+      '<div class="demo-controls"></div>' +
+      '<div class="demo-view"><canvas class="c-orig" width="' + W + '" height="' + H + '"></canvas><canvas class="c-res" width="' + W + '" height="' + H + '"></canvas><div class="demo-line"></div><span class="demo-chip l">원본</span><span class="demo-chip r">결과</span></div>' +
+      '<div class="demo-wipe"><span>◀ 원본</span><input type="range" min="0" max="100" value="50"><span>결과 ▶</span></div>' +
+      '<div class="demo-stat"></div><div class="demo-hint"></div>';
+    var ctrlBox = box.querySelector('.demo-controls'), view = box.querySelector('.demo-view'),
+        cO = box.querySelector('.c-orig'), cR = box.querySelector('.c-res'), line = box.querySelector('.demo-line'),
+        wipe = box.querySelector('.demo-wipe input'), stat = box.querySelector('.demo-stat'), hint = box.querySelector('.demo-hint');
+    var params = {};
+    cfg.controls.forEach(function (c) {
+      params[c.k] = c.value;
+      var lab = document.createElement('label'), span = document.createElement('span'), el, val;
+      span.textContent = c.label; lab.appendChild(span);
+      if (c.type === 'select') {
+        el = document.createElement('select');
+        c.options.forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; if (o[0] === c.value) op.selected = true; el.appendChild(op); });
+        el.addEventListener('change', function () { params[c.k] = el.value; update(); });
+        lab.appendChild(el);
+      } else {
+        el = document.createElement('input'); el.type = 'range'; el.min = c.min; el.max = c.max; el.step = c.step; el.value = c.value;
+        val = document.createElement('span'); val.className = 'val'; val.textContent = c.value;
+        el.addEventListener('input', function () { params[c.k] = parseFloat(el.value); val.textContent = el.value; update(); });
+        lab.appendChild(el); lab.appendChild(val);
+      }
+      ctrlBox.appendChild(lab);
+    });
+    function setWipe(p) { p = ci(p, 0, 100); wipe.value = p; line.style.left = p + '%'; cR.style.clipPath = 'inset(0 0 0 ' + p + '%)'; }
+    function update() { var o = cfg.run(cfg.src, params); draw(cR, o.img); stat.innerHTML = cfg.stat(cfg.src, o, params); }
+    draw(cO, cfg.src); hint.textContent = '💡 ' + cfg.hint; update(); setWipe(50);
+    wipe.addEventListener('input', function () { setWipe(parseFloat(wipe.value)); });
+    var dragging = false;
+    function pos(e) { var r = view.getBoundingClientRect(); setWipe((e.clientX - r.left) / r.width * 100); }
+    view.addEventListener('pointerdown', function (e) { dragging = true; view.setPointerCapture(e.pointerId); pos(e); });
+    view.addEventListener('pointermove', function (e) { if (dragging) pos(e); });
+    view.addEventListener('pointerup', function () { dragging = false; });
+  });
+})();
+</script>
 </body>
 </html>
