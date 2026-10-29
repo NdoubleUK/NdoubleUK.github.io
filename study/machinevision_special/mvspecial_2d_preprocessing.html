@@ -96,6 +96,36 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 평균 필터는 커널 내 모든 픽셀에 동일한 가중치를 부여해 단순 평균을 취하는 반면, Gaussian Filter는 중심에 가중치가 몰려 있다는 점이 근본적으로 다르다.
                 이 차이 때문에 Gaussian Filter는 평균 필터보다 엣지(경계선) 부분을 상대적으로 덜 뭉개는 특성을 가지며, 노이즈를 줄이면서도 형상의 구조 정보를 어느 정도 보존할 수 있다.
             </p>
+            <h3>계산 수식 — 커널은 어떻게 만들어지고, 어떻게 적용되는가</h3>
+            <p style="color:var(--sub);">① 가우시안 함수 (커널 가중치를 만드는 식). 중심에서 거리가 멀수록 지수적으로 작아진다.</p>
+            <div class="formula-box">
+                1D : G(x) = 1 / (√(2π)·σ) · e<sup>−x² / (2σ²)</sup><br>
+                2D : G(x, y) = 1 / (2πσ²) · e<sup>−(x² + y²) / (2σ²)</sup>
+            </div>
+            <p style="color:var(--sub);">② 컨볼루션 (커널을 영상에 적용하는 식). 커널 K의 가중치 합은 1이 되도록 정규화하여 전체 밝기가 변하지 않게 한다.</p>
+            <div class="formula-box">I'(x, y) = Σ<sub>i,j</sub> K(i, j) · I(x+i, y+j) &nbsp;&nbsp;(단, Σ K(i, j) = 1)</div>
+            <p style="color:var(--sub);">
+                <strong style="color:var(--text);">3×3 커널 예시</strong> — σ ≈ 1 일 때의 가우시안을 정수 비율로 근사한 대표적인 커널이다.
+                1D 커널 [1, 2, 1] / 4 두 개를 곱한(외적) 것과 같다.
+            </p>
+            <div class="formula-box">
+                K = 1/16 × [ 1 &nbsp;2 &nbsp;1 ]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 2 &nbsp;4 &nbsp;2 ]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 1 &nbsp;2 &nbsp;1 ]
+            </div>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — 주변이 모두 10인 영역 한가운데에 노이즈로 50이 튀어 있는 3×3 패치</p>
+            <div class="formula-box">
+                중심 픽셀의 새 값 = ( 1×10 + 2×10 + 1×10 + 2×10 + 4×<strong style="color:#fbbf24;">50</strong> + 2×10 + 1×10 + 2×10 + 1×10 ) / 16<br>
+                = ( 120 + 200 ) / 16 = 320 / 16 = <strong style="color:#fbbf24;">20</strong>
+            </div>
+            <p style="color:var(--sub);">
+                50으로 튀던 값이 20으로 완화되었다. 중심 가중치(4/16)가 가장 크므로 원래 값의 영향이 남아 있고, 이웃(10)의 영향으로 끌어내려진 결과다.
+                참고로 같은 패치에 평균 필터(모두 1/9)를 적용하면 (8×10 + 50)/9 ≈ 14.4가 되어 노이즈가 더 많이 깎이지만 그만큼 엣지도 더 뭉개진다.
+            </p>
+            <div class="note">
+                <strong>계산량 팁 — 분리 가능(Separable)</strong> : 2D 가우시안은 1D 가우시안 두 개의 곱으로 분해할 수 있다. 따라서 N×N 커널을 한 번에 적용하는 대신
+                가로 1×N, 세로 N×1을 차례로 적용해도 결과가 같고, 픽셀당 곱셈 횟수가 N²에서 2N으로 줄어든다(예: 7×7이면 49회 → 14회).
+            </div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>GaussFilter3x3()</code>, <code>GaussFilter5x5()</code>로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 σ를 자유롭게 지정하는 범용 함수가 아니라 3×3/5×5 두 가지 고정 커널 크기로만 제공된다는 것 — 실시간 검사 라인에서는 임의 크기 커널의 유연성보다 고정 크기 커널의 실행 속도가 더 중요하기 때문에, 자주 쓰이는 두 사이즈만 최적화해 제공하는 실무적 설계로 보인다.</span>
@@ -116,6 +146,24 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 극단적으로 튀는 값은 정렬을 하면 값의 크기 순서상 맨 앞이나 맨 뒤, 즉 양 끝으로 밀려나게 되고, 최종적으로 선택되는 것은 정중앙의 값이기 때문에
                 이런 극단값들은 결과에 거의 영향을 주지 않는다. 반면 평균을 계산하는 방식이었다면 극단값 하나가 전체 평균을 크게 왜곡시킬 수 있다는 점에서,
                 이는 평균 기반 필터와 Median Filter 사이의 근본적인 차이점이다.
+            </p>
+            <h3>계산 수식과 예시</h3>
+            <div class="formula-box">I'(x, y) = median { I(x+i, y+j) | (i, j) ∈ 윈도우 W }</div>
+            <p style="color:var(--sub);">
+                윈도우 안의 값이 N개일 때, 정렬한 뒤 가운데 ((N+1)/2)번째 값을 선택한다. 3×3이면 9개 중 5번째 값이다.
+                Gaussian처럼 가중치를 곱해서 더하는 연산이 아니므로 선형 필터가 아니고, 커널 가중치도 없다.
+            </p>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — 중심에 Salt 노이즈(255)가 박힌 3×3 윈도우</p>
+            <table class="compare-table">
+                <tr><th>단계</th><th>내용</th><th>결과</th></tr>
+                <tr><td>윈도우 값</td><td>12, 10, 11, 9, <strong style="color:#fbbf24;">255</strong>, 10, 11, 12, 10</td><td>—</td></tr>
+                <tr><td>정렬</td><td>9, 10, 10, 10, <strong style="color:#fbbf24;">11</strong>, 11, 12, 12, 255</td><td>255가 맨 끝으로 밀려남</td></tr>
+                <tr><td>Median (5번째)</td><td>11</td><td><strong>중심 픽셀 = 11</strong></td></tr>
+                <tr><td>(비교) 평균</td><td>340 / 9</td><td>37.8 (노이즈 하나에 크게 왜곡)</td></tr>
+            </table>
+            <p style="color:var(--sub);">
+                Median은 11로 주변 값과 자연스럽게 이어지는 반면, 평균은 37.8로 주변보다 훨씬 밝은 값이 남는다. 극단값이 몇 개 섞여도 중간값은 거의 움직이지 않는다는 점이 핵심이다
+                (윈도우의 절반 미만이 극단값이면 결과에 영향이 없다).
             </p>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
@@ -139,6 +187,37 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 상쇄되어 사라지고, 검사 대상 자체의 상대적인 밝기 비율만 남게 된다. 이렇게 함으로써 "원래 조명이 어둡게 비치던 부분"을 결함으로 잘못 판정하는
                 오류를 방지할 수 있다.
             </p>
+            <h3>계산 수식과 예시</h3>
+            <div class="formula-box">
+                I<sub>보정</sub>(x, y) = I(x, y) / F(x, y) × mean(F)<br>
+                (암전류까지 보정할 때) I<sub>보정</sub> = ( I − D ) / ( F − D ) × mean(F − D)
+            </div>
+            <p style="color:var(--sub);">
+                I는 검사 영상, F는 Flat-field 기준 영상, D는 조명을 끄고 촬영한 암전류(Dark) 영상이다. 나눗셈만 하면 값이 1 근처의 비율로 바뀌므로,
+                F의 평균을 곱해 원래 밝기 스케일로 되돌린다.
+            </p>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — 같은 재질의 제품인데 조명이 중앙은 밝고 가장자리는 어두운 경우 (mean(F) = 150)</p>
+            <table class="compare-table">
+                <tr><th>위치</th><th>F (기준 영상)</th><th>I (검사 영상)</th><th>보정 전</th><th>보정 후 = I / F × 150</th></tr>
+                <tr><td>중앙</td><td>200</td><td>160</td><td>160</td><td>160 / 200 × 150 = <strong style="color:#fbbf24;">120</strong></td></tr>
+                <tr><td>가장자리</td><td>100</td><td>80</td><td>80 (결함처럼 보임)</td><td>80 / 100 × 150 = <strong style="color:#fbbf24;">120</strong></td></tr>
+            </table>
+            <p style="color:var(--sub);">
+                보정 전에는 가장자리(80)가 중앙(160)보다 절반으로 어두워 결함으로 오인될 수 있지만, 보정 후에는 두 위치 모두 120으로 동일해진다.
+                이후 단계(이진화)에서 하나의 임계값을 영상 전체에 쓸 수 있게 되는 것이 이 보정의 목적이다.
+            </p>
+            <h3>배경을 영상에서 직접 추정하는 방식 — 적분영상(Integral Image)</h3>
+            <p style="color:var(--sub);">
+                별도의 기준 영상 없이 검사 영상 자체에서 국소 평균 B(x, y)를 배경으로 추정해 I / B 또는 I − B로 보정하는 방법도 널리 쓰인다.
+                이때 윈도우가 클수록 평균 계산이 느려지는 문제를 적분영상이 해결한다.
+            </p>
+            <div class="formula-box">
+                적분영상 : S(x, y) = Σ<sub>u≤x, v≤y</sub> I(u, v) &nbsp;(좌상단부터 해당 위치까지의 누적합)<br>
+                사각형 합 = S(D) − S(B) − S(C) + S(A) &nbsp;(A, B, C, D : 사각형 주변 네 모서리의 적분값)
+            </div>
+            <p style="color:var(--sub);">
+                영상 전체에 대해 적분영상을 한 번만 만들어 두면, 어떤 크기의 윈도우든 합을 덧셈·뺄셈 4번으로 구할 수 있다. 윈도우 크기와 무관하게 연산량이 일정(O(1))하다는 것이 장점이다.
+            </p>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span><code>MakeBackgroundImage()</code>, <code>MakePositiveContrastImage()</code>, <code>MakeNegativeContrastImage()</code>가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 함수들이 별도의 기준(Flat-field) 영상을 미리 촬영해둘 필요 없이, 적분영상(Integral Image, <code>IntegralInclusive()</code>)을 이용해 원본 영상 자체에서 국소 윈도우 단위의 배경을 실시간으로 추정하도록 설계되어 있다는 점이다 — 적분영상을 쓰면 윈도우 크기와 무관하게 각 픽셀의 국소 평균을 덧셈 몇 번으로 구할 수 있어, 매번 별도의 기준 촬영 없이도 조명 보정을 빠르게 수행할 수 있다.</span>
@@ -159,6 +238,23 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 다만 이 방식은 영상 전체를 하나의 히스토그램으로 취급해 일괄적으로 처리하기 때문에, 국소적으로 노이즈가 섞여 있는 영역까지 함께 과도하게
                 증폭시켜버릴 수 있다는 단점이 있다.
             </p>
+            <h4 style="margin:16px 0 8px; font-size:15px;">계산 수식</h4>
+            <div class="formula-box">
+                p(k) = n<sub>k</sub> / N &nbsp;&nbsp;(밝기 k인 픽셀의 비율 = 히스토그램을 전체 픽셀 수로 나눈 값)<br>
+                c(k) = Σ<sub>j≤k</sub> p(j) &nbsp;&nbsp;(CDF, 누적분포)<br>
+                k' = round( (L − 1) × c(k) ) &nbsp;&nbsp;(L : 밝기 단계 수, 8비트면 256)
+            </div>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — 밝기 단계 8개(0~7), 픽셀 16개. 밝기가 2~5 구간에만 몰려 있는 어두침침한 영상</p>
+            <table class="compare-table">
+                <tr><th>밝기 k</th><th>픽셀 수 n<sub>k</sub></th><th>p(k)</th><th>CDF c(k)</th><th>새 밝기 = round(7 × c)</th></tr>
+                <tr><td>2</td><td>4</td><td>0.250</td><td>0.250</td><td>round(1.75) = <strong style="color:#fbbf24;">2</strong></td></tr>
+                <tr><td>3</td><td>6</td><td>0.375</td><td>0.625</td><td>round(4.38) = <strong style="color:#fbbf24;">4</strong></td></tr>
+                <tr><td>4</td><td>4</td><td>0.250</td><td>0.875</td><td>round(6.13) = <strong style="color:#fbbf24;">6</strong></td></tr>
+                <tr><td>5</td><td>2</td><td>0.125</td><td>1.000</td><td>round(7.00) = <strong style="color:#fbbf24;">7</strong></td></tr>
+            </table>
+            <p style="color:var(--sub);">
+                원래 2~5(폭 3)에 몰려 있던 밝기가 2, 4, 6, 7로 벌어져 사용하는 밝기 범위가 넓어졌다. 픽셀이 많이 몰린 밝기 구간(3)일수록 CDF가 크게 뛰어 더 넓게 벌어지는 것이 이 방식의 특징이다.
+            </p>
 
             <h3>CLAHE(Contrast Limited Adaptive Histogram Equalization)</h3>
             <p style="color:var(--sub);">
@@ -171,6 +267,28 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 <li>이렇게 조정된 히스토그램으로부터 계산된 CDF를 이용해 각 타일 내부의 픽셀 값들을 평활화된 값으로 매핑한다.</li>
                 <li>타일 단위로 독립 처리를 하다 보면 타일 경계에서 밝기가 부자연스럽게 단절되는 현상이 생기는데, 이를 Bilinear Interpolation(양선형 보간)으로 부드럽게 이어붙여 자연스러운 결과를 만든다.</li>
             </ul>
+            <h4 style="margin:16px 0 8px; font-size:15px;">Clip Limit과 보간의 계산</h4>
+            <div class="formula-box">
+                초과분 E = Σ<sub>k</sub> max( h(k) − clip, 0 )<br>
+                h'(k) = min( h(k), clip ) + E / L &nbsp;&nbsp;(잘라낸 양을 L개 밝기 단계에 균등 재분배)
+            </div>
+            <p style="color:var(--sub);">
+                <strong style="color:var(--text);">계산 예시</strong> — 밝기 단계 8개, 타일 내 픽셀 16개, 히스토그램 h = [0, 4, 6, 4, 2, 0, 0, 0], clip = 4
+            </p>
+            <div class="formula-box">
+                초과분 E = (6 − 4) = 2 → E / L = 2 / 8 = 0.25<br>
+                h' = [0.25, 4.25, 4.25, 4.25, 2.25, 0.25, 0.25, 0.25] &nbsp;(합계 16 유지)
+            </div>
+            <p style="color:var(--sub);">
+                가장 높던 봉우리(6)가 낮아지고 비어 있던 구간에 조금씩 채워졌다. 이 h'로 CDF를 만들면 기울기가 완만해져, 같은 밝기 차이가 평활화 후에 지나치게 벌어지지 않는다 = 노이즈가 덜 증폭된다.
+            </p>
+            <p style="color:var(--sub);">
+                타일 경계의 단절은 인접한 4개 타일의 매핑 함수 T를 거리 비율로 섞어서 없앤다. 픽셀이 4개 타일 중심 사이에서 가로 u, 세로 v (0~1) 위치에 있을 때:
+            </p>
+            <div class="formula-box">
+                I'(x, y) = (1−u)(1−v)·T<sub>좌상</sub>(g) + u(1−v)·T<sub>우상</sub>(g) + (1−u)v·T<sub>좌하</sub>(g) + uv·T<sub>우하</sub>(g)
+            </div>
+            <p style="color:var(--sub);">g는 원래 밝기 값이다. 타일 중심에 가까울수록 해당 타일의 결과가 더 크게 반영된다.</p>
             <div class="note">
                 <strong>핵심 포인트</strong> : CLAHE는 "국소적으로 대비를 높이되, 국소적으로 과도해지지 않도록 제한한다"는 두 가지 목표를 Clip Limit와 타일 분할이라는 장치로 동시에 달성한다.
             </div>
@@ -207,6 +325,28 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 Closing은 그 반대 순서로, Dilation을 먼저 적용한 뒤 Erosion을 적용한다. Dilation 단계에서 결함이나 객체 내부에 있던 작은 구멍이나
                 끊긴 틈을 메운 뒤, 다시 Erosion을 적용해 부풀려졌던 객체의 크기를 원래 크기에 가깝게 되돌린다. 이를 통해 내부의 작은 결손을 채우면서도
                 전체적인 형태와 크기는 원본과 유사하게 유지할 수 있다.
+            </p>
+            <h3>계산 수식과 예시</h3>
+            <div class="formula-box">
+                Erosion : (I ⊖ B)(x, y) = min<sub>(i,j)∈B</sub> I(x+i, y+j)<br>
+                Dilation : (I ⊕ B)(x, y) = max<sub>(i,j)∈B</sub> I(x+i, y+j)<br>
+                Opening = (I ⊖ B) ⊕ B &nbsp;&nbsp;/&nbsp;&nbsp; Closing = (I ⊕ B) ⊖ B
+            </div>
+            <p style="color:var(--sub);">
+                B는 구조요소이다. 이진 영상(0/1)에서는 min이 "구조요소 안이 전부 1일 때만 1(AND)", max가 "하나라도 1이면 1(OR)"과 같다.
+                아래는 이해를 위해 1차원 신호에 길이 3의 구조요소를 적용한 예시다 (1 = 전경).
+            </p>
+            <table class="compare-table">
+                <tr><th>연산</th><th>입력 → 출력 (인덱스 0~9)</th><th>결과 해석</th></tr>
+                <tr><td>원본 (Opening용)</td><td>0 0 <strong style="color:#fbbf24;">1</strong> 0 0 1 1 1 0 0</td><td>인덱스 2의 홀로 떨어진 1(노이즈) + 폭 3의 객체</td></tr>
+                <tr><td>① Erosion</td><td>0 0 0 0 0 0 <strong>1</strong> 0 0 0</td><td>노이즈 소멸, 객체는 폭 3 → 1로 축소</td></tr>
+                <tr><td>② Dilation (= Opening 결과)</td><td>0 0 0 0 0 <strong>1 1 1</strong> 0 0</td><td>객체 폭 3 복원, 노이즈는 제거된 채 유지</td></tr>
+                <tr><td>원본 (Closing용)</td><td>0 0 1 1 <strong style="color:#fbbf24;">0</strong> 1 1 0 0 0</td><td>인덱스 4에 1칸짜리 틈(끊김)</td></tr>
+                <tr><td>① Dilation</td><td>0 1 1 1 1 1 1 1 0 0</td><td>틈이 메워지고 객체가 양쪽으로 팽창</td></tr>
+                <tr><td>② Erosion (= Closing 결과)</td><td>0 0 <strong>1 1 1 1 1</strong> 0 0 0</td><td>틈은 메워진 채, 객체의 바깥 크기는 원래대로</td></tr>
+            </table>
+            <p style="color:var(--sub);">
+                Opening은 구조요소보다 작은 돌기·점을 지우고, Closing은 구조요소보다 작은 틈·구멍을 메운다. 구조요소의 크기가 곧 "얼마나 작은 것까지 없앨 것인가"의 기준이 된다.
             </p>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>

@@ -121,6 +121,33 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 SSD 대비 NCC가 가지는 핵심적인 장점이며, 조명 환경이 완벽하게 통제되기 어려운 실제 생산 라인에서 NCC 계열 알고리즘이 더 폭넓게 채택되는 이유이기도 하다.
             </p>
 
+            <h4 style="margin:16px 0 8px; font-size:15px;">NCC 수식 — 어떻게 -1 ~ 1이 나오는가</h4>
+            <div class="formula-box">
+                NCC(x, y) = Σ [ ( I(x+i, y+j) − Ī ) · ( T(i, j) − T̄ ) ] &nbsp;/&nbsp; ( √Σ( I − Ī )² · √Σ( T − T̄ )² )
+            </div>
+            <p style="color:var(--sub);">
+                여기서 Ī는 후보 패치의 평균 밝기, T̄는 템플릿의 평균 밝기이다. 계산은 세 단계로 나누어 이해할 수 있다.
+            </p>
+            <ul style="color:var(--sub); padding-left:20px; margin:8px 0 12px;">
+                <li style="margin-bottom:6px;"><strong>① 평균 빼기</strong> — 각 패치에서 자기 평균을 빼면 조명·노출에 의한 전체 밝기 수준이 사라지고, "평균보다 얼마나 밝은가/어두운가"라는 패턴만 남는다. 모든 픽셀이 +50 밝아져도 평균도 +50 올라가므로 결과는 그대로다.</li>
+                <li style="margin-bottom:6px;"><strong>② 편차끼리 곱해서 더하기(분자)</strong> — 같은 위치의 두 편차를 곱한다. 둘 다 평균보다 밝거나 둘 다 어두우면 (+)×(+) 또는 (−)×(−)로 양수가 쌓이고, 한쪽만 밝고 다른 쪽이 어두우면 음수가 쌓인다. 즉 패턴의 방향이 같을수록 크게 양수, 반대일수록 크게 음수가 된다.</li>
+                <li style="margin-bottom:6px;"><strong>③ 편차의 크기로 나누기(분모)</strong> — 분모는 두 패치 각각의 편차 크기(표준편차에 √N을 곱한 값)를 곱한 것이다. 이 값으로 나누면 대비(콘트라스트)가 몇 배가 되든 결과가 같아지고, 값은 코시-슈바르츠 부등식에 의해 항상 -1 ~ 1 안에 들어간다. 스터디 자료의 "표준편차로 나눈다"는 바로 이 과정이다.</li>
+            </ul>
+            <p style="color:var(--sub);">
+                기하학적으로는 평균을 뺀 두 패치를 벡터로 보았을 때, 두 벡터 사이 각도의 cos 값과 같다. 같은 방향이면 cos = 1, 직각이면 0, 반대 방향이면 −1이다.
+            </p>
+
+            <p style="color:var(--sub); margin-top:12px;"><strong style="color:var(--text);">숫자 예시</strong> — 템플릿 T = [1, 2, 3] (평균 2, 편차 [−1, 0, 1])</p>
+            <table class="compare-table">
+                <tr><th>후보 패치 I</th><th>평균</th><th>편차</th><th>분자</th><th>분모</th><th>NCC</th></tr>
+                <tr><td>[10, 20, 30]</td><td>20</td><td>[−10, 0, 10]</td><td>20</td><td>√200 · √2 = 20</td><td><strong>1.0</strong> (밝기·대비가 달라도 형태 동일)</td></tr>
+                <tr><td>[30, 20, 10]</td><td>20</td><td>[10, 0, −10]</td><td>−20</td><td>20</td><td><strong>−1.0</strong> (명암이 정반대)</td></tr>
+                <tr><td>[10, 30, 20]</td><td>20</td><td>[−10, 10, 0]</td><td>10</td><td>20</td><td><strong>0.5</strong> (부분적으로 유사)</td></tr>
+            </table>
+            <p style="color:var(--sub);">
+                첫 번째 행이 핵심이다. I는 T보다 값이 10배나 크지만 오름차순이라는 형태가 같기 때문에, SSD로는 매우 큰 값(불일치)이 나올 상황에서도 NCC는 완벽한 일치(1.0)를 출력한다.
+            </p>
+
             <h3>탐색 방식 — Exhaustive Search</h3>
             <p style="color:var(--sub);">
                 기본적인 Template Matching은 준비된 템플릿을 원본 이미지 위에서 가로·세로 방향으로 한 픽셀씩 이동시키면서, 이동할 수 있는 모든 후보 위치에 대해
@@ -165,6 +192,38 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 후속 계산 과정에서 누적되어 판정 결과에 영향을 줄 수 있기 때문에, 정수 픽셀보다 더 세밀한 소수점 단위의 위치, 즉 Sub-pixel 정밀도를 확보하는 기법이 필요하다.
             </p>
 
+            <h4 style="margin:16px 0 8px; font-size:15px;">숫자로 보는 필요성</h4>
+            <p style="color:var(--sub);">
+                시야(FOV) 50mm를 가로 5000픽셀 카메라로 촬영하면 1픽셀 = 50mm ÷ 5000 = <strong style="color:var(--text);">10µm</strong>이다.
+                엣지 위치를 정수 픽셀로만 판단하면 실제 위치와의 오차가 최대 ±0.5픽셀 = <strong style="color:var(--text);">±5µm</strong>가 된다.
+                그런데 요구 정밀도가 1µm 수준이라면 카메라 해상도만으로는 달성할 수 없고, 계산으로 픽셀 사이의 값을 복원해야 한다.
+                Sub-pixel 기법을 쓰면 일반적으로 1/10 ~ 1/20 픽셀 수준(위 예시에서는 0.5 ~ 1µm)의 위치 정밀도를 기대할 수 있다.
+            </p>
+
+            <h4 style="margin:16px 0 8px; font-size:15px;">엣지는 밝기 변화율의 봉우리다</h4>
+            <p style="color:var(--sub);">
+                엣지를 가로지르는 1차원 밝기 단면(프로파일)을 보면, 어두운 영역에서 밝은 영역으로 넘어가는 구간에서 밝기가 급격히 올라간다.
+                이 밝기 값을 이웃한 픽셀끼리 뺀 값, 즉 <strong style="color:var(--text);">gradient(밝기 변화율)</strong>를 위치별로 그리면 엣지가 있는 지점에서 가장 큰 봉우리가 생긴다.
+                따라서 "엣지 위치 찾기"는 "gradient 봉우리의 정확한 꼭대기 위치 찾기"와 같은 문제가 된다.
+            </p>
+            <div class="svg-box">
+                <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard, sans-serif" font-size="12">
+                    <text x="190" y="20" fill="#e5e7eb" text-anchor="middle" font-weight="700">① 밝기 프로파일</text>
+                    <line x1="40" y1="200" x2="350" y2="200" stroke="#374151"/>
+                    <polyline points="40,170 110,170 150,165 185,120 220,75 260,70 350,70" fill="none" stroke="#6366f1" stroke-width="2.5"/>
+                    <g fill="#6366f1"><circle cx="110" cy="170" r="4"/><circle cx="150" cy="165" r="4"/><circle cx="185" cy="120" r="4"/><circle cx="220" cy="75" r="4"/><circle cx="260" cy="70" r="4"/></g>
+                    <text x="45" y="225" fill="#9ca3af">어두움</text><text x="305" y="225" fill="#9ca3af">밝음</text>
+                    <text x="190" y="240" fill="#9ca3af" text-anchor="middle">위치(픽셀) →</text>
+
+                    <text x="570" y="20" fill="#e5e7eb" text-anchor="middle" font-weight="700">② gradient (밝기 변화율)</text>
+                    <line x1="410" y1="200" x2="730" y2="200" stroke="#374151"/>
+                    <polyline points="420,195 480,190 520,160 560,85 600,60 640,120 680,185 730,198" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+                    <line x1="590" y1="45" x2="590" y2="200" stroke="#10b981" stroke-dasharray="4 3"/>
+                    <text x="590" y="38" fill="#10b981" text-anchor="middle">봉우리 = 엣지 위치</text>
+                    <text x="570" y="240" fill="#9ca3af" text-anchor="middle">위치(픽셀) →</text>
+                </svg>
+            </div>
+
             <h3>Parabolic Interpolation(포물선 보간)</h3>
             <p style="color:var(--sub);">
                 엣지 부근에서 밝기 변화율(Gradient) 값을 위치에 따라 그래프로 그려보면, 엣지가 있는 지점에서 값이 가장 크게 솟아오르는 봉우리 형태가 나타난다.
@@ -172,12 +231,39 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 매끄럽게 잇는 연속적인 곡선을 얻을 수 있다. 이 포물선의 꼭짓점(최댓값이 위치하는 지점)을 계산하면, 정수 픽셀 좌표 사이에 존재하는 소수점 단위의
                 실제 엣지 위치를 추정해낼 수 있다. 이렇게 하면 카메라 해상도로는 표현할 수 없었던 픽셀 사이의 위치 정보까지 계산으로 복원하는 셈이 된다.
             </p>
+            <p style="color:var(--sub);">
+                봉우리 픽셀의 gradient를 g₀, 왼쪽 이웃을 g₋, 오른쪽 이웃을 g₊라 하면, 3점을 지나는 포물선의 꼭짓점은 다음 공식으로 구한다.
+            </p>
+            <div class="formula-box">
+                δ = ( g₋ − g₊ ) / ( 2 · ( g₋ − 2·g₀ + g₊ ) )<br>
+                엣지 위치 = x₀ + δ &nbsp;&nbsp;(x₀ : 봉우리 픽셀 위치, δ : −0.5 ~ +0.5)
+            </div>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — g₋ = 40, g₀ = 100, g₊ = 80 인 경우</p>
+            <div class="formula-box">
+                δ = (40 − 80) / ( 2 × (40 − 2×100 + 80) ) = −40 / −160 = <strong style="color:#fbbf24;">0.25</strong><br>
+                → 엣지는 정수 위치 x₀보다 0.25픽셀 오른쪽에 있다.
+            </div>
+            <ul style="color:var(--sub); padding-left:20px; margin:8px 0 12px;">
+                <li style="margin-bottom:6px;"><strong>직관 확인</strong> — 오른쪽 이웃(80)이 왼쪽 이웃(40)보다 크므로 봉우리가 오른쪽으로 치우쳐 있을 것이라는 예상과 결과(+0.25)가 일치한다.</li>
+                <li style="margin-bottom:6px;"><strong>질문</strong> — g₋ = g₊ 이면 δ는? → 분자가 0이므로 δ = 0, 즉 정확히 정수 픽셀 위치가 엣지다.</li>
+                <li style="margin-bottom:6px;"><strong>범위</strong> — 봉우리 픽셀이 가장 큰 값이므로 δ는 항상 −0.5 ~ +0.5 안에 들어간다.</li>
+            </ul>
 
             <h3>Centroid Method(그레이레벨 무게중심법)</h3>
             <p style="color:var(--sub);">
                 Centroid Method는 봉우리의 정점 하나만을 보는 대신, 엣지 부근에 분포한 밝기 값 전체를 하나의 가중치로 취급해 무게중심(가중 평균 위치)을 계산하는 방식이다.
                 각 픽셀의 위치에 그 픽셀의 밝기(또는 그레디언트) 값을 가중치로 곱한 뒤 모두 더하고, 이를 가중치들의 합으로 나누면 분포 전체의 중심 위치를 얻을 수 있으며,
                 이 값을 경계의 실제 위치로 추정한다.
+            </p>
+            <div class="formula-box">x_edge = Σ( xᵢ · gᵢ ) / Σ( gᵢ )</div>
+            <p style="color:var(--sub);"><strong style="color:var(--text);">계산 예시</strong> — 위와 같은 값 g = [40, 100, 80]을 위치 x = [−1, 0, +1]에 대입</p>
+            <div class="formula-box">
+                x_edge = ( (−1)×40 + 0×100 + (+1)×80 ) / ( 40 + 100 + 80 ) = 40 / 220 ≈ <strong style="color:#fbbf24;">0.18</strong>
+            </div>
+            <p style="color:var(--sub);">
+                같은 데이터인데 포물선 보간(0.25)과 무게중심법(0.18)의 결과가 약간 다르다. 포물선 보간은 꼭대기 3점의 모양에 민감하고,
+                무게중심법은 사용하는 픽셀 범위 전체의 분포를 반영하기 때문이다. 어느 쪽이 더 정확한지는 영상 상태(노이즈, 엣지의 날카로움)에 따라 달라지므로,
+                실무에서는 두 방법의 결과를 비교해 보거나 검사 대상에 맞게 선택한다.
             </p>
 
             <h3>한계</h3>
