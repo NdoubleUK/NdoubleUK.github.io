@@ -168,6 +168,24 @@
         }
 
         .nav-footer { display: flex; justify-content: space-between; margin-top: 10px; }
+
+        .demo-box { background:#0b1120; border:1px solid #1f2937; border-radius:12px; padding:16px; margin:16px 0; }
+        .demo-head { font-weight:700; color:#a5b4fc; margin-bottom:10px; font-size:14px; }
+        .demo-controls { display:flex; flex-wrap:wrap; gap:10px 22px; margin-bottom:12px; font-size:13px; color:var(--sub); }
+        .demo-controls label { display:flex; align-items:center; gap:8px; }
+        .demo-controls input[type=range] { accent-color:#6366f1; }
+        .demo-controls select { background:#111827; color:var(--text); border:1px solid #374151; border-radius:6px; padding:3px 6px; }
+        .demo-controls .val { min-width:34px; color:#fbbf24; font-family:'Courier New',monospace; }
+        .demo-view { position:relative; width:100%; max-width:640px; margin:0 auto; aspect-ratio:256/160; border-radius:8px; overflow:hidden; border:1px solid #1f2937; cursor:ew-resize; touch-action:none; user-select:none; }
+        .demo-view canvas { position:absolute; top:0; left:0; width:100%; height:100%; image-rendering:pixelated; }
+        .demo-line { position:absolute; top:0; bottom:0; width:2px; margin-left:-1px; background:#fbbf24; box-shadow:0 0 6px rgba(251,191,36,.8); pointer-events:none; }
+        .demo-chip { position:absolute; top:8px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; background:rgba(0,0,0,.65); color:#e5e7eb; pointer-events:none; }
+        .demo-chip.l { left:8px; } .demo-chip.r { right:8px; }
+        .demo-wipe { display:flex; align-items:center; gap:10px; max-width:640px; margin:10px auto 0; font-size:12px; color:var(--sub); }
+        .demo-wipe input { flex:1; accent-color:#f59e0b; }
+        .demo-stat { max-width:640px; margin:10px auto 0; font-size:13px; color:var(--text); background:rgba(99,102,241,.08); border-left:3px solid var(--primary); padding:8px 12px; border-radius:6px; }
+        .demo-hint { max-width:640px; margin:8px auto 0; font-size:12.5px; color:var(--sub); }
+        .demo-extra { display:block; width:100%; max-width:640px; margin:10px auto 0; background:#0b1120; border:1px solid #1f2937; border-radius:8px; }
     </style>
 </head>
 <body>
@@ -201,6 +219,29 @@
                     <li>이 방식은 계산이 단순하고 빠르지만, 조명이 화면 전체에 걸쳐 조금이라도 불균일하면 문제가 생김 — 화면의 밝은 영역과 어두운 영역에 동일한 T를 적용하면, 밝은 영역에서는 정상 부분이 결함으로 오검출되고 어두운 영역에서는 실제 결함이 배경으로 묻혀버리는 현상이 각각 발생하기 쉬움</li>
                     <li>즉 Global Thresholding은 "조명이 완벽하게 균일한 환경"이라는 전제가 성립할 때만 안정적으로 동작하며, 실제 검사 환경에서는 이 전제가 자주 깨지기 때문에 뒤에서 다룰 Otsu's Method나 Adaptive Thresholding이 함께 쓰임</li>
                 </ul>
+                <h3>계산 수식과 예시</h3>
+                <div class="formula-box">g(x, y) = 255 &nbsp;&nbsp;(I(x, y) ≥ T) &nbsp;&nbsp;/&nbsp;&nbsp; 0 &nbsp;&nbsp;(I(x, y) &lt; T)</div>
+                <p>I는 입력 영상의 밝기, g는 이진화 결과(255 = 흰색 전경, 0 = 검은색 배경)이다. 픽셀마다 "T와 비교해서 크냐 작냐" 한 번만 판단하므로 계산이 가장 빠르다.</p>
+                <div class="formula-box">
+                    예시 : I = [ 30, &nbsp;80, 200, 120 ], &nbsp;T = 100<br>
+                    → g = [ 0, &nbsp;0, 255, 255 ]
+                </div>
+
+                <h3>Hysteresis Thresholding — 임계값을 두 개 쓰는 방식</h3>
+                <p>단일 T는 "T를 낮추면 약한 신호까지 잡히지만 노이즈도 함께 잡히고, T를 높이면 노이즈는 사라지지만 약한 신호도 같이 사라지는" 딜레마가 있다. Hysteresis는 임계값을 두 개(T<sub>high</sub> &gt; T<sub>low</sub>) 사용해 이 딜레마를 푼다.</p>
+                <div class="formula-box">
+                    g(x, y) = 255 &nbsp;&nbsp;if &nbsp; I ≥ T<sub>high</sub> &nbsp;&nbsp;(확실한 전경, 씨앗)<br>
+                    g(x, y) = 255 &nbsp;&nbsp;if &nbsp; I ≥ T<sub>low</sub> 이고 g=255인 픽셀과 연결됨<br>
+                    g(x, y) = 0 &nbsp;&nbsp;그 외
+                </div>
+                <p><strong>계산 예시</strong> — 1차원 신호 I = [30, 90, 140, 95, 210, 130, 70, 150, 40], T<sub>low</sub> = 100, T<sub>high</sub> = 200</p>
+                <table class="compare-table">
+                    <tr><th>방식</th><th>결과 (밝은 위치 = 전경)</th><th>해석</th></tr>
+                    <tr><td>단일 T = 100</td><td>인덱스 2, 4, 5, 7</td><td>실제 객체(4, 5)와 함께 고립된 노이즈(2, 7)도 포함됨</td></tr>
+                    <tr><td>단일 T = 200</td><td>인덱스 4</td><td>노이즈는 사라졌지만 객체의 이웃 픽셀(5)도 함께 사라짐</td></tr>
+                    <tr><td>Hysteresis (100 / 200)</td><td>인덱스 4, 5</td><td>인덱스 4(≥200)를 씨앗으로 삼고, 이어진 5(≥100)만 편입. 연결되지 않은 2, 7은 제외</td></tr>
+                </table>
+                <div id="demo-global"></div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span><code>BinarizeLess()</code>, <code>BinarizeGreater()</code>, <code>BinarizeGreaterEqualAndLessEqual()</code> 등 비교 조건별로 세분화된 함수가 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 계열에 <code>BinarizeHysteresis()</code>(이중 임계값 이진화)가 포함되어 있다는 것 — 높은 임계값을 넘는 픽셀을 확실한 전경 씨앗(seed)으로 삼고, 그 씨앗과 연결된 픽셀 중 낮은 임계값만 넘어도 함께 전경으로 편입시키는 방식이다. 단일 임계값보다 결함 경계의 미세한 잡음(스페클)을 훨씬 잘 걸러내며, Canny 엣지 검출의 이중 임계값 아이디어를 이진화에 그대로 응용한 사례로 볼 수 있다.</span>
@@ -235,6 +276,25 @@
                 </div>
 
                 <p>이 방법은 영상의 밝기 분포가 배경 봉우리와 결함(전경) 봉우리, 이렇게 두 개의 봉우리를 가진 <strong>이중봉(Bimodal)</strong> 형태일 때 특히 잘 맞는다. 반대로 봉우리가 명확히 갈라지지 않고 완만하게 섞여 있는 분포에서는 Otsu의 결과가 기대만큼 정확하지 않을 수 있다.</p>
+                <h3>수식 풀어보기</h3>
+                <div class="formula-box">
+                    p(i) = n<sub>i</sub> / N &nbsp;&nbsp;(밝기 i인 픽셀의 비율)<br>
+                    ω₀(T) = Σ<sub>i≤T</sub> p(i) , &nbsp;&nbsp;ω₁(T) = 1 − ω₀(T)<br>
+                    μ₀(T) = Σ<sub>i≤T</sub> i·p(i) / ω₀ , &nbsp;&nbsp;μ₁(T) = Σ<sub>i&gt;T</sub> i·p(i) / ω₁<br>
+                    σB²(T) = ω₀ · ω₁ · ( μ₁ − μ₀ )² &nbsp;&nbsp;→ &nbsp;&nbsp;T* = argmax σB²(T)
+                </div>
+                <p>ω는 "그 그룹이 전체에서 차지하는 비율", μ는 "그 그룹의 평균 밝기"이다. (μ₁ − μ₀)²는 두 그룹이 얼마나 떨어져 있는지, ω₀·ω₁은 두 그룹의 크기가 얼마나 균형 잡혀 있는지를 나타낸다. 한쪽이 거의 비어 있으면 ω₀·ω₁이 0에 가까워져 아무리 평균이 멀어도 σB²가 커지지 않는다.</p>
+
+                <p><strong>계산 예시</strong> — 밝기 1, 2, 4, 5에만 픽셀이 있는 10개 영상 (n = 3, 2, 2, 3 → p = 0.3, 0.2, 0.2, 0.3)</p>
+                <table class="compare-table">
+                    <tr><th>T</th><th>ω₀ / ω₁</th><th>μ₀</th><th>μ₁</th><th>σB² = ω₀·ω₁·(μ₁−μ₀)²</th></tr>
+                    <tr><td>1</td><td>0.3 / 0.7</td><td>1.00</td><td>3.86</td><td>0.3 × 0.7 × 2.86² = 1.71</td></tr>
+                    <tr><td><strong>2</strong></td><td>0.5 / 0.5</td><td>1.40</td><td>4.60</td><td>0.5 × 0.5 × 3.20² = <strong style="color:#fbbf24;">2.56 (최대)</strong></td></tr>
+                    <tr><td>3</td><td>0.5 / 0.5</td><td>1.40</td><td>4.60</td><td>2.56 (밝기 3에 픽셀이 없어 T=2와 동일)</td></tr>
+                    <tr><td>4</td><td>0.7 / 0.3</td><td>2.14</td><td>5.00</td><td>0.7 × 0.3 × 2.86² = 1.71</td></tr>
+                </table>
+                <p>두 봉우리(1~2와 4~5) 사이에서 σB²가 최대가 되었고, 임계값은 두 봉우리 사이 어딘가(T = 2~3)로 자동 결정된다.</p>
+                <div id="demo-otsu"></div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span><code>GetThreshold_Otsu()</code>로 그대로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 함수 하나만 있는 게 아니라는 것 — 바로 옆에 <code>GetThreshold_PTile()</code>과 <code>GetThreshold_SIS()</code>가 나란히 존재한다. PTile은 "전체 픽셀 중 몇 %를 전경으로 볼 것인가"라는 비율을 직접 지정하면 그에 맞는 임계값을 역산해주는 방식으로, 결함이 차지하는 면적 비율이 공정상 어느 정도 예측 가능한 검사(예 : 특정 코팅 불량 면적률)에서는 밝기 분포 모양에 의존하는 Otsu보다 오히려 더 안정적일 수 있다. SIS는 세 번째 자동 임계값 계산 방식으로, 상황에 맞게 Otsu·PTile·SIS 중 골라 쓸 수 있도록 라이브러리가 설계되어 있다는 점이 인상적이다.</span>
@@ -268,6 +328,23 @@
                     <strong>Gaussian 가중 평균을 사용하는 이유</strong><br>
                     단순 평균은 블록 내 모든 픽셀을 동일한 비중으로 취급하지만, Gaussian 가중 평균은 블록 중심 픽셀 근처의 정보에 더 크게 의존한다. 이렇게 하면 블록 경계 부근에서 생기는 급격한 임계값 변화가 완화되어, 결과적으로 더 매끄럽고 안정적인 이진화 경계를 얻을 수 있다.
                 </div>
+                <h3>수식과 계산 예시</h3>
+                <div class="formula-box">
+                    T(x, y) = M(x, y) − C<br>
+                    M(x, y) = (1 / b²) · Σ I(x+i, y+j) &nbsp;&nbsp;(b×b 블록의 평균)<br>
+                    M(x, y) = Σ w(i, j) · I(x+i, y+j) &nbsp;&nbsp;(Gaussian 가중 평균, Σ w = 1)
+                </div>
+                <p>Gaussian 가중 평균의 σ는 블록 크기 b에서 정해진다. OpenCV는 σ = 0.3 × ((b − 1) / 2 − 1) + 0.8을 사용한다(예: b = 31이면 σ ≈ 5.0). 평균은 적분영상으로 구하면 블록 크기와 상관없이 빠르다(전처리 페이지의 적분영상 설명 참고).</p>
+                <p><strong>계산 예시</strong> — 어두운 대상을 전경으로 찾는 경우 (C = 10, 전경 조건 : I &lt; T)</p>
+                <table class="compare-table">
+                    <tr><th>위치</th><th>국소 평균 M</th><th>T = M − 10</th><th>픽셀 I</th><th>Adaptive 판정</th><th>Global T = 100 판정</th></tr>
+                    <tr><td>밝은 영역, 정상 픽셀</td><td>180</td><td>170</td><td>178</td><td>배경 (178 ≥ 170)</td><td>배경</td></tr>
+                    <tr><td>밝은 영역, 결함</td><td>180</td><td>170</td><td>150</td><td>전경 (150 &lt; 170)</td><td>배경 (150 ≥ 100) ❌ 놓침</td></tr>
+                    <tr><td>어두운 영역, 정상 픽셀</td><td>80</td><td>70</td><td>78</td><td>배경 (78 ≥ 70)</td><td>전경 (78 &lt; 100) ❌ 오검출</td></tr>
+                    <tr><td>어두운 영역, 결함</td><td>80</td><td>70</td><td>55</td><td>전경 (55 &lt; 70)</td><td>전경</td></tr>
+                </table>
+                <p>Global T = 100은 밝은 쪽 결함을 놓치고 어두운 쪽 정상 픽셀을 결함으로 잘못 판정한다. Adaptive는 각 픽셀이 "자기 주변보다 C 이상 어두운가"만 보기 때문에 두 영역 모두 올바르게 판정한다.</p>
+                <div id="demo-adaptive"></div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span><code>BinarizeAdaptive()</code>로 제공된다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 국소 평균을 매번 블록 픽셀을 다시 훑어서 계산하는 대신, <strong>적분영상(Integral Image)</strong>을 미리 만들어두고 그것을 이용해 어떤 크기의 블록이든 덧셈·뺄셈 몇 번만으로 즉시 평균을 구하도록 설계되어 있다는 것이다 — 블록을 키워도 연산량이 거의 늘지 않아, 실시간 검사 라인에서도 넓은 영역의 Adaptive Thresholding을 부담 없이 적용할 수 있다.</span>
@@ -318,5 +395,206 @@
     <footer>
         <p>© 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디</p>
     </footer>
+
+<script>
+(function () {
+  var W = 256, H = 160, N = W * H;
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(r) { var u = 1 - r(), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function cl(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+  function ci(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  /* ---------- 검사 장면: 밝은 배경(170) 위의 어두운 결함(70) + 옅은 스크래치(130) ---------- */
+  function distSeg(x, y, ax, ay, bx, by) { var dx = bx - ax, dy = by - ay, t = ci(((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy), 0, 1), ex = x - (ax + t * dx), ey = y - (ay + t * dy); return Math.sqrt(ex * ex + ey * ey); }
+  function makeScene(grad, seed) {
+    var img = new Float32Array(N), gt = new Uint8Array(N), r = rng(seed), x, y, i;
+    var dots = [[50, 40, 5], [90, 112, 7], [150, 50, 4], [215, 45, 6], [200, 125, 5], [120, 75, 3], [70, 85, 13], [190, 88, 13]];
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var v = 170, f = 0, d;
+      for (i = 0; i < dots.length; i++) { var q = dots[i]; if ((x - q[0]) * (x - q[0]) + (y - q[1]) * (y - q[1]) <= q[2] * q[2]) f = 70; }
+      if (distSeg(x, y, 20, 138, 110, 146) < 1.3) f = 70;
+      if (distSeg(x, y, 128, 22, 238, 28) < 1.3) f = 70;
+      if (x >= 100 && x < 112 && y >= 95 && y < 125) f = 70;
+      if (distSeg(x, y, 154, 52, 236, 76) < 1.4 && !f) f = 130;
+      if (f) { v = f; gt[y * W + x] = 1; }
+      var F = grad ? 1 - 0.55 * x / (W - 1) : 1;
+      img[y * W + x] = v * F;
+    }
+    for (i = 0; i < N; i++) img[i] = cl(img[i] + gauss(r) * 6);
+    return { img: img, gt: gt };
+  }
+  var uni = makeScene(false, 101), tilt = makeScene(true, 101);
+  var gtCount = 0; (function () { for (var i = 0; i < N; i++) gtCount += uni.gt[i]; })();
+
+  /* ---------- 알고리즘 ---------- */
+  function hist256(a) { var h = new Float64Array(256), i; for (i = 0; i < N; i++) h[Math.round(ci(a[i], 0, 255))]++; return h; }
+  function otsu(h) {
+    var sumAll = 0, i; for (i = 0; i < 256; i++) sumAll += i * h[i];
+    var wB = 0, sumB = 0, best = -1, bestT = 0, curve = new Float64Array(256);
+    for (var t = 0; t < 256; t++) {
+      wB += h[t]; sumB += t * h[t];
+      var wF = N - wB; if (wB === 0 || wF === 0) { curve[t] = 0; continue; }
+      var mB = sumB / wB, mF = (sumAll - sumB) / wF, v = (wB / N) * (wF / N) * (mB - mF) * (mB - mF);
+      curve[t] = v; if (v > best) { best = v; bestT = t; }
+    }
+    return { t: bestT, curve: curve, max: best };
+  }
+  function ptileT(h, pct) { var target = pct / 100 * N, c = 0, t; for (t = 0; t < 256; t++) { c += h[t]; if (c >= target) return t; } return 255; }
+  function below(src, T) { var o = new Float32Array(N), i; for (i = 0; i < N; i++) o[i] = src[i] <= T ? 255 : 0; return o; }
+  function hyst(src, tWeak, tStrong) {
+    var o = new Float32Array(N), st = [], i; tWeak = Math.max(tWeak, tStrong);
+    for (i = 0; i < N; i++) if (src[i] <= tStrong) { o[i] = 255; st.push(i); }
+    while (st.length) {
+      var p = st.pop(), x = p % W, y = (p / W) | 0, dx, dy;
+      for (dy = -1; dy <= 1; dy++) for (dx = -1; dx <= 1; dx++) {
+        var nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+        var q = ny * W + nx; if (!o[q] && src[q] <= tWeak) { o[q] = 255; st.push(q); }
+      }
+    }
+    return o;
+  }
+  function boxMean(src, r) {
+    var S = new Float64Array((W + 1) * (H + 1)), x, y, out = new Float32Array(N);
+    for (y = 1; y <= H; y++) { var row = 0; for (x = 1; x <= W; x++) { row += src[(y - 1) * W + (x - 1)]; S[y * (W + 1) + x] = S[(y - 1) * (W + 1) + x] + row; } }
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var x0 = Math.max(0, x - r), x1 = Math.min(W, x + r + 1), y0 = Math.max(0, y - r), y1 = Math.min(H, y + r + 1);
+      out[y * W + x] = (S[y1 * (W + 1) + x1] - S[y0 * (W + 1) + x1] - S[y1 * (W + 1) + x0] + S[y0 * (W + 1) + x0]) / ((x1 - x0) * (y1 - y0));
+    }
+    return out;
+  }
+  function gaussBlur(src, sigma) {
+    var r = Math.max(1, Math.ceil(3 * sigma)), k = [], sum = 0, i, x, y;
+    for (i = -r; i <= r; i++) { var g = Math.exp(-i * i / (2 * sigma * sigma)); k.push(g); sum += g; }
+    for (i = 0; i < k.length; i++) k[i] /= sum;
+    var tmp = new Float32Array(N), out = new Float32Array(N);
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var s = 0; for (i = -r; i <= r; i++) s += k[i + r] * src[y * W + ci(x + i, 0, W - 1)]; tmp[y * W + x] = s; }
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var s2 = 0; for (i = -r; i <= r; i++) s2 += k[i + r] * tmp[ci(y + i, 0, H - 1) * W + x]; out[y * W + x] = s2; }
+    return out;
+  }
+  function score(o, gt) {
+    var hit = 0, fp = 0, i; for (i = 0; i < N; i++) { if (o[i] > 127) { if (gt[i]) hit++; else fp++; } }
+    return '결함 픽셀 검출률 <b>' + (hit / gtCount * 100).toFixed(0) + '%</b> &nbsp;|&nbsp; 오검출(배경인데 흰색) <b>' + fp + '</b> 픽셀';
+  }
+  var uniPct = Math.round(gtCount / N * 100);
+
+  /* ---------- 데모 정의 ---------- */
+  var demos = [
+    {
+      id: 'demo-global',
+      controls: [
+        { k: 'light', label: '조명', type: 'select', options: [['uni', '균일'], ['tilt', '왼쪽→오른쪽으로 어두워짐']], value: 'uni' },
+        { k: 'mode', label: '방식', type: 'select', options: [['global', '단일 T (Global)'], ['hyst', 'Hysteresis']], value: 'global' },
+        { k: 'T', label: 'T (Global 값 / Hysteresis의 완화값)', min: 0, max: 255, step: 1, value: 100 },
+        { k: 'Ts', label: 'T_strong (Hysteresis 전용)', min: 0, max: 255, step: 1, value: 80 }
+      ],
+      src: function (p) { return p.light === 'uni' ? uni : tilt; },
+      run: function (s, p) { return p.mode === 'global' ? below(s.img, p.T) : hyst(s.img, p.T, p.Ts); },
+      stat: function (s, o) { return score(o, s.gt); },
+      hint: '※ 데모는 "어두운 결함"을 찾는 설정이라 T보다 어두운 픽셀을 흰색으로 표시합니다(본문 예시와 부등호 방향만 반대). 균일 조명에서 T=100이면 옅은 스크래치(밝기 130)를 놓치고(검출률 91%), T를 150으로 올리면 잡히지만 160 이상부터는 배경 노이즈 점이 대량으로 생깁니다. 이때 방식을 Hysteresis로 바꾸고 T를 160 부근, T_strong을 80~100으로 두면 확실한 결함과 이어진 부분만 남아 오검출이 크게 줄어듭니다. 조명을 "기울어짐"으로 바꾸면 어떤 단일 T도 좌우를 동시에 만족시키지 못합니다(T=100이면 오른쪽 절반이 오검출, T=55이면 검출률 57%).'
+    },
+    {
+      id: 'demo-otsu',
+      controls: [
+        { k: 'light', label: '조명', type: 'select', options: [['uni', '균일'], ['tilt', '왼쪽→오른쪽으로 어두워짐']], value: 'uni' },
+        { k: 'method', label: '임계값 결정', type: 'select', options: [['manual', '수동 T'], ['otsu', 'Otsu (자동)'], ['ptile', 'PTile (비율 지정)']], value: 'otsu' },
+        { k: 'T', label: '수동 T', min: 0, max: 255, step: 1, value: 120 },
+        { k: 'pct', label: 'PTile 전경 비율(%)', min: 1, max: 40, step: 1, value: uniPct }
+      ],
+      src: function (p) { return p.light === 'uni' ? uni : tilt; },
+      run: function (s, p) {
+        var h = hist256(s.img), od = otsu(h), T = p.method === 'manual' ? p.T : p.method === 'otsu' ? od.t : ptileT(h, p.pct);
+        var o = below(s.img, T); o.__T = T; o.__otsu = od; o.__h = h; return o;
+      },
+      stat: function (s, o, p) { return '적용된 T = <b>' + o.__T + '</b> (Otsu 값 ' + o.__otsu.t + ', 그 때의 σB² ≈ ' + o.__otsu.max.toFixed(0) + ') &nbsp;|&nbsp; ' + score(o, s.gt); },
+      extra: function (ctx, cw, ch, s, o) {
+        ctx.clearRect(0, 0, cw, ch); var h = o.__h, od = o.__otsu, i, hm = 0, cm = 0;
+        for (i = 0; i < 256; i++) { hm = Math.max(hm, Math.sqrt(h[i])); cm = Math.max(cm, od.curve[i]); }
+        ctx.fillStyle = '#6366f1'; for (i = 0; i < 256; i++) { var bh = Math.sqrt(h[i]) / hm * (ch - 22); ctx.fillRect(i * 2, ch - 14 - bh, 2, bh); }
+        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.beginPath();
+        for (i = 0; i < 256; i++) { var cy = ch - 14 - od.curve[i] / cm * (ch - 22); if (i === 0) ctx.moveTo(0, cy); else ctx.lineTo(i * 2, cy); } ctx.stroke();
+        ctx.strokeStyle = '#10b981'; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(od.t * 2 + 1, 0); ctx.lineTo(od.t * 2 + 1, ch - 14); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(o.__T * 2 + 1, 0); ctx.lineTo(o.__T * 2 + 1, ch - 14); ctx.stroke();
+        ctx.fillStyle = '#9ca3af'; ctx.font = '11px sans-serif'; ctx.fillText('0', 2, ch - 2); ctx.fillText('밝기 →  255', 214 * 2 - 20, ch - 2);
+        ctx.fillStyle = 'rgba(11,17,32,0.85)'; ctx.fillRect(0, 0, 300, 18);
+        ctx.fillStyle = '#818cf8'; ctx.fillText('■ 히스토그램', 6, 12); ctx.fillStyle = '#f59e0b'; ctx.fillText('— σB²(T)', 100, 12); ctx.fillStyle = '#10b981'; ctx.fillText('┆ Otsu T', 170, 12); ctx.fillStyle = '#fbbf24'; ctx.fillText('| 적용 T', 235, 12);
+      },
+      hint: '※ 어두운 결함을 흰색으로 표시합니다. 균일 조명에서는 히스토그램이 두 봉우리(결함 70 근처 / 배경 170 근처)이고 σB²(주황선)의 꼭대기가 두 봉우리 사이에 놓여 Otsu가 잘 동작합니다. 조명을 "기울어짐"으로 바꾸면 봉우리가 뭉개져 Otsu도 좌우를 동시에 맞추지 못합니다. PTile은 결함이 차지하는 면적 비율(%)을 직접 지정하는 방식입니다.'
+    },
+    {
+      id: 'demo-adaptive',
+      controls: [
+        { k: 'method', label: '방식', type: 'select', options: [['otsu', 'Global (Otsu)'], ['mean', 'Adaptive (평균)'], ['gauss', 'Adaptive (Gaussian)']], value: 'mean' },
+        { k: 'block', label: '블록 크기 b', min: 11, max: 101, step: 10, value: 51 },
+        { k: 'C', label: 'C', min: 0, max: 40, step: 1, value: 15 }
+      ],
+      src: function () { return tilt; },
+      run: function (s, p) {
+        if (p.method === 'otsu') return below(s.img, otsu(hist256(s.img)).t);
+        var M, o = new Float32Array(N), i;
+        if (p.method === 'mean') M = boxMean(s.img, (p.block - 1) >> 1);
+        else M = gaussBlur(s.img, 0.3 * ((p.block - 1) / 2 - 1) + 0.8);
+        for (i = 0; i < N; i++) o[i] = s.img[i] < M[i] - p.C ? 255 : 0;
+        return o;
+      },
+      stat: function (s, o) { return score(o, s.gt); },
+      hint: '※ 조명이 왼쪽→오른쪽으로 어두워지는 영상입니다. Global(Otsu)은 어두운 오른쪽 절반이 통째로 흰색(오검출 약 1.6만 픽셀)이 되지만, Adaptive는 양쪽 모두 검출합니다. 블록 크기를 11로 줄이면 큰 결함(지름 26)의 안쪽이 "주변과 같다"고 판단되어 속이 빈 고리 모양이 됩니다. C를 줄이면 오검출이 늘고, 늘리면 옅은 스크래치가 먼저 사라집니다.'
+    }
+  ];
+
+  function draw(canvas, arr) {
+    var ctx = canvas.getContext('2d'), im = ctx.createImageData(W, H), i;
+    for (i = 0; i < N; i++) { var v = cl(arr[i]); im.data[4 * i] = v; im.data[4 * i + 1] = v; im.data[4 * i + 2] = v; im.data[4 * i + 3] = 255; }
+    ctx.putImageData(im, 0, 0);
+  }
+
+  demos.forEach(function (cfg) {
+    var box = document.getElementById(cfg.id);
+    if (!box) return;
+    box.className = 'demo-box';
+    box.innerHTML = '<div class="demo-head">🎛️ 직접 확인해보기 — 전/후 비교 (슬라이더 또는 영상을 좌우로 드래그)</div>' +
+      '<div class="demo-controls"></div>' +
+      '<div class="demo-view"><canvas class="c-orig" width="' + W + '" height="' + H + '"></canvas><canvas class="c-res" width="' + W + '" height="' + H + '"></canvas><div class="demo-line"></div><span class="demo-chip l">원본</span><span class="demo-chip r">결과</span></div>' +
+      '<div class="demo-wipe"><span>◀ 원본</span><input type="range" min="0" max="100" value="50"><span>결과 ▶</span></div>' +
+      (cfg.extra ? '<canvas class="demo-extra" width="512" height="130"></canvas>' : '') +
+      '<div class="demo-stat"></div><div class="demo-hint"></div>';
+    var ctrlBox = box.querySelector('.demo-controls'), view = box.querySelector('.demo-view'),
+        cO = box.querySelector('.c-orig'), cR = box.querySelector('.c-res'), line = box.querySelector('.demo-line'),
+        wipe = box.querySelector('.demo-wipe input'), stat = box.querySelector('.demo-stat'), hint = box.querySelector('.demo-hint'),
+        ex = box.querySelector('.demo-extra');
+    var params = {};
+    cfg.controls.forEach(function (c) {
+      params[c.k] = c.value;
+      var lab = document.createElement('label'), span = document.createElement('span'), el, val;
+      span.textContent = c.label; lab.appendChild(span);
+      if (c.type === 'select') {
+        el = document.createElement('select');
+        c.options.forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; if (o[0] === c.value) op.selected = true; el.appendChild(op); });
+        el.addEventListener('change', function () { params[c.k] = el.value; update(); });
+        lab.appendChild(el);
+      } else {
+        el = document.createElement('input'); el.type = 'range'; el.min = c.min; el.max = c.max; el.step = c.step; el.value = c.value;
+        val = document.createElement('span'); val.className = 'val'; val.textContent = c.value;
+        el.addEventListener('input', function () { params[c.k] = parseFloat(el.value); val.textContent = el.value; update(); });
+        lab.appendChild(el); lab.appendChild(val);
+      }
+      ctrlBox.appendChild(lab);
+    });
+    function setWipe(p) { p = ci(p, 0, 100); wipe.value = p; line.style.left = p + '%'; cR.style.clipPath = 'inset(0 0 0 ' + p + '%)'; }
+    function update() {
+      var s = cfg.src(params), o = cfg.run(s, params);
+      draw(cO, s.img); draw(cR, o);
+      stat.innerHTML = cfg.stat(s, o, params);
+      if (ex) cfg.extra(ex.getContext('2d'), 512, 130, s, o, params);
+    }
+    hint.textContent = '💡 ' + cfg.hint; update(); setWipe(50);
+    wipe.addEventListener('input', function () { setWipe(parseFloat(wipe.value)); });
+    var dragging = false;
+    function pos(e) { var r = view.getBoundingClientRect(); setWipe((e.clientX - r.left) / r.width * 100); }
+    view.addEventListener('pointerdown', function (e) { dragging = true; view.setPointerCapture(e.pointerId); pos(e); });
+    view.addEventListener('pointermove', function (e) { if (dragging) pos(e); });
+    view.addEventListener('pointerup', function () { dragging = false; });
+  });
+})();
+</script>
 </body>
 </html>
