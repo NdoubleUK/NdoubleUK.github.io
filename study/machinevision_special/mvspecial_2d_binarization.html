@@ -385,6 +385,55 @@
             </div>
         </div>
 
+        <div class="section">
+            <h2>5. 처리 속도 비교 — Big-O 개념과 방법별 계산량</h2>
+            <div class="card">
+                <h3>Big-O란?</h3>
+                <p>Big-O(빅오) 표기는 <strong>"입력이 커질 때, 계산 횟수가 얼마나 빠르게 늘어나는가"</strong>를 나타내는 방법이다. 정확한 실행 시간(초)은 컴퓨터마다 다르므로, 대신 입력 크기 N에 대해 연산 횟수가 어떤 비율로 증가하는지만 따진다. 영상 처리에서 N은 보통 <strong>픽셀 수</strong>이다.</p>
+                <p>예를 들어 "영상의 모든 픽셀을 한 번씩 훑으며 비교 1번"이라면 연산 횟수는 N번이고, 이를 <strong>O(N)</strong>이라고 쓴다. 영상이 2배 커지면(픽셀이 2배) 시간도 약 2배가 된다.</p>
+
+                <table class="compare-table">
+                    <tr><th>표기</th><th>이름</th><th>의미 (입력이 2배가 되면?)</th><th>영상 처리 예시</th></tr>
+                    <tr><td>O(1)</td><td>상수</td><td>입력 크기와 상관없이 항상 일정</td><td>적분영상으로 구한 블록 합 (덧셈·뺄셈 4번)</td></tr>
+                    <tr><td>O(N)</td><td>선형</td><td>시간도 2배</td><td>모든 픽셀을 한 번씩 비교하는 Global Thresholding</td></tr>
+                    <tr><td>O(N · b)</td><td>선형 × 창 크기</td><td>창 크기 b가 2배면 시간도 2배</td><td>b 크기의 1차원 필터를 가로·세로로 적용</td></tr>
+                    <tr><td>O(N · b²)</td><td>선형 × 창 넓이</td><td>창 크기 b가 2배면 시간은 4배</td><td>픽셀마다 b×b 블록을 매번 다시 더하는 Adaptive</td></tr>
+                </table>
+
+                <div class="note">
+                    <strong>Big-O를 읽는 두 가지 규칙</strong><br>
+                    ① <strong>상수 배수는 무시한다</strong> : 픽셀당 연산이 1번이든 3번이든 똑같이 O(N)이다. 즉 O(N)끼리는 "같은 등급"이지만 실제 시간은 상수 배수만큼 다를 수 있다.<br>
+                    ② <strong>가장 큰 항만 남긴다</strong> : 연산이 N + 256번이면, N이 충분히 클 때 256은 무시할 수 있으므로 O(N)이다.
+                </div>
+
+                <h3>이진화 방법별 계산량</h3>
+                <p>N = 픽셀 수, L = 밝기 단계 수(256), b = Adaptive 블록의 한 변 길이</p>
+                <table class="compare-table">
+                    <tr><th>방법</th><th>시간 복잡도</th><th>계산량이 이렇게 나오는 이유</th></tr>
+                    <tr><td>Global</td><td><strong>O(N)</strong></td><td>픽셀마다 "T와 비교" 1번</td></tr>
+                    <tr><td>Hysteresis</td><td><strong>O(N)</strong></td><td>비교 후, 연결된 픽셀을 따라가는 탐색에서 각 픽셀을 최대 한 번씩만 방문. 다만 접근 순서가 불규칙해 실제로는 Global보다 느림</td></tr>
+                    <tr><td>Otsu / PTile</td><td><strong>O(N + L)</strong> ≈ O(N)</td><td>히스토그램 만들기 N번 + 임계값 탐색 L(=256)번 + 적용 N번. 탐색 256번은 N에 비해 무시할 수준</td></tr>
+                    <tr><td>Adaptive<br>(블록을 매번 합산)</td><td><strong>O(N · b²)</strong></td><td>픽셀 N개마다 b×b개 값을 새로 더함. b = 31이면 픽셀당 961번</td></tr>
+                    <tr><td>Adaptive<br>(적분영상)</td><td><strong>O(N)</strong></td><td>적분영상 생성에 N번 + 픽셀마다 덧셈·뺄셈 4번(O(1)). 블록 크기 b와 무관</td></tr>
+                    <tr><td>Adaptive<br>(Gaussian, 분리형)</td><td><strong>O(N · b)</strong></td><td>2차원 가우시안을 가로 1D + 세로 1D로 나누어 적용하므로 픽셀당 b + b번 (전처리 페이지의 Separable 참고)</td></tr>
+                </table>
+
+                <h3>계산량을 직접 계산해보기</h3>
+                <p>영상 크기와 블록 크기를 바꿔가며 방법별 대략적인 연산 횟수를 비교해 보세요. 정확한 값이 아니라 규모를 비교하기 위한 계산(상수 배수는 단순화)입니다.</p>
+                <div id="demo-bigo" class="demo-box"></div>
+
+                <h3>실제 실행 시간 측정해보기</h3>
+                <p>Big-O에서 같은 O(N)인 방법들도 실제로는 시간이 다르고, O(N · b²)는 얼마나 느린지 직접 측정해 봅니다.</p>
+                <div id="demo-bench" class="demo-box"></div>
+
+                <div class="note">
+                    <strong>해석할 때 주의할 점</strong><br>
+                    위 측정은 브라우저(JavaScript)에서 실행한 상대 비교이다. PC와 브라우저에 따라 값이 달라지며, 실제 검사 소프트웨어(C++, SIMD·GPU 최적화)의 속도와는 다르다. "어떤 방법이 몇 배 느린가"의 경향을 보는 용도로 활용한다.<br><br>
+                    <strong>실무 관점</strong> : 라인스캔 카메라처럼 영상이 매우 클 때(N이 수천만 픽셀)는 O(N · b²)와 O(N)의 차이가 실시간 처리 가능 여부를 가른다. 또한 조명이 안정적인 환경이라면 Otsu 임계값을 기준 영상에서 한 번만 구해 재사용하여, 프레임당 비용을 Global과 같게 만들 수도 있다.
+                </div>
+            </div>
+        </div>
+
         <div class="card nav-footer">
             <a href="./mvspecial_2d_preprocessing.html" class="detail-btn"><span class="arrow">←</span> 이전 : 전처리 알고리즘 상세</a>
             <a href="./mvspecial_2d_blob.html" class="detail-btn">다음 : Blob 분석 알고리즘 상세 <span class="arrow">→</span></a>
@@ -594,6 +643,138 @@
     view.addEventListener('pointermove', function (e) { if (dragging) pos(e); });
     view.addEventListener('pointerup', function () { dragging = false; });
   });
+})();
+</script>
+
+<script>
+(function () {
+  function fmt(n) {
+    if (n >= 1e8) return (n / 1e8).toFixed(1) + '억';
+    if (n >= 1e4) return (n / 1e4).toFixed(n >= 1e6 ? 0 : 1) + '만';
+    return Math.round(n).toString();
+  }
+  function pctLog(v, min, max) { return Math.max(2, 100 * (Math.log10(v) - Math.log10(min) + 0.3) / (Math.log10(max) - Math.log10(min) + 0.3)); }
+  function bars(rows, unitFmt) {
+    var min = Infinity, max = 0, i;
+    rows.forEach(function (r) { if (r.v != null) { min = Math.min(min, r.v); max = Math.max(max, r.v); } });
+    var h = '<table class="compare-table" style="margin:0;"><tr><th style="width:26%">방법</th><th style="width:16%">복잡도</th><th style="width:16%">값</th><th>상대 크기 (로그 눈금)</th></tr>';
+    rows.forEach(function (r) {
+      h += '<tr><td>' + r.name + '</td><td>' + r.big + '</td><td>' + (r.v == null ? '<span style="color:#f87171">생략</span>' : '<b style="color:#fbbf24">' + unitFmt(r.v) + '</b>' + (r.ratio ? ' <span style="color:#9ca3af">(×' + r.ratio + ')</span>' : '')) + '</td><td>' +
+        (r.v == null ? '<span style="color:#9ca3af">' + (r.note || '') + '</span>' : '<div style="height:12px;border-radius:6px;background:' + r.color + ';width:' + pctLog(r.v, min, max).toFixed(0) + '%"></div>') + '</td></tr>';
+    });
+    return h + '</table>';
+  }
+
+  /* ---------- 1) 계산량 계산기 ---------- */
+  (function () {
+    var box = document.getElementById('demo-bigo'); if (!box) return;
+    box.innerHTML = '<div class="demo-head">🧮 연산 횟수 계산기</div>' +
+      '<div class="demo-controls"><label><span>영상 한 변 (픽셀)</span><input id="bg-side" type="range" min="100" max="4000" step="100" value="1000"><span class="val" id="bg-side-v" style="min-width:90px">1000</span></label>' +
+      '<label><span>블록 크기 b</span><input id="bg-b" type="range" min="3" max="101" step="2" value="31"><span class="val" id="bg-b-v">31</span></label></div>' +
+      '<div id="bg-out"></div><div class="demo-hint" style="max-width:none">💡 영상 한 변이 2배가 되면 N은 4배가 되므로, O(N) 방법의 연산 횟수도 4배가 됩니다. 블록 크기 b를 키워도 Global·Otsu·적분영상 Adaptive는 변하지 않지만, 블록 합산 Adaptive는 b²에 비례해 급증합니다.</div>';
+    var s = box.querySelector('#bg-side'), b = box.querySelector('#bg-b');
+    function upd() {
+      var side = +s.value, bb = +b.value, N = side * side;
+      box.querySelector('#bg-side-v').textContent = side + ' × ' + side + ' (N = ' + fmt(N) + ')';
+      box.querySelector('#bg-b-v').textContent = bb;
+      var rows = [
+        { name: 'Global', big: 'O(N)', v: N, color: '#10b981' },
+        { name: 'Otsu / PTile', big: 'O(N + L)', v: 2 * N + 256, color: '#10b981' },
+        { name: 'Adaptive (적분영상)', big: 'O(N)', v: 6 * N, color: '#10b981' },
+        { name: 'Adaptive (Gaussian 분리형)', big: 'O(N·b)', v: 2 * N * bb + N, color: '#f59e0b' },
+        { name: 'Adaptive (블록 합산)', big: 'O(N·b²)', v: N * bb * bb, color: '#ef4444' }
+      ];
+      rows.forEach(function (r) { r.ratio = (r.v / N).toFixed(r.v / N >= 100 ? 0 : 1); });
+      box.querySelector('#bg-out').innerHTML = bars(rows, fmt);
+    }
+    s.addEventListener('input', upd); b.addEventListener('input', upd); upd();
+  })();
+
+  /* ---------- 2) 실측 벤치마크 ---------- */
+  (function () {
+    var box = document.getElementById('demo-bench'); if (!box) return;
+    box.innerHTML = '<div class="demo-head">⏱️ 실행 시간 측정 (이 브라우저에서 실제로 실행)</div>' +
+      '<div class="demo-controls"><label><span>영상 크기</span><select id="bn-size"><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option><option value="2048">2048 × 2048</option></select></label>' +
+      '<label><span>블록 크기 b</span><select id="bn-b"><option value="15">15</option><option value="31" selected>31</option><option value="61">61</option></select></label>' +
+      '<button id="bn-run" style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-weight:700;cursor:pointer;font-family:inherit">▶ 측정 실행</button></div>' +
+      '<div id="bn-out" class="demo-hint" style="max-width:none">버튼을 누르면 각 방법을 실행해 시간을 잽니다. (블록 합산 Adaptive는 연산이 너무 많으면 자동으로 생략됩니다)</div>';
+    var out = box.querySelector('#bn-out'), btn = box.querySelector('#bn-run');
+
+    function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    function gen(w, h) {
+      var r = rng(7), a = new Uint8Array(w * h), x, y, i;
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var v = 170 * (1 - 0.5 * x / w) + (r() + r() + r() - 1.5) * 14; a[y * w + x] = v < 0 ? 0 : v > 255 ? 255 : v; }
+      var nb = Math.round(w * h / 15000);
+      for (i = 0; i < nb; i++) { var cx = r() * w | 0, cy = r() * h | 0, rad = 3 + (r() * 8 | 0), yy, xx; for (yy = Math.max(0, cy - rad); yy < Math.min(h, cy + rad); yy++) for (xx = Math.max(0, cx - rad); xx < Math.min(w, cx + rad); xx++) if ((xx - cx) * (xx - cx) + (yy - cy) * (yy - cy) <= rad * rad) a[yy * w + xx] = 60 + (r() * 20 | 0); }
+      return a;
+    }
+    function gGlobal(a, w, h) { var o = new Uint8Array(w * h), n = w * h, i; for (i = 0; i < n; i++) o[i] = a[i] <= 100 ? 255 : 0; return o; }
+    function hist(a, n) { var hh = new Float64Array(256), i; for (i = 0; i < n; i++) hh[a[i]]++; return hh; }
+    function gOtsu(a, w, h) {
+      var n = w * h, hh = hist(a, n), sumAll = 0, i, wB = 0, sumB = 0, best = -1, T = 0;
+      for (i = 0; i < 256; i++) sumAll += i * hh[i];
+      for (var t = 0; t < 256; t++) { wB += hh[t]; if (!wB) continue; var wF = n - wB; if (!wF) break; sumB += t * hh[t]; var mB = sumB / wB, mF = (sumAll - sumB) / wF, v = wB * wF * (mB - mF) * (mB - mF); if (v > best) { best = v; T = t; } }
+      var o = new Uint8Array(n); for (i = 0; i < n; i++) o[i] = a[i] <= T ? 255 : 0; return o;
+    }
+    function gPtile(a, w, h) {
+      var n = w * h, hh = hist(a, n), c = 0, T = 255, t, tg = 0.07 * n; for (t = 0; t < 256; t++) { c += hh[t]; if (c >= tg) { T = t; break; } }
+      var o = new Uint8Array(n), i; for (i = 0; i < n; i++) o[i] = a[i] <= T ? 255 : 0; return o;
+    }
+    function gHyst(a, w, h) {
+      var n = w * h, o = new Uint8Array(n), st = new Int32Array(n), sp = 0, i;
+      for (i = 0; i < n; i++) if (a[i] <= 80) { o[i] = 255; st[sp++] = i; }
+      while (sp) { var p = st[--sp], x = p % w, y = (p / w) | 0, dy, dx; for (dy = -1; dy <= 1; dy++) for (dx = -1; dx <= 1; dx++) { var nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; var q = ny * w + nx; if (!o[q] && a[q] <= 150) { o[q] = 255; st[sp++] = q; } } }
+      return o;
+    }
+    function gNaive(a, w, h, b) {
+      var r = (b - 1) >> 1, o = new Uint8Array(w * h), x, y, i, j;
+      for (y = 0; y < h; y++) { var y0 = Math.max(0, y - r), y1 = Math.min(h - 1, y + r); for (x = 0; x < w; x++) { var x0 = Math.max(0, x - r), x1 = Math.min(w - 1, x + r), s = 0; for (j = y0; j <= y1; j++) { var base = j * w; for (i = x0; i <= x1; i++) s += a[base + i]; } o[y * w + x] = a[y * w + x] < s / ((x1 - x0 + 1) * (y1 - y0 + 1)) - 15 ? 255 : 0; } }
+      return o;
+    }
+    function gIntegral(a, w, h, b) {
+      var r = (b - 1) >> 1, W1 = w + 1, S = new Float64Array(W1 * (h + 1)), o = new Uint8Array(w * h), x, y;
+      for (y = 1; y <= h; y++) { var row = 0; for (x = 1; x <= w; x++) { row += a[(y - 1) * w + (x - 1)]; S[y * W1 + x] = S[(y - 1) * W1 + x] + row; } }
+      for (y = 0; y < h; y++) { var y0 = Math.max(0, y - r), y1 = Math.min(h, y + r + 1); for (x = 0; x < w; x++) { var x0 = Math.max(0, x - r), x1 = Math.min(w, x + r + 1), sum = S[y1 * W1 + x1] - S[y0 * W1 + x1] - S[y1 * W1 + x0] + S[y0 * W1 + x0]; o[y * w + x] = a[y * w + x] < sum / ((x1 - x0) * (y1 - y0)) - 15 ? 255 : 0; } }
+      return o;
+    }
+    function gGauss(a, w, h, b) {
+      var r = (b - 1) >> 1, sg = 0.3 * ((b - 1) / 2 - 1) + 0.8, k = new Float32Array(b), sum = 0, i, x, y;
+      for (i = -r; i <= r; i++) { k[i + r] = Math.exp(-i * i / (2 * sg * sg)); sum += k[i + r]; } for (i = 0; i < b; i++) k[i] /= sum;
+      var tmp = new Float32Array(w * h), o = new Uint8Array(w * h);
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var s = 0; for (i = -r; i <= r; i++) { var xx = x + i; xx = xx < 0 ? 0 : xx >= w ? w - 1 : xx; s += k[i + r] * a[y * w + xx]; } tmp[y * w + x] = s; }
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var s2 = 0; for (i = -r; i <= r; i++) { var yy = y + i; yy = yy < 0 ? 0 : yy >= h ? h - 1 : yy; s2 += k[i + r] * tmp[yy * w + x]; } o[y * w + x] = a[y * w + x] < s2 - 15 ? 255 : 0; }
+      return o;
+    }
+    function time(fn, runs) { var ts = [], k; for (k = 0; k < runs; k++) { var t0 = performance.now(); fn(); ts.push(performance.now() - t0); } ts.sort(function (p, q) { return p - q; }); return ts[(ts.length - 1) >> 1]; }
+
+    btn.addEventListener('click', function () {
+      var size = +box.querySelector('#bn-size').value, b = +box.querySelector('#bn-b').value, N = size * size;
+      btn.disabled = true; out.textContent = '영상 생성 및 측정 중... (잠시 화면이 멈출 수 있습니다)';
+      setTimeout(function () {
+        var a = gen(size, size);
+        var jobs = [
+          { name: 'Global', big: 'O(N)', color: '#10b981', fn: function () { gGlobal(a, size, size); } },
+          { name: 'Otsu', big: 'O(N + L)', color: '#10b981', fn: function () { gOtsu(a, size, size); } },
+          { name: 'PTile', big: 'O(N + L)', color: '#10b981', fn: function () { gPtile(a, size, size); } },
+          { name: 'Hysteresis', big: 'O(N)', color: '#34d399', fn: function () { gHyst(a, size, size); } },
+          { name: 'Adaptive (적분영상)', big: 'O(N)', color: '#10b981', fn: function () { gIntegral(a, size, size, b); } },
+          { name: 'Adaptive (Gaussian 분리형)', big: 'O(N·b)', color: '#f59e0b', fn: function () { gGauss(a, size, size, b); } }
+        ];
+        var heavy = N * b * b > 2.5e9;
+        jobs.forEach(function (j) { j.fn(); j.v = time(j.fn, 3); });
+        var naive = { name: 'Adaptive (블록 합산)', big: 'O(N·b²)', color: '#ef4444' };
+        if (heavy) { naive.v = null; naive.note = '연산이 약 ' + fmt(N * b * b) + '회로 너무 많아 생략 — 이것이 O(N·b²)의 의미입니다'; }
+        else { naive.v = time(function () { gNaive(a, size, size, b); }, 1); }
+        jobs.push(naive);
+        var base = jobs[0].v;
+        jobs.forEach(function (j) { if (j.v != null) j.ratio = (j.v / base).toFixed(j.v / base >= 100 ? 0 : 1); });
+        out.className = ''; out.style.maxWidth = 'none';
+        out.innerHTML = bars(jobs, function (v) { return v < 10 ? v.toFixed(1) + ' ms' : v < 1000 ? v.toFixed(0) + ' ms' : (v / 1000).toFixed(2) + ' 초'; }) +
+          '<div style="margin-top:8px;font-size:12.5px;color:#9ca3af">영상 ' + size + '×' + size + ' (N = ' + fmt(N) + '), 블록 b = ' + b + '. 괄호 안 ×는 Global 대비 배수. 막대는 로그 눈금이라 길이 비율이 시간 비율과 같지 않습니다.</div>';
+        btn.disabled = false;
+      }, 30);
+    });
+  })();
 })();
 </script>
 </body>
