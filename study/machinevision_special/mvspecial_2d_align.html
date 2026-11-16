@@ -43,6 +43,30 @@ section { max-width:1100px; margin:auto; padding:80px 20px; margin-bottom:20px; 
 .breadcrumb span { margin:0 6px; font-size:12px; }
 footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; color:var(--sub); font-size:13px; }
 .nav-footer { display:flex; justify-content:space-between; margin-top:10px; }
+.demo-box { background:#0b1120; border:1px solid #1f2937; border-radius:12px; padding:16px; margin:16px 0; }
+.demo-head { font-weight:700; color:#a5b4fc; margin-bottom:10px; font-size:14px; }
+.demo-controls { display:flex; flex-wrap:wrap; gap:10px 22px; margin-bottom:12px; font-size:13px; color:var(--sub); align-items:center; }
+.demo-controls label { display:flex; align-items:center; gap:8px; }
+.demo-controls input[type=range] { accent-color:#6366f1; }
+.demo-controls select { background:#111827; color:var(--text); border:1px solid #374151; border-radius:6px; padding:3px 6px; }
+.demo-controls .val { min-width:40px; color:#fbbf24; font-family:'Courier New',monospace; }
+.demo-btn { background:#111827; color:var(--text); border:1px solid #374151; border-radius:8px; padding:6px 12px; cursor:pointer; font-family:inherit; font-size:13px; }
+.demo-btn:hover { border-color:#6366f1; }
+.demo-btn.primary { background:#6366f1; border-color:#6366f1; color:#fff; }
+.demo-row { display:flex; flex-wrap:wrap; gap:10px; max-width:760px; margin:0 auto; }
+.demo-cell { flex:1 1 220px; min-width:0; }
+.demo-cell .cap { text-align:center; font-size:12.5px; color:#9ca3af; margin-bottom:4px; }
+.demo-cv { display:block; width:100%; background:#0b1120; border:1px solid #1f2937; border-radius:8px; image-rendering:pixelated; }
+.feat-view { position:relative; width:100%; max-width:640px; margin:0 auto; border:1px solid #1f2937; border-radius:8px; overflow:hidden; background:#0b1120; }
+.feat-view canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
+.feat-view canvas.px { image-rendering:pixelated; }
+.demo-stat { max-width:760px; margin:10px auto 0; font-size:13px; color:var(--text); background:rgba(99,102,241,.08); border-left:3px solid var(--primary); padding:8px 12px; border-radius:6px; line-height:1.7; }
+.demo-hint { max-width:760px; margin:8px auto 0; font-size:12.5px; color:var(--sub); }
+.feat-table { width:100%; max-width:760px; margin:10px auto 0; border-collapse:collapse; font-size:13px; }
+.feat-table th, .feat-table td { border:1px solid #1f2937; padding:6px 10px; text-align:left; color:var(--sub); }
+.feat-table th { color:var(--text); background:rgba(99,102,241,.1); font-weight:600; }
+.feat-table td b { color:#fbbf24; }
+.feat-table tr.hl td, .feat-table tr.hl th { background:rgba(245,158,11,.08); }
 </style>
 </head>
 <body>
@@ -83,6 +107,9 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 이진화, 결함 검출, Golden Template 비교 등 뒤따르는 모든 알고리즘은 "정렬이 정확히 되어 있다"는 전제 위에서 설계되기 때문에,
                 Align의 정밀도가 곧 전체 검사 파이프라인이 도달할 수 있는 정확도의 상한선을 결정한다고 볼 수 있다.
             </p>
+            <h3>직접 해보기 — 제품이 조금만 어긋나도 생기는 가성 불량</h3>
+            <p style="color:var(--sub);">같은 양품을 다른 위치·각도로 놓고 Golden Template과 차영상(|검사 − 기준|)을 비교합니다. 위치를 조금만 움직여도 결함이 아닌 엣지마다 "차이"가 생기는 것을 확인하고, Align을 켰을 때와 Align 추정에 오차가 남았을 때를 비교해 보세요.</p>
+            <div id="demo-misalign"></div>
             <div class="note">
                 <strong>핵심 포인트</strong> : Align은 눈에 잘 띄지 않는 전처리 단계처럼 보이지만, 실제로는 파이프라인 전체의 정확도를 좌우하는 병목 지점이다.
             </div>
@@ -155,6 +182,9 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 모든 후보 점수를 비교해 SSD라면 최솟값을, NCC라면 최댓값을 가지는 위치를 최종적으로 제품이 놓인 위치로 채택한다.
                 연산량이 많다는 단점이 있지만, 국소 최적해에 빠지지 않고 탐색 범위 내 전역 최적해를 보장한다는 점에서 정렬의 기본 원리로 널리 쓰인다.
             </p>
+            <h4 style="margin:16px 0 8px; font-size:15px;">직접 해보기 — 탐색 과정과 SSD vs NCC 비교</h4>
+            <p style="color:var(--sub);">[▶ 탐색 시연]을 누르면 템플릿이 모든 후보 위치를 훑으며 점수 지도(Heatmap)가 채워집니다. 이어서 밝기(gain/offset)를 바꿔 SSD와 NCC가 찾아내는 위치가 어떻게 달라지는지 비교해 보세요. 영상이나 지도를 클릭하면 그 위치의 점수를 볼 수 있습니다.</p>
+            <div id="demo-match"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span>기본형은 <code>TemplateMatching()</code>, <code>SearchTemplate()</code>로 위치와 매칭 점수를 반환한다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>TemplateMatching_Rotation()</code>이 별도로 존재한다는 것 — 이름 그대로 지정한 각도 범위를 스텝 단위로 돌려가며 매칭을 반복 탐색해, 제품이 정확히 정렬되지 않고 살짝 회전된 채로 놓여도 최적 각도까지 함께 찾아낸다. 게다가 이 함수는 단순 위치 매칭을 넘어 인쇄물 검사에 특화된 Mismatch(형상 불일치)·Overprint(과인쇄)·Underprint(저인쇄) 점수까지 함께 계산하도록 설계되어 있어, 마킹·인쇄 검사 용도로 확장된 버전임을 알 수 있다.</span>
@@ -176,6 +206,9 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 수학적으로 피팅(fitting)하여, 실제 형상의 정확한 기준 위치와 각도를 산출한다. 예를 들어 원형 홀이라면 검출된 경계 점들에 원 방정식을 최소자승법으로
                 피팅해 중심 좌표와 반지름을 구하고, 이 중심 좌표를 정렬 기준점으로 사용하는 식이다.
             </p>
+            <h4 style="margin:16px 0 8px; font-size:15px;">직접 해보기 — 원형 홀의 엣지 검출 → 원 피팅 (최소자승 vs RANSAC)</h4>
+            <p style="color:var(--sub);">원형 홀 둘레를 방사형으로 훑어 엣지 점을 찾고(Sub-pixel 포함) 원을 피팅합니다. 홀 가장자리에 이물을 늘려가며, 모든 점을 쓰는 최소자승법과 이상치를 걸러내는 RANSAC의 중심 좌표 오차를 비교해 보세요.</p>
+            <div id="demo-edge"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span>엣지 검출은 <code>DetectEdge()</code>/<code>DetectEdges()</code>로 제공되며, Rising Edge(어두움→밝음)와 Falling Edge(밝음→어두움)를 구분해 탐색할 수 있다. 원/타원/폴리곤 형상을 따라 탐색 경로를 자동 생성해주는 <code>GetEdgeSearchInfo_Circle/Ellipse/Polygon()</code>도 별도로 있어, 원형 홀처럼 곡선 형상의 엣지를 각도별로 훑는 작업이 간편해진다. 직선·원 피팅은 <code>FitToLine()</code>, <code>FitToCircle()</code>, <code>FitToEllipse()</code>가 제공하는데, <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>FitToLine_RANSAC()</code>이 별도로 존재한다는 것 — 검출된 엣지 점들 중 일부가 이물이나 노이즈로 인한 이상치(outlier)여도, RANSAC(무작위 표본합의) 방식으로 이상치를 자동으로 걸러내고 실제 직선에 가까운 점들만으로 피팅해 강건한 결과를 낸다. 단순 최소자승법보다 오염된 데이터에 훨씬 안정적이다.</span>
@@ -272,6 +305,9 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 렌즈나 제품 표면에 이물이 묻어 있다면, 원래는 좁고 뾰족했어야 할 그레디언트 봉우리가 넓게 퍼지고 무뎌지게 된다. 이렇게 봉우리가 무뎌지면
                 포물선 피팅의 꼭짓점도, 무게중심 계산 결과도 모두 실제 위치에서 벗어나기 쉬워지므로, 두 기법 모두 정확도가 떨어질 수 있다는 공통적인 한계를 가진다.
             </p>
+            <h4 style="margin:16px 0 8px; font-size:15px;">직접 해보기 — 정수 픽셀 vs 포물선 보간 vs 무게중심</h4>
+            <p style="color:var(--sub);">엣지의 실제 위치를 슬라이더로 움직이면, 정수 픽셀 위치와 두 Sub-pixel 기법의 추정값이 어떻게 따라오는지 볼 수 있습니다. 블러(초점 흐림)와 노이즈를 키워 "한계"에서 설명한 현상도 확인해 보세요.</p>
+            <div id="demo-subpix"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span>Sub-pixel 처리는 <code>EdgeDetectionFilter</code> 클래스가 담당한다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이 필터가 단순 3점 포물선 피팅이 아니라, 필터 길이와 가우시안 표준편차(deviation)를 직접 지정할 수 있는 <strong>가우시안 미분(derivative-of-Gaussian) 기반 정합 필터</strong>로 구현되어 있다는 것이다. 필터 길이를 늘리면 더 넓은 구간의 밝기 변화를 함께 고려해 노이즈에 강해지지만 반응이 다소 무뎌지고, 가우시안 표준편차를 조절하면 스무딩 정도를 세밀하게 튜닝할 수 있다 — 이는 앞서 설명한 단순 포물선 보간보다 한 단계 더 노이즈에 강건한 방식이다.</span>
@@ -293,6 +329,12 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
                 화소 단위 비교, 결함 위치의 좌표 기반 판정 — 가 의미를 가지게 된다. 정렬되지 않은 좌표계 위에서 아무리 정교한 결함 검출 알고리즘을 적용해도,
                 애초에 비교 대상이 서로 다른 물리적 위치를 가리키고 있다면 그 결과는 신뢰할 수 없다.
             </p>
+            <h4 style="margin:16px 0 8px; font-size:15px;">직접 해보기 — Affine 변환 행렬과 합성 순서</h4>
+            <p style="color:var(--sub);">이동·회전·배율 값을 바꾸면 하나의 행렬로 합쳐지는 것을 볼 수 있습니다. 합성 순서를 바꾸면 같은 값인데도 결과가 달라지는 점, 그리고 역변환으로 기준 위치에 되돌리는 Align 동작도 확인해 보세요.</p>
+            <div id="demo-affine"></div>
+            <h4 style="margin:16px 0 8px; font-size:15px;">직접 해보기 — 카메라가 기울었을 때 : Affine vs Perspective</h4>
+            <p style="color:var(--sub);">카메라가 비스듬히 설치되어 격자가 사다리꼴로 찍혔을 때, Affine으로 보정한 결과와 Perspective로 보정한 결과를 비교합니다.</p>
+            <div id="demo-persp"></div>
             <div class="ipvm-tag">
                 <span class="ipvm-label">🔧 IPVM</span>
                 <span>이동·회전·배율을 묶은 어파인 변환은 <code>TransformAffine_Linear()</code>, 단순 회전만 필요하면 <code>Rotate_Linear()</code>/<code>Rotate_Cubic()</code>, 평행이동만 필요하면 <code>Shift()</code>로 세분화되어 있다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>TransformPerspective_Linear()</code>(원근 변환)도 함께 제공된다는 것 — 카메라가 검사 대상과 완전히 수직이 아니라 약간 기울어져 촬영된 경우, 어파인 변환(평행선 유지)만으로는 왜곡을 다 보정할 수 없는데, 원근 변환은 사다리꼴로 찌그러진 형상까지 바로잡을 수 있어 카메라 설치 각도에 제약이 있는 라인에서 특히 유용하다.</span>
@@ -314,5 +356,352 @@ footer { text-align:center; padding:40px 20px; border-top:1px solid #1f2937; col
     © 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디
 </footer>
 
+<script>
+(function () {
+  var W = 256, H = 160, N = W * H;
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(r) { var u = 1 - r(), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function cl(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+  function ci(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  function bil(a, w, h, x, y) {
+    x = ci(x, 0, w - 1); y = ci(y, 0, h - 1);
+    var x0 = Math.floor(x), y0 = Math.floor(y), x1 = Math.min(w - 1, x0 + 1), y1 = Math.min(h - 1, y0 + 1), fx = x - x0, fy = y - y0;
+    return (a[y0 * w + x0] * (1 - fx) + a[y0 * w + x1] * fx) * (1 - fy) + (a[y1 * w + x0] * (1 - fx) + a[y1 * w + x1] * fx) * fy;
+  }
+  function paintGray(canvas, arr, w, h) { var ctx = canvas.getContext('2d'), im = ctx.createImageData(w, h), i; for (i = 0; i < w * h; i++) { var v = cl(arr[i]); im.data[4 * i] = v; im.data[4 * i + 1] = v; im.data[4 * i + 2] = v; im.data[4 * i + 3] = 255; } ctx.putImageData(im, 0, 0); }
+  function slider(id, label, min, max, step, val, unit) { return '<label><span>' + label + '</span><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"><span class="val" id="' + id + '-v">' + val + '</span>' + (unit || '') + '</label>'; }
+  function bindSliders(box, ids, fn) { ids.forEach(function (id) { var el = box.querySelector('#' + id); el.addEventListener('input', function () { box.querySelector('#' + id + '-v').textContent = el.value; fn(); }); }); }
+
+  /* =====================================================
+     1) Placement 오차 → 차영상 가성 불량
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-misalign'); if (!box) return;
+    function scene(defect) {
+      var a = new Float32Array(N), x, y;
+      for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+        var v = 40, cx = ci(x, 44, 212), cy = ci(y, 39, 121);
+        if (x >= 30 && x < 226 && y >= 25 && y < 135 && Math.hypot(x - cx, y - cy) <= 14) v = 150;
+        if (v === 150) {
+          if (Math.hypot(x - 70, y - 60) <= 12 || Math.hypot(x - 186, y - 60) <= 12 || Math.hypot(x - 128, y - 105) <= 16) v = 60;
+          if (x >= 100 && x < 156 && y >= 40 && y < 46) v = 200;
+          if (x >= 40 && x < 60 && y >= 105 && y < 125) v = 190;
+          if (x >= 196 && x < 216 && y >= 100 && y < 122) v = 110;
+          if (defect && Math.hypot(x - 170, y - 90) <= 4) v = 80;
+        }
+        a[y * W + x] = v;
+      }
+      return a;
+    }
+    var G = scene(false), B = scene(true), r = rng(5), noise = new Float32Array(N), i; for (i = 0; i < N; i++) noise[i] = gauss(r) * 3;
+    box.innerHTML = '<div class="demo-head">📐 Placement 오차와 가성 불량</div>' +
+      '<div class="demo-controls">' + slider('mi-dx', '좌우 이동 dx', -8, 8, 0.5, 3, 'px') + slider('mi-dy', '상하 이동 dy', -8, 8, 0.5, 2, 'px') + slider('mi-th', '회전 θ', -4, 4, 0.1, 1.2, '°') + '</div>' +
+      '<div class="demo-controls"><label><input type="checkbox" id="mi-al"><span>Align 적용 (역변환으로 되돌림)</span></label>' + slider('mi-e', 'Align 추정 오차', 0, 2, 0.25, 0, 'px') + '</div>' +
+      '<div class="demo-row"><div class="demo-cell"><div class="cap">① 기준(Golden Template)</div><canvas class="demo-cv" id="mi-a" width="' + W + '" height="' + H + '"></canvas></div>' +
+      '<div class="demo-cell"><div class="cap" id="mi-capb">② 검사 영상</div><canvas class="demo-cv" id="mi-b" width="' + W + '" height="' + H + '"></canvas></div>' +
+      '<div class="demo-cell"><div class="cap">③ 차영상 |② − ①| &gt; 30 (흰색 = 결함으로 판정)</div><canvas class="demo-cv" id="mi-c" width="' + W + '" height="' + H + '"></canvas></div></div>' +
+      '<div class="demo-stat" id="mi-stat"></div>' +
+      '<div class="demo-hint">💡 ① Align을 끈 채 dy·θ를 0으로 두고 dx를 1px만 움직여도 부품의 모든 엣지에 흰 윤곽선이 생깁니다. 이것이 가성 불량(오검출)입니다. ② Align을 켜면 윤곽선이 사라지고 진짜 결함(청록 원)만 남습니다. ③ 켠 상태에서 "Align 추정 오차"를 1px로 올리면 가성 불량이 다시 늘어납니다. Align이 1픽셀만 어긋나도 판정이 흔들린다는 뜻입니다.</div>';
+    var ca = box.querySelector('#mi-a'), cb = box.querySelector('#mi-b'), cc = box.querySelector('#mi-c');
+    paintGray(ca, G, W, H);
+    function update() {
+      var dx = +box.querySelector('#mi-dx').value, dy = +box.querySelector('#mi-dy').value, th = +box.querySelector('#mi-th').value * Math.PI / 180,
+          on = box.querySelector('#mi-al').checked, e = +box.querySelector('#mi-e').value, c = Math.cos(th), s = Math.sin(th), x, y, k;
+      var I = new Float32Array(N);
+      for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var qx = x - 128 - dx, qy = y - 80 - dy; I[y * W + x] = bil(B, W, H, c * qx + s * qy + 128, -s * qx + c * qy + 80) + noise[y * W + x]; }
+      var A = I;
+      if (on) { A = new Float32Array(N); for (y = 0; y < H; y++) for (x = 0; x < W; x++) A[y * W + x] = bil(I, W, H, c * (x - 128) - s * (y - 80) + 128 + dx + e, s * (x - 128) + c * (y - 80) + 80 + dy); }
+      paintGray(cb, A, W, H);
+      box.querySelector('#mi-capb').textContent = on ? '② 검사 영상 (Align 적용 후)' : '② 검사 영상 (Align 전)';
+      var ctx = cc.getContext('2d'), im = ctx.createImageData(W, H), fp = 0, hit = 0, white = 0;
+      for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+        k = y * W + x; var d = Math.abs(A[k] - G[k]) > 30, dd = Math.hypot(x - 170, y - 90), o = 4 * k;
+        if (d) { white++; if (dd > 8) fp++; else if (dd <= 5) hit++; }
+        var vv = d ? 255 : 14; im.data[o] = vv; im.data[o + 1] = d ? 255 : 20; im.data[o + 2] = d ? 255 : 32; im.data[o + 3] = 255;
+      }
+      ctx.putImageData(im, 0, 0); ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(170, 90, 9, 0, 7); ctx.stroke();
+      box.querySelector('#mi-stat').innerHTML = '가성 불량(결함이 아닌데 흰색) 픽셀 : <b style="color:' + (fp > 200 ? '#f87171' : '#fbbf24') + '">' + fp + '</b> &nbsp;|&nbsp; 진짜 결함 검출 : <b>' + (hit >= 8 ? '✔ 검출' : '✘ 미검출') + '</b>';
+    }
+    bindSliders(box, ['mi-dx', 'mi-dy', 'mi-th', 'mi-e'], update); box.querySelector('#mi-al').addEventListener('change', update);
+    update();
+  })();
+
+  /* =====================================================
+     2) Template Matching : 탐색 + SSD vs NCC
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-match'); if (!box) return;
+    var TW = 40, TH = 28, TX = 150, TY = 66, nx = W - TW + 1, ny = H - TH + 1, NP = nx * ny;
+    function scene() {
+      var a = new Float32Array(N), x, y;
+      for (y = 0; y < H; y++) for (x = 0; x < W; x++) a[y * W + x] = 105 + 25 * x / W;
+      function disc(cx, cy, rr, v) { for (var yy = Math.floor(cy - rr); yy <= cy + rr; yy++) for (var xx = Math.floor(cx - rr); xx <= cx + rr; xx++) if (xx >= 0 && yy >= 0 && xx < W && yy < H && Math.hypot(xx - cx, yy - cy) <= rr) a[yy * W + xx] = v; }
+      function rect(x0, y0, x1, y1, v) { for (var yy = y0; yy < y1; yy++) for (var xx = x0; xx < x1; xx++) a[yy * W + xx] = v; }
+      disc(TX + 12, TY + 14, 7, 55); rect(TX + 24, TY + 6, TX + 36, TY + 10, 205); disc(TX + 30, TY + 20, 4, 195);
+      disc(40, 40, 8, 55); rect(70, 25, 110, 30, 205); disc(60, 120, 5, 195); rect(100, 105, 150, 145, 150); disc(215, 120, 9, 60); rect(20, 85, 48, 91, 200); rect(200, 25, 230, 31, 205);
+      return a;
+    }
+    var S0 = scene(), T = new Float32Array(TW * TH), i, x, y, r = rng(9), nz = new Float32Array(N);
+    for (y = 0; y < TH; y++) for (x = 0; x < TW; x++) T[y * TW + x] = S0[(TY + y) * W + TX + x];
+    for (i = 0; i < N; i++) nz[i] = gauss(r);
+    var tm = 0, tv = 0, t2 = 0, n = TW * TH; for (i = 0; i < n; i++) { tm += T[i]; t2 += T[i] * T[i]; } tm /= n; for (i = 0; i < n; i++) tv += (T[i] - tm) * (T[i] - tm);
+    box.innerHTML = '<div class="demo-head">🔍 Template Matching 탐색 시연</div>' +
+      '<div class="demo-controls"><label><span>점수 지도</span><select id="tm-m"><option value="ssd">SSD (작을수록 일치)</option><option value="ncc" selected>NCC (1에 가까울수록 일치)</option></select></label>' + slider('tm-g', '밝기 배율 gain', 0.5, 1.5, 0.05, 1, '') + slider('tm-o', '밝기 이동 offset', -60, 60, 5, 0, '') + slider('tm-n', '노이즈', 0, 30, 1, 3, '') +
+      '<button class="demo-btn primary" id="tm-play">▶ 탐색 시연</button></div>' +
+      '<div class="demo-row"><div class="demo-cell" style="flex:1 1 300px"><div class="cap">검사 영상 (노랑 = 현재 후보, 초록 = 최적, 흰 점선 = 정답)</div><div class="feat-view" style="max-width:none;aspect-ratio:' + W + '/' + H + '"><canvas class="px" id="tm-img" width="' + W + '" height="' + H + '"></canvas><canvas id="tm-ov" width="' + W * 2 + '" height="' + H * 2 + '"></canvas></div></div>' +
+      '<div class="demo-cell" style="flex:1 1 300px"><div class="cap" id="tm-cap">점수 지도 (밝을수록 일치)</div><div class="feat-view" style="max-width:none;aspect-ratio:' + nx + '/' + ny + '"><canvas class="px" id="tm-hm" width="' + nx * 3 + '" height="' + ny * 3 + '"></canvas></div></div>' +
+      '<div class="demo-cell" style="flex:0 0 120px"><div class="cap">템플릿 (' + TW + '×' + TH + ')</div><canvas class="demo-cv" id="tm-t" width="' + TW + '" height="' + TH + '"></canvas></div></div>' +
+      '<div class="demo-stat" id="tm-stat"></div>' +
+      '<div class="demo-hint">💡 ① [▶ 탐색 시연]으로 후보 위치를 하나씩 훑는 과정을 보세요 (점수 지도가 채워집니다). ② gain 1.0, offset 0에서는 SSD·NCC 모두 정답을 찾습니다. ③ <b>offset을 +40 이상</b>으로 올리면 SSD는 정답이 아닌 "밝기가 비슷한 평탄한 곳"을 최적으로 고르지만 NCC는 여전히 정답을 찾습니다. ④ 노이즈를 키우면 NCC 점수도 낮아지지만 정답 위치는 비교적 안정적입니다.</div>';
+    paintGray(box.querySelector('#tm-t'), T, TW, TH);
+    var cimg = box.querySelector('#tm-img'), cov = box.querySelector('#tm-ov').getContext('2d'), chm = box.querySelector('#tm-hm').getContext('2d');
+    var off = document.createElement('canvas'); off.width = nx; off.height = ny;
+    var ssd = new Float64Array(NP), ncc = new Float64Array(NP), Q = new Float32Array(N), cand = [TX - 30, TY + 10], scanN = NP, timer = null, bestS, bestN;
+    function plasma(t) { var st = [[13, 8, 135], [126, 3, 168], [204, 71, 120], [248, 149, 64], [240, 249, 33]], p = ci(t, 0, 1) * 4, k = Math.min(3, Math.floor(p)), f = p - k; return [st[k][0] + (st[k + 1][0] - st[k][0]) * f, st[k][1] + (st[k + 1][1] - st[k][1]) * f, st[k][2] + (st[k + 1][2] - st[k][2]) * f]; }
+    function compute() {
+      var g = +box.querySelector('#tm-g').value, o = +box.querySelector('#tm-o').value, ns = +box.querySelector('#tm-n').value, k, px, py, tx, ty;
+      for (k = 0; k < N; k++) Q[k] = cl(g * S0[k] + o + nz[k] * ns);
+      var S = new Float64Array((W + 1) * (H + 1)), S2 = new Float64Array((W + 1) * (H + 1));
+      for (py = 1; py <= H; py++) { var rs = 0, rs2 = 0; for (px = 1; px <= W; px++) { var v = Q[(py - 1) * W + px - 1]; rs += v; rs2 += v * v; S[py * (W + 1) + px] = S[(py - 1) * (W + 1) + px] + rs; S2[py * (W + 1) + px] = S2[(py - 1) * (W + 1) + px] + rs2; } }
+      function rsum(A, x0, y0) { var x1 = x0 + TW, y1 = y0 + TH; return A[y1 * (W + 1) + x1] - A[y0 * (W + 1) + x1] - A[y1 * (W + 1) + x0] + A[y0 * (W + 1) + x0]; }
+      var bs = 1e30, bn = -2, bsi = 0, bni = 0;
+      for (py = 0; py < ny; py++) for (px = 0; px < nx; px++) {
+        var cc = 0; for (ty = 0; ty < TH; ty++) { var qi = (py + ty) * W + px, ti = ty * TW; for (tx = 0; tx < TW; tx++) cc += Q[qi + tx] * T[ti + tx]; }
+        var sq = rsum(S, px, py), sq2 = rsum(S2, px, py), idx = py * nx + px, vr = sq2 - sq * sq / n;
+        ssd[idx] = sq2 - 2 * cc + t2; ncc[idx] = vr < 1 ? 0 : (cc - tm * sq) / Math.sqrt(vr * tv);
+        if (ssd[idx] < bs) { bs = ssd[idx]; bsi = idx; } if (ncc[idx] > bn) { bn = ncc[idx]; bni = idx; }
+      }
+      bestS = bsi; bestN = bni;
+    }
+    function drawHeat() {
+      var metric = box.querySelector('#tm-m').value, arr = metric === 'ssd' ? ssd : ncc, mn = 1e30, mx = -1e30, k;
+      for (k = 0; k < NP; k++) { if (arr[k] < mn) mn = arr[k]; if (arr[k] > mx) mx = arr[k]; }
+      var oc = off.getContext('2d'), im = oc.createImageData(nx, ny);
+      for (k = 0; k < NP; k++) { var o4 = 4 * k; if (k > scanN) { im.data[o4] = 14; im.data[o4 + 1] = 20; im.data[o4 + 2] = 32; im.data[o4 + 3] = 255; continue; } var t = metric === 'ssd' ? 1 - (arr[k] - mn) / (mx - mn + 1e-9) : (arr[k] - mn) / (mx - mn + 1e-9); t = Math.pow(t, metric === 'ssd' ? 8 : 3); var c = plasma(t); im.data[o4] = c[0]; im.data[o4 + 1] = c[1]; im.data[o4 + 2] = c[2]; im.data[o4 + 3] = 255; }
+      oc.putImageData(im, 0, 0); chm.imageSmoothingEnabled = false; chm.clearRect(0, 0, nx * 3, ny * 3); chm.drawImage(off, 0, 0, nx * 3, ny * 3);
+      var bi = metric === 'ssd' ? bestS : bestN, bx = bi % nx, by = (bi / nx) | 0;
+      chm.strokeStyle = '#34d399'; chm.lineWidth = 2; chm.strokeRect(bx * 3 - 4, by * 3 - 4, 11, 11);
+      chm.strokeStyle = '#fde047'; chm.beginPath(); chm.moveTo(cand[0] * 3 + 1.5 - 7, cand[1] * 3 + 1.5); chm.lineTo(cand[0] * 3 + 1.5 + 7, cand[1] * 3 + 1.5); chm.moveTo(cand[0] * 3 + 1.5, cand[1] * 3 + 1.5 - 7); chm.lineTo(cand[0] * 3 + 1.5, cand[1] * 3 + 1.5 + 7); chm.stroke();
+      box.querySelector('#tm-cap').textContent = metric === 'ssd' ? '점수 지도 : SSD (밝을수록 값이 작아 일치)' : '점수 지도 : NCC (밝을수록 1에 가까워 일치)';
+    }
+    function drawImg() {
+      paintGray(cimg, Q, W, H); cov.clearRect(0, 0, W * 2, H * 2);
+      cov.setLineDash([5, 4]); cov.strokeStyle = '#ffffff'; cov.lineWidth = 1.5; cov.strokeRect(TX * 2, TY * 2, TW * 2, TH * 2); cov.setLineDash([]);
+      var metric = box.querySelector('#tm-m').value, bi = metric === 'ssd' ? bestS : bestN;
+      if (scanN >= NP - 1) { cov.strokeStyle = '#34d399'; cov.lineWidth = 3; cov.strokeRect((bi % nx) * 2, ((bi / nx) | 0) * 2, TW * 2, TH * 2); }
+      cov.strokeStyle = '#fde047'; cov.lineWidth = 2; cov.strokeRect(cand[0] * 2, cand[1] * 2, TW * 2, TH * 2);
+    }
+    function stats() {
+      var ci_ = cand[1] * nx + cand[0], bx = bestS % nx, by = (bestS / nx) | 0, nxx = bestN % nx, nyy = (bestN / nx) | 0;
+      function er(a, b) { return Math.hypot(a - TX, b - TY); }
+      function tag(e) { return e <= 2 ? '<b style="color:#4ade80">정답</b>' : '<b style="color:#f87171">오검출 (정답에서 ' + e.toFixed(0) + 'px)</b>'; }
+      box.querySelector('#tm-stat').innerHTML = '현재 후보 (' + cand[0] + ', ' + cand[1] + ') &nbsp;→&nbsp; SSD <b>' + (ssd[ci_] / 1000).toFixed(1) + 'k</b> , NCC <b>' + ncc[ci_].toFixed(3) + '</b><br>' +
+        '<b>SSD 최적</b> (' + bx + ', ' + by + ') ' + tag(er(bx, by)) + ' &nbsp;|&nbsp; <b>NCC 최적</b> (' + nxx + ', ' + nyy + ') 점수 ' + ncc[bestN].toFixed(3) + ' ' + tag(er(nxx, nyy)) + ' &nbsp;|&nbsp; 정답 위치 (' + TX + ', ' + TY + ')';
+    }
+    function redraw() { drawImg(); drawHeat(); stats(); }
+    function recompute() { stop(); scanN = NP; compute(); redraw(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; box.querySelector('#tm-play').textContent = '▶ 탐색 시연'; } }
+    function setCand(px, py) { cand = [ci(px, 0, nx - 1), ci(py, 0, ny - 1)]; redraw(); }
+    ['tm-g', 'tm-o', 'tm-n'].forEach(function (id) { var el = box.querySelector('#' + id); el.addEventListener('input', function () { box.querySelector('#' + id + '-v').textContent = el.value; recompute(); }); });
+    box.querySelector('#tm-m').addEventListener('change', redraw);
+    var vi = box.querySelectorAll('.feat-view');
+    function bindDrag(view, fn) { var d = false; view.addEventListener('pointerdown', function (e) { d = true; view.setPointerCapture(e.pointerId); fn(e); }); view.addEventListener('pointermove', function (e) { if (d) fn(e); }); view.addEventListener('pointerup', function () { d = false; }); }
+    bindDrag(vi[0], function (e) { stop(); scanN = NP; var rc = vi[0].getBoundingClientRect(); setCand(Math.round((e.clientX - rc.left) / rc.width * W - TW / 2), Math.round((e.clientY - rc.top) / rc.height * H - TH / 2)); });
+    bindDrag(vi[1], function (e) { stop(); scanN = NP; var rc = vi[1].getBoundingClientRect(); setCand(Math.floor((e.clientX - rc.left) / rc.width * nx), Math.floor((e.clientY - rc.top) / rc.height * ny)); });
+    box.querySelector('#tm-play').addEventListener('click', function () {
+      if (timer) { stop(); scanN = NP; redraw(); return; }
+      scanN = 0; box.querySelector('#tm-play').textContent = '⏹ 중지';
+      timer = setInterval(function () { scanN += 160; if (scanN >= NP) { scanN = NP; stop(); cand = [bestN % nx, (bestN / nx) | 0]; if (box.querySelector('#tm-m').value === 'ssd') cand = [bestS % nx, (bestS / nx) | 0]; redraw(); return; } cand = [scanN % nx, (scanN / nx) | 0]; redraw(); }, 30);
+    });
+    compute(); redraw();
+  })();
+
+  /* =====================================================
+     3) 원형 홀 : 방사 엣지 검출 → 원 피팅 (LS vs RANSAC)
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-edge'); if (!box) return;
+    var CX = 131.4, CY = 77.9, R = 38.4, NCX = 128, NCY = 80;
+    function circ3(p1, p2, p3) {
+      var ax = p1[0], ay = p1[1], bx = p2[0], by = p2[1], cx = p3[0], cy = p3[1], d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
+      if (Math.abs(d) < 1e-9) return null;
+      var a2 = ax * ax + ay * ay, b2 = bx * bx + by * by, c2 = cx * cx + cy * cy, ux = (a2 * (by - cy) + b2 * (cy - ay) + c2 * (ay - by)) / d, uy = (a2 * (cx - bx) + b2 * (ax - cx) + c2 * (bx - ax)) / d;
+      return [ux, uy, Math.hypot(ax - ux, ay - uy)];
+    }
+    function kasa(pts) {
+      var M = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], v = [0, 0, 0], i, j, k;
+      pts.forEach(function (p) { var row = [p[0], p[1], 1], rhs = -(p[0] * p[0] + p[1] * p[1]); for (i = 0; i < 3; i++) { for (j = 0; j < 3; j++) M[i][j] += row[i] * row[j]; v[i] += row[i] * rhs; } });
+      for (i = 0; i < 3; i++) { var piv = i; for (k = i + 1; k < 3; k++) if (Math.abs(M[k][i]) > Math.abs(M[piv][i])) piv = k; var tm = M[i]; M[i] = M[piv]; M[piv] = tm; var tv = v[i]; v[i] = v[piv]; v[piv] = tv; for (k = i + 1; k < 3; k++) { var f = M[k][i] / M[i][i]; for (j = i; j < 3; j++) M[k][j] -= f * M[i][j]; v[k] -= f * v[i]; } }
+      var s = [0, 0, 0]; for (i = 2; i >= 0; i--) { var t = v[i]; for (j = i + 1; j < 3; j++) t -= M[i][j] * s[j]; s[i] = t / M[i][i]; }
+      var cx = -s[0] / 2, cy = -s[1] / 2; return [cx, cy, Math.sqrt(Math.max(0, cx * cx + cy * cy - s[2]))];
+    }
+    box.innerHTML = '<div class="demo-head">⭕ 원형 홀 엣지 검출 + 원 피팅</div>' +
+      '<div class="demo-controls">' + slider('ed-k', '탐색 방향 수', 12, 72, 4, 36, '') + slider('ed-d', '이물 개수', 0, 10, 1, 5, '') + slider('ed-n', '노이즈', 0, 12, 1, 4, '') + '<label><input type="checkbox" id="ed-ray"><span>탐색선 표시</span></label><button class="demo-btn" id="ed-re">🎲 이물 위치 다시 뽑기</button></div>' +
+      '<div class="feat-view" style="aspect-ratio:' + W + '/' + H + '"><canvas class="px" id="ed-img" width="' + W + '" height="' + H + '"></canvas><canvas id="ed-ov" width="' + W * 2 + '" height="' + H * 2 + '"></canvas></div>' +
+      '<table class="feat-table" id="ed-tbl"></table>' +
+      '<div class="demo-hint">💡 흰 점선 = 실제 원(정답), 주황 = 최소자승(모든 점 사용), 청록 = RANSAC. 점 색은 RANSAC 기준 정상(초록) / 이상치(빨강)입니다. 이물이 0개면 두 방법 모두 거의 정확하지만, 이물이 늘수록 최소자승은 이상치에 끌려 중심이 틀어지고 RANSAC은 거의 변하지 않습니다. 이물이 5개 이상일 때 두 중심 오차를 비교해 보세요.</div>';
+    var cimg = box.querySelector('#ed-img'), cov = box.querySelector('#ed-ov').getContext('2d'), tbl = box.querySelector('#ed-tbl'), seed = 3;
+    function update() {
+      var K = +box.querySelector('#ed-k').value, nd = +box.querySelector('#ed-d').value, ns = +box.querySelector('#ed-n').value, r = rng(seed), img = new Float32Array(N), x, y, i;
+      for (y = 0; y < H; y++) for (x = 0; x < W; x++) { var d = Math.hypot(x + 0.5 - CX, y + 0.5 - CY); img[y * W + x] = 50 + 120 / (1 + Math.exp(-(d - R) / 0.9)); }
+      var dirt = []; for (i = 0; i < nd; i++) { var ph = r() * 6.2832, outside = r() < 0.6, dl = outside ? 1.5 + r() * 2 : -(6 + r() * 3), rb = outside ? 3.5 + r() * 2 : 3 + r(), dxp = CX + (R + dl) * Math.cos(ph), dyp = CY + (R + dl) * Math.sin(ph); dirt.push([dxp, dyp, rb, outside ? 45 : 195]); }
+      dirt.forEach(function (b) { for (y = Math.floor(b[1] - b[2] - 1); y <= b[1] + b[2] + 1; y++) for (x = Math.floor(b[0] - b[2] - 1); x <= b[0] + b[2] + 1; x++) if (x >= 0 && y >= 0 && x < W && y < H && Math.hypot(x + 0.5 - b[0], y + 0.5 - b[1]) <= b[2]) img[y * W + x] = b[3]; });
+      var nr = rng(seed + 100); for (i = 0; i < N; i++) img[i] = cl(img[i] + gauss(nr) * ns);
+      paintGray(cimg, img, W, H);
+      var pts = [], rays = [], k, r0 = 22, st = 0.5, ns2 = 61;
+      for (k = 0; k < K; k++) {
+        var ang = 2 * Math.PI * k / K, ca = Math.cos(ang), sa = Math.sin(ang), prof = [], j;
+        for (j = 0; j < ns2; j++) { var rr = r0 + j * st; prof.push(bil(img, W, H, NCX + rr * ca - 0.5, NCY + rr * sa - 0.5)); }
+        var g = [], bi = 1, bv = -1e9; for (j = 1; j < ns2 - 1; j++) { g[j] = prof[j + 1] - prof[j - 1]; if (g[j] > bv) { bv = g[j]; bi = j; } }
+        var gm = g[bi - 1] === undefined ? g[bi] : g[bi - 1], gp = g[bi + 1] === undefined ? g[bi] : g[bi + 1], den = gm - 2 * g[bi] + gp, dl2 = Math.abs(den) < 1e-9 ? 0 : (gm - gp) / (2 * den), re = r0 + (bi + ci(dl2, -0.5, 0.5)) * st;
+        pts.push([NCX + re * ca, NCY + re * sa]); rays.push([ca, sa]);
+      }
+      var ls = kasa(pts), rs = rng(seed + 7), best = null, bestIn = -1, it;
+      for (it = 0; it < 200; it++) { var a = pts[Math.floor(rs() * K)], b = pts[Math.floor(rs() * K)], c = pts[Math.floor(rs() * K)]; if (a === b || b === c || a === c) continue; var m = circ3(a, b, c); if (!m || m[2] > 80) continue; var cnt = 0; pts.forEach(function (p) { if (Math.abs(Math.hypot(p[0] - m[0], p[1] - m[1]) - m[2]) <= 1.5) cnt++; }); if (cnt > bestIn) { bestIn = cnt; best = m; } }
+      var inl = pts.filter(function (p) { return best && Math.abs(Math.hypot(p[0] - best[0], p[1] - best[1]) - best[2]) <= 1.5; }), rf = inl.length >= 3 ? kasa(inl) : best;
+      cov.clearRect(0, 0, W * 2, H * 2);
+      if (box.querySelector('#ed-ray').checked) { cov.strokeStyle = 'rgba(99,102,241,.45)'; cov.lineWidth = 1; rays.forEach(function (rv) { cov.beginPath(); cov.moveTo((NCX + r0 * rv[0]) * 2, (NCY + r0 * rv[1]) * 2); cov.lineTo((NCX + (r0 + 30) * rv[0]) * 2, (NCY + (r0 + 30) * rv[1]) * 2); cov.stroke(); }); }
+      function ring(c, col, dash, lw) { cov.strokeStyle = col; cov.lineWidth = lw; cov.setLineDash(dash); cov.beginPath(); cov.arc(c[0] * 2, c[1] * 2, c[2] * 2, 0, 7); cov.stroke(); cov.setLineDash([]); }
+      ring([CX, CY, R], '#ffffff', [6, 4], 1.5); ring(ls, '#f59e0b', [], 2); if (rf) ring(rf, '#22d3ee', [], 2);
+      pts.forEach(function (p) { var ok = best && Math.abs(Math.hypot(p[0] - best[0], p[1] - best[1]) - best[2]) <= 1.5; cov.fillStyle = ok ? '#4ade80' : '#f87171'; cov.beginPath(); cov.arc(p[0] * 2, p[1] * 2, 3.5, 0, 7); cov.fill(); });
+      function ce(c) { return Math.hypot(c[0] - CX, c[1] - CY); }
+      tbl.innerHTML = '<tr><th></th><th>중심 (x, y)</th><th>반지름</th><th>중심 오차</th></tr>' +
+        '<tr><th>정답</th><td>(' + CX.toFixed(2) + ', ' + CY.toFixed(2) + ')</td><td>' + R.toFixed(2) + '</td><td>—</td></tr>' +
+        '<tr><th style="color:#f59e0b">최소자승 (모든 점)</th><td>(' + ls[0].toFixed(2) + ', ' + ls[1].toFixed(2) + ')</td><td>' + ls[2].toFixed(2) + '</td><td><b>' + ce(ls).toFixed(2) + ' px</b></td></tr>' +
+        '<tr class="hl"><th style="color:#22d3ee">RANSAC (정상 ' + inl.length + ' / ' + K + '점 사용)</th><td>(' + (rf ? rf[0].toFixed(2) : '-') + ', ' + (rf ? rf[1].toFixed(2) : '-') + ')</td><td>' + (rf ? rf[2].toFixed(2) : '-') + '</td><td><b>' + (rf ? ce(rf).toFixed(2) : '-') + ' px</b></td></tr>';
+    }
+    bindSliders(box, ['ed-k', 'ed-d', 'ed-n'], update); box.querySelector('#ed-ray').addEventListener('change', update);
+    box.querySelector('#ed-re').addEventListener('click', function () { seed += 13; update(); });
+    update();
+  })();
+
+  /* =====================================================
+     4) Sub-pixel : 정수 / 포물선 / 무게중심
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-subpix'); if (!box) return;
+    function erf(x) { var s = x < 0 ? -1 : 1, a = Math.abs(x), t = 1 / (1 + 0.3275911 * a); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-a * a)); }
+    function Phi(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+    function estimate(I) {
+      var g = [], i, i0 = 1, gv = -1e9; for (i = 1; i < 9; i++) { g[i] = (I[i + 1] - I[i - 1]) / 2; if (g[i] > gv) { gv = g[i]; i0 = i; } }
+      var gm = g[i0 - 1], gp = g[i0 + 1], den = gm - 2 * g[i0] + gp, d = (i0 === 1 || i0 === 8 || Math.abs(den) < 1e-9) ? 0 : (gm - gp) / (2 * den), s = 0, sw = 0;
+      for (i = Math.max(1, i0 - 2); i <= Math.min(8, i0 + 2); i++) { var w = Math.max(g[i], 0); s += i * w; sw += w; }
+      return { g: g, i0: i0, para: i0 + ci(d, -0.5, 0.5), cen: sw > 0 ? s / sw : i0 };
+    }
+    box.innerHTML = '<div class="demo-head">🎯 Sub-pixel 엣지 위치 추정</div>' +
+      '<div class="demo-controls">' + slider('sp-x', '엣지 실제 위치', 3.5, 5.5, 0.01, 4.3, 'px') + slider('sp-s', '블러 σ (초점 흐림)', 0.3, 3, 0.1, 0.8, 'px') + slider('sp-n', '노이즈', 0, 10, 0.5, 1, '') + '<button class="demo-btn" id="sp-re">🎲 노이즈 다시 뽑기</button></div>' +
+      '<canvas class="demo-cv" id="sp-cv" width="760" height="300" style="max-width:760px;margin:0 auto;image-rendering:auto"></canvas>' +
+      '<table class="feat-table" id="sp-tbl"></table>' +
+      '<div class="demo-hint">💡 왼쪽은 픽셀 밝기(점)와 실제 엣지 프로파일(곡선), 오른쪽은 gradient입니다. 흰색 = 정수 픽셀, 노랑 = 포물선 보간, 분홍 = 무게중심, 초록 = 실제 위치. 표 아래쪽의 "300회 반복 RMS 오차"는 엣지 위치를 바꿔가며 반복 측정한 평균적인 정밀도입니다. 정수 픽셀은 0.3px 안팎의 오차가 항상 남는 반면, Sub-pixel 기법은 이보다 훨씬 작은 오차를 보입니다. 블러 σ를 2 이상으로 키우거나 노이즈를 올리면 오차가 다시 커집니다.</div>';
+    var cv = box.querySelector('#sp-cv'), ctx = cv.getContext('2d'), tbl = box.querySelector('#sp-tbl'), seed = 21;
+    function profile(xe, sg, ns, r) { var I = [], i; for (i = 0; i < 10; i++) I.push(50 + 150 * Phi((i - xe) / sg) + (ns ? gauss(r) * ns : 0)); return I; }
+    function update() {
+      var xe = +box.querySelector('#sp-x').value, sg = +box.querySelector('#sp-s').value, ns = +box.querySelector('#sp-n').value, r = rng(seed), I = profile(xe, sg, ns, r), e = estimate(I), i;
+      ctx.clearRect(0, 0, 760, 300); ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, 760, 300);
+      var ax = function (v) { return 40 + v * 33; }, ay = function (v) { return 260 - v / 255 * 220; };
+      ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1; for (i = 0; i < 10; i++) { ctx.beginPath(); ctx.moveTo(ax(i), 30); ctx.lineTo(ax(i), 262); ctx.stroke(); }
+      ctx.fillStyle = '#9ca3af'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('① 밝기 프로파일 (픽셀 위치 0~9)', 40 + 4.5 * 33, 18); for (i = 0; i < 10; i++) ctx.fillText(i, ax(i), 278);
+      ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 2; ctx.beginPath(); for (var t = 0; t <= 9.001; t += 0.05) { var yv = 50 + 150 * Phi((t - xe) / sg); if (t === 0) ctx.moveTo(ax(t), ay(yv)); else ctx.lineTo(ax(t), ay(yv)); } ctx.stroke();
+      ctx.fillStyle = '#e5e7eb'; I.forEach(function (v, k) { ctx.beginPath(); ctx.arc(ax(k), ay(v), 4, 0, 7); ctx.fill(); });
+      ctx.strokeStyle = '#10b981'; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(ax(xe), 30); ctx.lineTo(ax(xe), 262); ctx.stroke(); ctx.setLineDash([]);
+      var bx = 400, bw = 33, gmax = 1; for (i = 1; i < 9; i++) gmax = Math.max(gmax, Math.abs(e.g[i]));
+      var bxp = function (v) { return bx + v * bw; }, gy = function (v) { return 190 - v / gmax * 130; };
+      ctx.fillStyle = '#9ca3af'; ctx.textAlign = 'center'; ctx.fillText('② gradient (밝기 변화율)', bx + 4.5 * bw, 18); for (i = 0; i < 10; i++) ctx.fillText(i, bxp(i), 278);
+      ctx.strokeStyle = '#374151'; ctx.beginPath(); ctx.moveTo(bx - 10, gy(0)); ctx.lineTo(bx + 9 * bw + 10, gy(0)); ctx.stroke();
+      for (i = 1; i < 9; i++) { ctx.fillStyle = i === e.i0 ? '#f59e0b' : '#4b5563'; var h2 = gy(e.g[i]); ctx.fillRect(bxp(i) - 8, Math.min(h2, gy(0)), 16, Math.abs(gy(0) - h2)); }
+      var g0 = e.g[e.i0], gm = e.g[e.i0 - 1], gp = e.g[e.i0 + 1], den = gm - 2 * g0 + gp;
+      if (e.i0 > 1 && e.i0 < 8 && Math.abs(den) > 1e-9) { var a = den / 2, b = (gp - gm) / 2; ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2; ctx.beginPath(); for (var u = -1.4; u <= 1.4; u += 0.05) { var gv = a * u * u + b * u + g0; if (u === -1.4) ctx.moveTo(bxp(e.i0 + u), gy(gv)); else ctx.lineTo(bxp(e.i0 + u), gy(gv)); } ctx.stroke(); }
+      function vline(v, col, dash) { ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(bxp(v), 40); ctx.lineTo(bxp(v), 262); ctx.stroke(); ctx.setLineDash([]); }
+      vline(xe, '#10b981', [5, 4]); vline(e.i0, '#ffffff', [2, 3]); vline(e.cen, '#f472b6', []); vline(e.para, '#fde047', []);
+      var tr = rng(77), se = [0, 0, 0], T = 300, k;
+      for (k = 0; k < T; k++) { var x2 = 4 + tr(), es = estimate(profile(x2, sg, ns, tr)); se[0] += (es.i0 - x2) * (es.i0 - x2); se[1] += (es.para - x2) * (es.para - x2); se[2] += (es.cen - x2) * (es.cen - x2); }
+      tbl.innerHTML = '<tr><th>방법</th><th>추정 위치</th><th>이 측정의 오차</th><th>300회 반복 RMS 오차</th></tr>' +
+        '<tr><th>정수 픽셀 (gradient 최대 위치)</th><td>' + e.i0.toFixed(2) + '</td><td>' + Math.abs(e.i0 - xe).toFixed(3) + ' px</td><td>' + Math.sqrt(se[0] / T).toFixed(3) + ' px</td></tr>' +
+        '<tr class="hl"><th style="color:#fde047">포물선 보간</th><td>' + e.para.toFixed(3) + '</td><td><b>' + Math.abs(e.para - xe).toFixed(3) + ' px</b></td><td><b>' + Math.sqrt(se[1] / T).toFixed(3) + ' px</b></td></tr>' +
+        '<tr class="hl"><th style="color:#f472b6">무게중심 (±2 픽셀)</th><td>' + e.cen.toFixed(3) + '</td><td><b>' + Math.abs(e.cen - xe).toFixed(3) + ' px</b></td><td><b>' + Math.sqrt(se[2] / T).toFixed(3) + ' px</b></td></tr>';
+    }
+    bindSliders(box, ['sp-x', 'sp-s', 'sp-n'], update); box.querySelector('#sp-re').addEventListener('click', function () { seed += 5; update(); });
+    update();
+  })();
+
+  /* =====================================================
+     5) Affine 행렬 / 합성 순서 / Perspective
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-affine'); if (!box) return;
+    box.innerHTML = '<div class="demo-head">🧮 Affine 변환 행렬</div>' +
+      '<div class="demo-controls">' + slider('af-tx', '이동 tx', -80, 80, 1, 50, 'px') + slider('af-ty', '이동 ty', -60, 60, 1, 20, 'px') + slider('af-th', '회전 θ', -90, 90, 1, 30, '°') + slider('af-s', '배율 s', 0.5, 1.5, 0.05, 1, '') + '</div>' +
+      '<div class="demo-controls"><label><span>합성 순서</span><select id="af-o"><option value="TRS">회전·배율 후 이동 (M = T·R·S)</option><option value="RST">이동 후 회전·배율 (M = R·S·T)</option></select></label><label><input type="checkbox" id="af-inv"><span>Align : 역변환(M⁻¹) 적용</span></label></div>' +
+      '<canvas class="demo-cv" id="af-cv" width="520" height="300" style="max-width:520px;margin:0 auto;image-rendering:auto"></canvas>' +
+      '<div class="demo-stat" id="af-stat" style="font-family:\'Courier New\',monospace"></div>' +
+      '<div class="demo-hint">💡 회색 점선 = 기준 위치, 주황 = 선택한 순서로 변환된 결과, 흐린 보라 = 반대 순서의 결과입니다. 같은 tx·ty·θ인데 순서에 따라 도착 위치가 달라집니다(이동 후 회전하면 이동량도 함께 회전하기 때문). 정렬은 "측정한 변환 M"을 구해 역변환 M⁻¹로 되돌리는 것이므로, [Align] 체크 시 결과가 기준 위치에 정확히 겹칩니다.</div>';
+    var cv = box.querySelector('#af-cv'), ctx = cv.getContext('2d'), OX = 260, OY = 150;
+    var OBJ = [[-80, -50], [80, -50], [80, 50], [-80, 50]];
+    function mul(A, B) { return [A[0] * B[0] + A[1] * B[3], A[0] * B[1] + A[1] * B[4], A[0] * B[2] + A[1] * B[5] + A[2], A[3] * B[0] + A[4] * B[3], A[3] * B[1] + A[4] * B[4], A[3] * B[2] + A[4] * B[5] + A[5]]; }
+    function inv(M) { var d = M[0] * M[4] - M[1] * M[3]; return [M[4] / d, -M[1] / d, (M[1] * M[5] - M[4] * M[2]) / d, -M[3] / d, M[0] / d, (M[3] * M[2] - M[0] * M[5]) / d]; }
+    function ap(M, p) { return [M[0] * p[0] + M[1] * p[1] + M[2], M[3] * p[0] + M[4] * p[1] + M[5]]; }
+    function drawObj(M, fill, stroke, dash) {
+      ctx.setLineDash(dash || []); ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.fillStyle = fill;
+      ctx.beginPath(); OBJ.forEach(function (p, i) { var q = ap(M, p); if (i === 0) ctx.moveTo(OX + q[0], OY + q[1]); else ctx.lineTo(OX + q[0], OY + q[1]); }); ctx.closePath(); if (fill) ctx.fill(); ctx.stroke();
+      var h = ap(M, [30, 10]), h2 = ap(M, [48, 10]), mk = [ap(M, [-80, -50]), ap(M, [-50, -50]), ap(M, [-80, -20])];
+      ctx.beginPath(); ctx.arc(OX + h[0], OY + h[1], 18 * Math.hypot(M[0], M[3]), 0, 7); ctx.stroke();
+      ctx.beginPath(); mk.forEach(function (q, i) { if (i === 0) ctx.moveTo(OX + q[0], OY + q[1]); else ctx.lineTo(OX + q[0], OY + q[1]); }); ctx.closePath(); ctx.fillStyle = stroke; ctx.fill(); ctx.setLineDash([]);
+    }
+    function update() {
+      var tx = +box.querySelector('#af-tx').value, ty = +box.querySelector('#af-ty').value, th = +box.querySelector('#af-th').value * Math.PI / 180, s = +box.querySelector('#af-s').value, ord = box.querySelector('#af-o').value, ai = box.querySelector('#af-inv').checked;
+      ['af-tx', 'af-ty', 'af-th', 'af-s'].forEach(function (id) { box.querySelector('#' + id + '-v').textContent = box.querySelector('#' + id).value; });
+      var c = Math.cos(th), sn = Math.sin(th), T = [1, 0, tx, 0, 1, ty, 0, 0, 1], R = [c, -sn, 0, sn, c, 0], S = [s, 0, 0, 0, s, 0], Tm = [1, 0, tx, 0, 1, ty];
+      var M1 = mul(Tm, mul(R, S)), M2 = mul(mul(R, S), Tm), M = ord === 'TRS' ? M1 : M2, Mo = ord === 'TRS' ? M2 : M1;
+      ctx.clearRect(0, 0, 520, 300); ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, 520, 300);
+      ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, OY); ctx.lineTo(520, OY); ctx.moveTo(OX, 0); ctx.lineTo(OX, 300); ctx.stroke();
+      drawObj([1, 0, 0, 0, 1, 0], null, '#6b7280', [6, 4]);
+      if (!ai) drawObj(Mo, null, 'rgba(168,85,247,.45)', [3, 3]);
+      var shown = ai ? mul(inv(M), M) : M; drawObj(shown, ai ? 'rgba(74,222,128,.15)' : 'rgba(245,158,11,.15)', ai ? '#4ade80' : '#f59e0b');
+      function f(v) { return (v >= 0 ? ' ' : '') + v.toFixed(2); }
+      box.querySelector('#af-stat').innerHTML = (ord === 'TRS' ? 'M = T · R · S' : 'M = R · S · T') + ' &nbsp;(선택한 순서)<br>' +
+        '┌ ' + f(M[0]) + ' ' + f(M[1]) + ' ' + f(M[2]) + ' ┐<br>' +
+        '└ ' + f(M[3]) + ' ' + f(M[4]) + ' ' + f(M[5]) + ' ┘<br>' +
+        '<span style="font-family:Pretendard,sans-serif">' + (ai ? '→ 역변환 M⁻¹을 적용해 기준 위치로 되돌림 (결과 = 단위행렬)' : '→ 이 행렬 하나로 이동·회전·배율이 동시에 적용됩니다') + '</span><br>' +
+        '<span style="color:#9ca3af">반대 순서 행렬의 이동 성분 (tx\', ty\') = (' + Mo[2].toFixed(1) + ', ' + Mo[5].toFixed(1) + ') &nbsp;vs&nbsp; 선택한 순서 (' + M[2].toFixed(1) + ', ' + M[5].toFixed(1) + ')</span>';
+    }
+    bindSliders(box, ['af-tx', 'af-ty', 'af-th', 'af-s'], update); box.querySelector('#af-o').addEventListener('change', update); box.querySelector('#af-inv').addEventListener('change', update);
+    update();
+  })();
+
+  (function () {
+    var box = document.getElementById('demo-persp'); if (!box) return;
+    box.innerHTML = '<div class="demo-head">📷 카메라 기울기 보정 : Affine vs Perspective</div>' +
+      '<div class="demo-controls">' + slider('pp-k', '카메라 기울기 k', -0.35, 0.35, 0.01, 0.25, '') + '</div>' +
+      '<div class="demo-row"><div class="demo-cell"><div class="cap">① 기울어진 카메라로 찍힌 격자</div><canvas class="demo-cv" id="pp-a" width="240" height="200" style="image-rendering:auto"></canvas></div>' +
+      '<div class="demo-cell"><div class="cap">② Affine 보정 (최소자승 최적)</div><canvas class="demo-cv" id="pp-b" width="240" height="200" style="image-rendering:auto"></canvas></div>' +
+      '<div class="demo-cell"><div class="cap">③ Perspective 보정</div><canvas class="demo-cv" id="pp-c" width="240" height="200" style="image-rendering:auto"></canvas></div></div>' +
+      '<div class="demo-stat" id="pp-stat"></div>' +
+      '<div class="demo-hint">💡 회색 점선 = 올바른 격자 위치(정답), 색 선 = 보정 결과입니다. 사다리꼴 왜곡은 평행선이 평행으로 유지되지 않는 변환이라 Affine(평행선 보존 변환)으로는 완전히 펼 수 없고 오차가 남습니다. Perspective는 이를 정확히 되돌립니다. k를 키울수록 Affine의 잔여 오차가 커집니다.</div>';
+    var SX = 80, SY = 60, CXp = 120, CYp = 100, NG = 8, MG = 5, pts = [], i, j;
+    for (j = 0; j <= MG; j++) for (i = 0; i <= NG; i++) pts.push([-1 + 2 * i / NG, -1 + 2 * j / MG]);
+    function distort(p, k) { var d = 1 + k * p[1]; return [p[0] / d, p[1] / d]; }
+    function solve3(M, v) { var a = M.map(function (r) { return r.slice(); }), b = v.slice(), n = 3, ii, jj, kk; for (ii = 0; ii < n; ii++) { var pv = ii; for (kk = ii + 1; kk < n; kk++) if (Math.abs(a[kk][ii]) > Math.abs(a[pv][ii])) pv = kk; var t = a[ii]; a[ii] = a[pv]; a[pv] = t; var tb = b[ii]; b[ii] = b[pv]; b[pv] = tb; for (kk = ii + 1; kk < n; kk++) { var f = a[kk][ii] / a[ii][ii]; for (jj = ii; jj < n; jj++) a[kk][jj] -= f * a[ii][jj]; b[kk] -= f * b[ii]; } } var s = [0, 0, 0]; for (ii = n - 1; ii >= 0; ii--) { var q = b[ii]; for (jj = ii + 1; jj < n; jj++) q -= a[ii][jj] * s[jj]; s[ii] = q / a[ii][ii]; } return s; }
+    function affineFit(src, dst) { var M = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], bx = [0, 0, 0], by = [0, 0, 0]; src.forEach(function (p, n) { var r = [p[0], p[1], 1], a, b; for (a = 0; a < 3; a++) { for (b = 0; b < 3; b++) M[a][b] += r[a] * r[b]; bx[a] += r[a] * dst[n][0]; by[a] += r[a] * dst[n][1]; } }); return [solve3(M, bx), solve3(M, by)]; }
+    function grid(ctx, f, col) {
+      ctx.setLineDash([]); ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      for (var a = 0; a <= NG; a++) { var p1 = f([-1 + 2 * a / NG, -1]), p2 = f([-1 + 2 * a / NG, 1]); ctx.beginPath(); ctx.moveTo(CXp + p1[0] * SX, CYp + p1[1] * SY); ctx.lineTo(CXp + p2[0] * SX, CYp + p2[1] * SY); ctx.stroke(); }
+      for (var b = 0; b <= MG; b++) { var q1 = f([-1, -1 + 2 * b / MG]), q2 = f([1, -1 + 2 * b / MG]); ctx.beginPath(); ctx.moveTo(CXp + q1[0] * SX, CYp + q1[1] * SY); ctx.lineTo(CXp + q2[0] * SX, CYp + q2[1] * SY); ctx.stroke(); }
+    }
+    function ref(ctx) { ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, 240, 200); ctx.setLineDash([4, 3]); ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1; for (var a = 0; a <= NG; a++) { ctx.beginPath(); ctx.moveTo(CXp + (-1 + 2 * a / NG) * SX, CYp - SY); ctx.lineTo(CXp + (-1 + 2 * a / NG) * SX, CYp + SY); ctx.stroke(); } for (var b = 0; b <= MG; b++) { ctx.beginPath(); ctx.moveTo(CXp - SX, CYp + (-1 + 2 * b / MG) * SY); ctx.lineTo(CXp + SX, CYp + (-1 + 2 * b / MG) * SY); ctx.stroke(); } ctx.setLineDash([]); }
+    function update() {
+      var k = +box.querySelector('#pp-k').value; box.querySelector('#pp-k-v').textContent = k.toFixed(2);
+      var cA = box.querySelector('#pp-a').getContext('2d'), cB = box.querySelector('#pp-b').getContext('2d'), cC = box.querySelector('#pp-c').getContext('2d');
+      var dist = pts.map(function (p) { return distort(p, k); }), fit = affineFit(dist, pts);
+      var aff = function (p) { var d = distort(p, k); return [fit[0][0] * d[0] + fit[0][1] * d[1] + fit[0][2], fit[1][0] * d[0] + fit[1][1] * d[1] + fit[1][2]]; };
+      var persp = function (p) { var d = distort(p, k), den = 1 - k * d[1]; return [d[0] / den, d[1] / den]; };
+      ref(cA); grid(cA, function (p) { return distort(p, k); }, '#f87171'); ref(cB); grid(cB, aff, '#f59e0b'); ref(cC); grid(cC, persp, '#22d3ee');
+      var ea = 0, ep = 0; pts.forEach(function (p) { var q = aff(p), r = persp(p); ea = Math.max(ea, Math.hypot((q[0] - p[0]) * SX, (q[1] - p[1]) * SY)); ep = Math.max(ep, Math.hypot((r[0] - p[0]) * SX, (r[1] - p[1]) * SY)); });
+      var eo = 0; pts.forEach(function (p) { var q = distort(p, k); eo = Math.max(eo, Math.hypot((q[0] - p[0]) * SX, (q[1] - p[1]) * SY)); });
+      box.querySelector('#pp-stat').innerHTML = '격자 점의 최대 위치 오차 : 보정 전 <b>' + eo.toFixed(1) + ' px</b> → Affine 보정 후 <b style="color:#f59e0b">' + ea.toFixed(1) + ' px</b> → Perspective 보정 후 <b style="color:#22d3ee">' + ep.toFixed(2) + ' px</b> &nbsp;(표시 배율 기준)';
+    }
+    bindSliders(box, ['pp-k'], update); update();
+  })();
+})();
+</script>
 </body>
 </html>
