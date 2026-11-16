@@ -168,6 +168,31 @@
         }
 
         .nav-footer { display: flex; justify-content: space-between; margin-top: 10px; }
+
+        .demo-box { background:#0b1120; border:1px solid #1f2937; border-radius:12px; padding:16px; margin:16px 0; }
+        .demo-head { font-weight:700; color:#a5b4fc; margin-bottom:10px; font-size:14px; }
+        .demo-controls { display:flex; flex-wrap:wrap; gap:10px 22px; margin-bottom:12px; font-size:13px; color:var(--sub); align-items:center; }
+        .demo-controls label { display:flex; align-items:center; gap:8px; }
+        .demo-controls input[type=range] { accent-color:#6366f1; }
+        .demo-controls select { background:#111827; color:var(--text); border:1px solid #374151; border-radius:6px; padding:3px 6px; }
+        .demo-controls .val { min-width:34px; color:#fbbf24; font-family:'Courier New',monospace; }
+        .demo-btns { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px 0; }
+        .demo-btn { background:#111827; color:var(--text); border:1px solid #374151; border-radius:8px; padding:6px 12px; cursor:pointer; font-family:inherit; font-size:13px; }
+        .demo-btn:hover { border-color:#6366f1; }
+        .demo-btn.primary { background:#6366f1; border-color:#6366f1; color:#fff; }
+        .demo-canvas { display:block; margin:0 auto; width:100%; max-width:480px; background:#0b1120; border:1px solid #1f2937; border-radius:8px; }
+        .feat-view { position:relative; width:100%; max-width:640px; margin:0 auto; aspect-ratio:256/160; border:1px solid #1f2937; border-radius:8px; overflow:hidden; background:#0b1120; }
+        .feat-view canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
+        .feat-view canvas.px { image-rendering:pixelated; }
+        .demo-stat { max-width:640px; margin:10px auto 0; font-size:13px; color:var(--text); background:rgba(99,102,241,.08); border-left:3px solid var(--primary); padding:8px 12px; border-radius:6px; line-height:1.7; }
+        .demo-hint { max-width:640px; margin:8px auto 0; font-size:12.5px; color:var(--sub); }
+        .demo-msg { max-width:480px; margin:10px auto 0; font-size:13.5px; color:var(--text); background:rgba(245,158,11,.08); border-left:3px solid #f59e0b; padding:8px 12px; border-radius:6px; min-height:42px; }
+        .chip { display:inline-block; font-size:12px; padding:1px 8px; border-radius:999px; margin:2px 4px 2px 0; color:#0b1120; font-weight:700; }
+        .feat-table { width:100%; max-width:640px; margin:10px auto 0; border-collapse:collapse; font-size:13px; }
+        .feat-table th, .feat-table td { border:1px solid #1f2937; padding:6px 10px; text-align:left; color:var(--sub); }
+        .feat-table th { color:var(--text); background:rgba(99,102,241,.1); width:44%; font-weight:600; }
+        .feat-table td b { color:#fbbf24; }
+        .feat-table tr.hl td, .feat-table tr.hl th { background:rgba(245,158,11,.08); }
     </style>
 </head>
 <body>
@@ -216,6 +241,10 @@
                     여러 개의 임시 라벨이 사실은 하나의 덩어리라는 사실을 효율적으로 관리하는 자료구조이다. "이 라벨의 최종 대표는 누구인가"를 빠르게 찾고(Find), 두 그룹을 하나로 합칠(Union) 수 있게 해준다. 이 구조 덕분에 영상을 여러 번 다시 훑지 않고도, 단 두 번의 스캔만으로 전체 라벨링을 끝낼 수 있다.
                 </div>
 
+                <h3>직접 해보기 — Two-pass 라벨링 단계별 보기</h3>
+                <p>[▶ 다음]을 눌러 한 픽셀씩 진행하며, 라벨이 어떻게 붙고 어떤 시점에 "두 라벨은 같은 덩어리"라는 등가 관계가 기록되는지 확인해 보세요. 연결성을 4/8로 바꾸면 결과가 어떻게 달라지는지도 비교할 수 있습니다.</p>
+                <div id="demo-ccl"></div>
+
                 <h3>Flood Fill (다른 접근 방식)</h3>
                 <p>임의의 전경 픽셀 하나에서 시작해, 그 픽셀에 인접한 전경 픽셀들을 재귀적으로 계속 따라가며 하나의 덩어리 전체를 한 번에 채워나가는 방식이다. 개념은 직관적이지만, 큰 영상에서는 재귀 깊이가 깊어지거나 처리 속도 면에서 Two-pass 방식보다 비효율적일 수 있다.</p>
                 <div class="ipvm-tag">
@@ -233,6 +262,9 @@
                     <li><strong>Bounding Box(외접 사각형)</strong> : Blob 전체를 포함하는 가장 작은 사각형</li>
                     <li><strong>Pixel Count(픽셀 수)</strong> : Blob을 구성하는 픽셀의 총 개수 — 이것이 곧 다음 절에서 다룰 Area(면적)의 기초가 됨</li>
                 </ul>
+                <h3>직접 해보기 — Blob을 클릭해서 기본 속성 확인</h3>
+                <p>라벨링이 끝난 영상입니다. Blob을 클릭하면 Bounding Box, 무게중심, 픽셀 수가 표시되고, 무게중심이 어떤 계산으로 나왔는지도 숫자로 확인할 수 있습니다.</p>
+                <div id="demo-pick"></div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span>무게중심은 <code>GetBlobMassCenter()</code>로 계산한다.</span>
@@ -264,6 +296,10 @@
                 <h3>Rectangularity(직각성)</h3>
                 <p>Blob의 면적이 그 Bounding Box 면적에서 차지하는 비율이다. 사각형에 가까운 형태(패턴 결함, 깨짐 등)를 판별하는 데 활용된다.</p>
 
+                <h3>직접 해보기 — 도형별 Feature 계산과 Bounding Box vs MBR</h3>
+                <p>도형을 고르고 회전시켜 보세요. 영상 위에 Bounding Box(청록), 최소 회전 외접 사각형 MBR(분홍), PCA 주축(초록)이 겹쳐 그려지고, 아래 표에서 Feature 값이 실시간으로 계산됩니다. 회전해도 달라지지 않는 값과 달라지는 값을 비교해 보는 것이 포인트입니다.</p>
+                <div id="demo-feature"></div>
+
                 <h3>Struct Factor(직선성 팩터)</h3>
                 <p>Blob의 주축 방향을 따라 픽셀들이 얼마나 일관되게 좁고 길게 분포하는지를 정량화한 지표이다. 직선형인 스크래치와, 형태가 불규칙한 이물을 구분하는 데 사용된다.</p>
                 <div class="ipvm-tag">
@@ -286,6 +322,13 @@
                     <strong>핵심 요약</strong><br>
                     Blob 분석의 본질은 단순히 "덩어리를 찾는 것"이 아니라, 그 덩어리로부터 형태를 정량적으로 설명하는 숫자(Feature)들을 뽑아내는 것이다. 이 숫자들이 조합되어야 비로소 결함 유형을 구분할 수 있는 근거가 된다.
                 </div>
+                <h3>직접 해보기 — Feature 필터 놀이터</h3>
+                <p>이물, 스크래치, 얼룩, 노이즈 점이 섞인 가상 영상입니다. 슬라이더로 조건을 설정하면 조건을 모두 통과(AND)한 Blob은 초록색, 탈락한 Blob은 회색이 됩니다. 아래 표는 결함 유형별로 몇 개가 통과했는지 보여주며, 영상 위에 마우스를 올리면 해당 Blob의 Feature를 볼 수 있습니다.</p>
+                <div id="demo-filter"></div>
+
+                <h3>직접 해보기 — 쪼개진 Blob 병합 (BlobLink / BlobMerge 개념)</h3>
+                <p>하나의 결함이 이진화 때문에 여러 조각으로 갈라져 검출되는 경우가 많습니다. 조각이 많으면 Feature(면적, 종횡비)가 달라져 판정이 틀어집니다. 병합 거리를 늘리며, 가까운 조각들이 하나로 합쳐지는 과정과 너무 크게 잡았을 때 생기는 부작용(과병합)을 확인해 보세요.</p>
+                <div id="demo-merge"></div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span>Feature 기준의 1차 필터링은 <code>BlobFiltering_SmallerThanArea/SizeX/SizeY()</code>, <code>BlobFiltering_LargerThanArea/SizeX/SizeY()</code>로 바로 적용할 수 있다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 <code>BlobLink()</code>/<code>BlobMerge()</code>가 별도로 있다는 것 — 실제 현장에서는 하나의 결함이 노이즈나 부분적인 가림 때문에 여러 조각의 Blob으로 쪼개져 검출되는 경우가 잦은데, 이 함수들은 거리 기준으로 가까운 Blob들을 판정 전에 다시 하나로 합쳐준다. Area·Aspect Ratio 같은 Feature를 계산하기 전에 "애초에 하나였어야 할 덩어리"를 복원해주는 전처리 성격의 후처리 단계인 셈이다. 이 모든 옵션(연결성, 필터 조건, 병합 거리, 계산할 Feature 종류)은 <code>Blob_Attribute</code> 클래스 하나에 파라미터로 설정해두고 재사용하는 구조로 되어 있다.</span>
@@ -303,5 +346,454 @@
     <footer>
         <p>© 2026 NDoubleUK · 머신비전 특화 - 검사 알고리즘 스터디</p>
     </footer>
+
+<script>
+(function () {
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function ci(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  var PAL = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6', '#eab308', '#84cc16', '#f97316', '#06b6d4', '#8b5cf6'];
+  function palette(l) { return PAL[(l - 1) % PAL.length]; }
+
+  /* ---------- 공용 : 윤곽 추적(Moore) / Feature 계산 ---------- */
+  var DX = [1, 1, 0, -1, -1, -1, 0, 1], DY = [0, 1, 1, 1, 0, -1, -1, -1];
+  function dirIndex(dx, dy) { for (var k = 0; k < 8; k++) if (DX[k] === dx && DY[k] === dy) return k; return 0; }
+  function traceContour(isFg, w, h, sx, sy) {
+    var path = [[sx, sy]], cx = sx, cy = sy, bdir = 4, first = -1, guard = 0;
+    while (guard++ < 50000) {
+      var found = -1, k;
+      for (k = 1; k <= 8; k++) { var d = (bdir + k) & 7, nx = cx + DX[d], ny = cy + DY[d]; if (nx >= 0 && ny >= 0 && nx < w && ny < h && isFg(nx, ny)) { found = d; break; } }
+      if (found < 0) return path;
+      if (first < 0) first = found; else if (cx === sx && cy === sy && found === first) break;
+      var pd = (found + 7) & 7, bx = cx + DX[pd], by = cy + DY[pd];
+      cx += DX[found]; cy += DY[found]; path.push([cx, cy]);
+      bdir = dirIndex(bx - cx, by - cy);
+    }
+    return path;
+  }
+  function pathLen(path) { var s = 0, i; for (i = 1; i < path.length; i++) { var dx = path[i][0] - path[i - 1][0], dy = path[i][1] - path[i - 1][1]; s += (dx && dy) ? Math.SQRT2 : 1; } return s; }
+  function mbrOf(pts) {
+    var best = null, a, i;
+    for (a = 0; a < 180; a++) {
+      var r = a * Math.PI / 180, ca = Math.cos(r), sa = Math.sin(r), u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
+      for (i = 0; i < pts.length; i++) { var x = pts[i][0], y = pts[i][1], u = x * ca + y * sa, v = -x * sa + y * ca; if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v; }
+      var bw = u1 - u0 + 1, bh = v1 - v0 + 1;
+      if (!best || bw * bh < best.area - 1e-9) best = { ang: r, ca: ca, sa: sa, area: bw * bh, w: bw, h: bh, u0: u0 - 0.5, u1: u1 + 0.5, v0: v0 - 0.5, v1: v1 + 0.5 };
+    }
+    return best;
+  }
+  /* px : 블롭 픽셀 인덱스 배열, isFg(x,y) : 해당 블롭 판별 */
+  function blobFeatures(px, w, h, isFg) {
+    var A = px.length, sx = 0, sy = 0, i, minx = 1e9, maxx = -1, miny = 1e9, maxy = -1, first = px[0];
+    for (i = 0; i < A; i++) { var p = px[i], x = p % w, y = (p / w) | 0; sx += x; sy += y; if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y; if (p < first) first = p; }
+    var cx = sx / A, cy = sy / A, m20 = 0, m02 = 0, m11 = 0;
+    for (i = 0; i < A; i++) { var q = px[i], xx = (q % w) - cx, yy = ((q / w) | 0) - cy; m20 += xx * xx; m02 += yy * yy; m11 += xx * yy; }
+    m20 = m20 / A + 1 / 12; m02 = m02 / A + 1 / 12; m11 /= A;
+    var tmp = Math.sqrt(((m20 - m02) / 2) * ((m20 - m02) / 2) + m11 * m11), l1 = (m20 + m02) / 2 + tmp, l2 = Math.max((m20 + m02) / 2 - tmp, 1e-6);
+    var pth = traceContour(isFg, w, h, first % w, (first / w) | 0), P = pathLen(pth), pts = pth.length > 1 ? pth.slice(0, -1) : pth;
+    if (pth.length <= 1) P = 4;
+    var mb = mbrOf(pts), bw = maxx - minx + 1, bh = maxy - miny + 1;
+    return {
+      pts: pts, area: A, perim: P, circ: Math.min(1, 4 * Math.PI * A / (P * P)), cx: cx, cy: cy, minx: minx, miny: miny, bw: bw, bh: bh,
+      arBox: Math.max(bw, bh) / Math.min(bw, bh), mbr: mb, mbrLong: Math.max(mb.w, mb.h), mbrShort: Math.min(mb.w, mb.h), arMbr: Math.max(mb.w, mb.h) / Math.min(mb.w, mb.h),
+      arPca: Math.sqrt(l1 / l2), pcaAng: 0.5 * Math.atan2(2 * m11, m20 - m02), pcaL: 2 * Math.sqrt(l1),
+      rectBox: A / (bw * bh), rectMbr: A / (mb.w * mb.h)
+    };
+  }
+
+  /* =====================================================
+     1) Two-pass 라벨링 단계별 보기
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-ccl'); if (!box) return;
+    var ROWS = 8, COLS = 12, CS = 40;
+    var PATS = {
+      u: { name: 'U자 + 사각형 + 대각선 쌍', rows: ['............', '.#...#..##..', '.#...#..##..', '.#...#......', '.#####....#.', '...........#', '............', '............'] },
+      w: { name: '3개 팔이 이어지는 W형 (연쇄 병합)', rows: ['............', '#...#...#...', '#...#...#...', '#...#...#...', '#####...#...', '....#####...', '............', '............'] },
+      m: { name: '여러 덩어리', rows: ['##....##....', '##...###..#.', '......#...#.', '.#........#.', '.#.#........', '.###....#...', '........#.#.', '...........#'] }
+    };
+    box.innerHTML = '<div class="demo-head">🧩 Two-pass 라벨링 시뮬레이터</div>' +
+      '<div class="demo-controls"><label><span>패턴</span><select id="cc-pat"><option value="u">' + PATS.u.name + '</option><option value="w">' + PATS.w.name + '</option><option value="m">' + PATS.m.name + '</option></select></label>' +
+      '<label><span>연결성</span><select id="cc-conn"><option value="4">4-연결</option><option value="8">8-연결</option></select></label></div>' +
+      '<canvas id="cc-cv" class="demo-canvas" width="' + COLS * CS + '" height="' + ROWS * CS + '"></canvas>' +
+      '<div class="demo-btns"><button class="demo-btn" id="cc-first">⏮ 처음</button><button class="demo-btn" id="cc-prev">◀ 이전</button><button class="demo-btn primary" id="cc-next">▶ 다음</button><button class="demo-btn" id="cc-last">⏭ 끝까지</button><button class="demo-btn" id="cc-play">⏯ 자동 재생</button></div>' +
+      '<div class="demo-msg" id="cc-msg"></div>' +
+      '<div class="demo-stat" id="cc-eq" style="max-width:480px"></div>' +
+      '<div class="demo-hint" style="max-width:480px">💡 W형 패턴에서 1차 패스가 끝난 뒤 "라벨 → 대표" 표를 보세요. 임시 라벨이 3개였는데 등가 관계가 기록되어 하나의 대표로 묶입니다. U자 패턴의 오른쪽 아래 대각선 쌍은 4-연결이면 2개, 8-연결이면 1개의 Blob이 됩니다.</div>';
+    var cv = box.querySelector('#cc-cv'), ctx = cv.getContext('2d'), msg = box.querySelector('#cc-msg'), eqBox = box.querySelector('#cc-eq');
+    var steps = [], cur = 0, timer = null;
+
+    function build(rows, conn8) {
+      var grid = new Uint8Array(ROWS * COLS), r, c;
+      for (r = 0; r < ROWS; r++) for (c = 0; c < COLS; c++) grid[r * COLS + c] = rows[r][c] === '#' ? 1 : 0;
+      var lab = new Int32Array(ROWS * COLS), parent = [0], nxt = 1, eq = [], out = [];
+      function find(a) { while (parent[a] !== a) a = parent[a]; return a; }
+      function snap(o) { o.labels = Int32Array.from(lab); o.parent = parent.slice(); o.eq = eq.slice(); out.push(o); }
+      snap({ phase: 0, msg: '시작 : 흰 픽셀(전경)이 아직 라벨 없이 회색으로 표시되어 있습니다. [▶ 다음]을 누르면 1차 패스(왼쪽 위 → 오른쪽 아래)가 시작됩니다.', cur: -1, nb: [] });
+      var NB = conn8 ? [[-1, 0, '왼쪽'], [-1, -1, '왼쪽 위'], [0, -1, '위'], [1, -1, '오른쪽 위']] : [[-1, 0, '왼쪽'], [0, -1, '위']];
+      for (r = 0; r < ROWS; r++) for (c = 0; c < COLS; c++) {
+        var i = r * COLS + c; if (!grid[i]) continue;
+        var nbs = [], found = [], k;
+        for (k = 0; k < NB.length; k++) { var nc = c + NB[k][0], nr = r + NB[k][1]; if (nc < 0 || nr < 0 || nc >= COLS) continue; var ni = nr * COLS + nc; nbs.push(ni); if (lab[ni] > 0) found.push({ l: lab[ni], name: NB[k][2] }); }
+        var m, L;
+        if (!found.length) { L = nxt++; parent[L] = L; lab[i] = L; m = '(' + r + ',' + c + ') : 이미 라벨이 붙은 이웃이 없음 → <b>새 라벨 ' + L + '</b> 부여'; }
+        else {
+          L = found[0].l; found.forEach(function (f) { if (f.l < L) L = f.l; }); lab[i] = L;
+          var uniq = {}, list = []; found.forEach(function (f) { uniq[f.l] = 1; list.push(f.name + '=' + f.l); });
+          var distinct = Object.keys(uniq).map(Number), merged = false;
+          distinct.forEach(function (l) { if (l !== L) { var ra = find(L), rb = find(l); if (ra !== rb) { parent[Math.max(ra, rb)] = Math.min(ra, rb); eq.push([l, L]); merged = true; } } });
+          m = '(' + r + ',' + c + ') : 이웃 라벨 [' + list.join(', ') + '] → ' + (distinct.length > 1 ? '서로 다른 라벨(' + distinct.join(', ') + ')이 한 픽셀에서 만남! <b>' + L + '</b>을 부여하고 <b>등가 관계 기록</b> (Union)' : '<b>' + L + '</b>을 그대로 부여');
+        }
+        snap({ phase: 1, msg: m, cur: i, nb: nbs });
+      }
+      snap({ phase: 1, msg: '1차 패스 종료 : 임시 라벨이 ' + (nxt - 1) + '개 만들어졌고 기록된 등가 관계는 ' + eq.length + '개입니다. 아래 "라벨 → 대표" 표를 확인하세요. 이제 2차 패스에서 대표 라벨로 통일합니다.', cur: -1, nb: [] });
+      var changed = 0;
+      for (r = 0; r < ROWS; r++) for (c = 0; c < COLS; c++) {
+        var j = r * COLS + c; if (!grid[j]) continue;
+        var rt = find(lab[j]);
+        if (rt !== lab[j]) { var old = lab[j]; lab[j] = rt; changed++; snap({ phase: 2, msg: '(' + r + ',' + c + ') : 라벨 ' + old + ' → 대표 라벨 <b>' + rt + '</b>로 통일 (Find)', cur: j, nb: [] }); }
+      }
+      var roots = {}; for (var q = 0; q < lab.length; q++) if (lab[q]) roots[lab[q]] = 1;
+      snap({ phase: 3, msg: '완료 : 최종 <b>Blob ' + Object.keys(roots).length + '개</b> (' + (conn8 ? '8' : '4') + '-연결). ' + (changed ? '2차 패스에서 ' + changed + '개 픽셀의 라벨이 통일되었습니다.' : '통일할 라벨이 없어 2차 패스에서 바뀐 픽셀이 없습니다.'), cur: -1, nb: [] });
+      return out;
+    }
+    function find2(parent, a) { while (parent[a] !== a) a = parent[a]; return a; }
+    function render() {
+      var s = steps[cur], r, c, i;
+      ctx.clearRect(0, 0, cv.width, cv.height); ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, cv.width, cv.height);
+      var pat = PATS[box.querySelector('#cc-pat').value].rows;
+      for (r = 0; r < ROWS; r++) for (c = 0; c < COLS; c++) {
+        i = r * COLS + c; var x = c * CS, y = r * CS;
+        if (pat[r][c] === '#') {
+          var l = s.labels[i];
+          ctx.fillStyle = l ? palette(l) : '#6b7280'; ctx.fillRect(x + 2, y + 2, CS - 4, CS - 4);
+          if (l) { ctx.fillStyle = '#0b1120'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(l, x + CS / 2, y + CS / 2 + 1); }
+        }
+        ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 1; ctx.strokeRect(x + 0.5, y + 0.5, CS, CS);
+      }
+      s.nb.forEach(function (n) { var x = (n % COLS) * CS, y = ((n / COLS) | 0) * CS; ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(x + 3, y + 3, CS - 6, CS - 6); ctx.setLineDash([]); });
+      if (s.cur >= 0) { var cx2 = (s.cur % COLS) * CS, cy2 = ((s.cur / COLS) | 0) * CS; ctx.strokeStyle = '#fde047'; ctx.lineWidth = 4; ctx.strokeRect(cx2 + 2, cy2 + 2, CS - 4, CS - 4); }
+      var phaseName = ['준비', '1차 패스 (스캔 + 등가 기록)', '2차 패스 (대표 라벨로 통일)', '완료'][s.phase];
+      msg.innerHTML = '<span style="color:#f59e0b;font-weight:700">[' + phaseName + ' · ' + cur + '/' + (steps.length - 1) + ']</span> ' + s.msg +
+        '<div style="font-size:12px;color:#9ca3af;margin-top:4px">노란 테두리 = 현재 픽셀, 청록 점선 = 확인 중인 이웃(이미 지나온 위치만)</div>';
+      var created = 0, k; for (k = 1; k < s.parent.length; k++) created = k;
+      var h = '<b>라벨 → 대표(Root)</b> &nbsp;';
+      if (!created) h += '<span style="color:#9ca3af">아직 라벨이 없음</span>';
+      for (k = 1; k <= created; k++) { var rt = find2(s.parent, k); h += '<span class="chip" style="background:' + palette(k) + '">' + k + (rt !== k ? ' → ' + rt : ' (대표)') + '</span>'; }
+      h += '<br><b>기록된 등가 관계(Union)</b> &nbsp;' + (s.eq.length ? s.eq.map(function (e) { return e[0] + ' ≡ ' + e[1]; }).join(' , ') : '<span style="color:#9ca3af">없음</span>');
+      eqBox.innerHTML = h;
+    }
+    function reset() { stop(); steps = build(PATS[box.querySelector('#cc-pat').value].rows, box.querySelector('#cc-conn').value === '8'); cur = 0; render(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; box.querySelector('#cc-play').textContent = '⏯ 자동 재생'; } }
+    box.querySelector('#cc-pat').addEventListener('change', reset); box.querySelector('#cc-conn').addEventListener('change', reset);
+    box.querySelector('#cc-first').addEventListener('click', function () { stop(); cur = 0; render(); });
+    box.querySelector('#cc-prev').addEventListener('click', function () { stop(); cur = Math.max(0, cur - 1); render(); });
+    box.querySelector('#cc-next').addEventListener('click', function () { stop(); cur = Math.min(steps.length - 1, cur + 1); render(); });
+    box.querySelector('#cc-last').addEventListener('click', function () { stop(); cur = steps.length - 1; render(); });
+    box.querySelector('#cc-play').addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      if (cur >= steps.length - 1) cur = 0;
+      box.querySelector('#cc-play').textContent = '⏸ 일시정지';
+      timer = setInterval(function () { if (cur >= steps.length - 1) { stop(); return; } cur++; render(); }, 450);
+    });
+    reset();
+  })();
+
+  /* =====================================================
+     2) 도형별 Feature 계산 (BBox vs MBR)
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-feature'); if (!box) return;
+    var FW = 256, FH = 160, FN = FW * FH;
+    function inside(kind, x, y) {
+      switch (kind) {
+        case 'circle': return x * x + y * y <= 900;
+        case 'square': return Math.abs(x) <= 28 && Math.abs(y) <= 28;
+        case 'bar': return Math.abs(x) <= 45 && Math.abs(y) <= 18;
+        case 'scratch': return Math.abs(x) <= 60 && Math.abs(y) <= 1.7;
+        case 'ellipse': return x * x / (46 * 46) + y * y / (22 * 22) <= 1;
+        case 'ell': return (x >= -28 && x <= -12 && y >= -30 && y <= 30) || (x >= -28 && x <= 32 && y >= 14 && y <= 30);
+        case 'irr': { var th = Math.atan2(y, x), r = 27 * (1 + 0.25 * Math.sin(3 * th) + 0.15 * Math.sin(5 * th + 1) + 0.1 * Math.sin(7 * th)); return Math.sqrt(x * x + y * y) <= r; }
+      }
+      return false;
+    }
+    var KINDS = [['circle', '원 (이물)'], ['square', '정사각형'], ['bar', '직사각형'], ['ellipse', '타원'], ['scratch', '가는 선 (스크래치)'], ['ell', 'L자형'], ['irr', '울퉁불퉁한 덩어리 (얼룩)']];
+    box.innerHTML = '<div class="demo-head">📐 Feature 계산 시각화</div>' +
+      '<div class="demo-controls"><label><span>도형</span><select id="ft-kind">' + KINDS.map(function (k) { return '<option value="' + k[0] + '">' + k[1] + '</option>'; }).join('') + '</select></label>' +
+      '<label><span>회전</span><input id="ft-rot" type="range" min="0" max="180" step="1" value="0"><span class="val" id="ft-rot-v" style="min-width:44px">0°</span></label></div>' +
+      '<div class="demo-controls"><label><input type="checkbox" id="ft-bbox" checked><span style="color:#22d3ee">Bounding Box</span></label><label><input type="checkbox" id="ft-mbr" checked><span style="color:#f472b6">MBR</span></label><label><input type="checkbox" id="ft-pca" checked><span style="color:#4ade80">PCA 주축</span></label></div>' +
+      '<div class="feat-view"><canvas class="px" id="ft-px" width="' + FW + '" height="' + FH + '"></canvas><canvas id="ft-ov" width="512" height="320"></canvas></div>' +
+      '<table class="feat-table" id="ft-table"></table>' +
+      '<div class="demo-hint">💡 ① <b>가는 선</b>을 고르고 회전을 0° → 45°로 움직여 보세요. Bounding Box 종횡비는 1에 가깝게 무너지지만 MBR·PCA 종횡비는 그대로입니다. ② <b>직사각형</b>을 45°로 돌리면 BBox 기준 직각성은 약 0.5로 떨어지고 MBR 기준은 1에 가깝습니다. ③ <b>원</b>도 디지털 영상에서는 원형도가 1이 아니라 0.9 안팎으로 나옵니다(픽셀 계단 때문에 체인코드 둘레가 실제보다 길게 측정되기 때문).</div>';
+    var px = box.querySelector('#ft-px').getContext('2d'), ov = box.querySelector('#ft-ov').getContext('2d'), tbl = box.querySelector('#ft-table');
+    function make(kind, deg) {
+      var mask = new Uint8Array(FN), t = deg * Math.PI / 180, ca = Math.cos(t), sa = Math.sin(t), x, y;
+      for (y = 0; y < FH; y++) for (x = 0; x < FW; x++) { var dx = x + 0.5 - 128, dy = y + 0.5 - 80, lx = dx * ca + dy * sa, ly = -dx * sa + dy * ca; if (inside(kind, lx, ly)) mask[y * FW + x] = 1; }
+      return mask;
+    }
+    function update() {
+      var kind = box.querySelector('#ft-kind').value, deg = +box.querySelector('#ft-rot').value;
+      box.querySelector('#ft-rot-v').textContent = deg + '°';
+      var mask = make(kind, deg), list = [], i; for (i = 0; i < FN; i++) if (mask[i]) list.push(i);
+      var f = blobFeatures(list, FW, FH, function (x, y) { return mask[y * FW + x] === 1; });
+      var im = px.createImageData(FW, FH); for (i = 0; i < FN; i++) { var v = mask[i] ? 235 : 14; im.data[4 * i] = v; im.data[4 * i + 1] = mask[i] ? 235 : 20; im.data[4 * i + 2] = mask[i] ? 235 : 32; im.data[4 * i + 3] = 255; } px.putImageData(im, 0, 0);
+      ov.clearRect(0, 0, 512, 320); ov.lineWidth = 2;
+      if (box.querySelector('#ft-bbox').checked) { ov.strokeStyle = '#22d3ee'; ov.strokeRect(f.minx * 2, f.miny * 2, f.bw * 2, f.bh * 2); }
+      if (box.querySelector('#ft-mbr').checked) {
+        var m = f.mbr, cs = [[m.u0, m.v0], [m.u1, m.v0], [m.u1, m.v1], [m.u0, m.v1]]; ov.strokeStyle = '#f472b6'; ov.beginPath();
+        cs.forEach(function (p, k) { var X = (p[0] * m.ca - p[1] * m.sa + 0.5) * 2, Y = (p[0] * m.sa + p[1] * m.ca + 0.5) * 2; if (k === 0) ov.moveTo(X, Y); else ov.lineTo(X, Y); }); ov.closePath(); ov.stroke();
+      }
+      if (box.querySelector('#ft-pca').checked) {
+        var L = Math.min(f.pcaL, 150), dx = Math.cos(f.pcaAng), dy = Math.sin(f.pcaAng), X = (f.cx + 0.5) * 2, Y = (f.cy + 0.5) * 2;
+        ov.strokeStyle = '#4ade80'; ov.setLineDash([6, 4]); ov.beginPath(); ov.moveTo(X - dx * L * 2, Y - dy * L * 2); ov.lineTo(X + dx * L * 2, Y + dy * L * 2); ov.stroke();
+        ov.beginPath(); ov.moveTo(X + dy * L * 0.5 * 2, Y - dx * L * 0.5 * 2); ov.lineTo(X - dy * L * 0.5 * 2, Y + dx * L * 0.5 * 2); ov.stroke(); ov.setLineDash([]);
+      }
+      ov.fillStyle = '#fde047'; ov.beginPath(); ov.arc((f.cx + 0.5) * 2, (f.cy + 0.5) * 2, 4, 0, 7); ov.fill();
+      function r2(v) { return v.toFixed(2); }
+      tbl.innerHTML =
+        '<tr><th>면적 Area</th><td><b>' + f.area + '</b> px</td></tr>' +
+        '<tr><th>둘레 Perimeter (체인코드)</th><td><b>' + f.perim.toFixed(1) + '</b></td></tr>' +
+        '<tr><th>원형도 4π·A / P²</th><td><b>' + r2(f.circ) + '</b></td></tr>' +
+        '<tr class="hl"><th>종횡비 ① Bounding Box (축 정렬)</th><td>' + f.bw + ' × ' + f.bh + ' → <b>' + r2(f.arBox) + '</b></td></tr>' +
+        '<tr class="hl"><th>종횡비 ② MBR (회전 최소 외접 사각형)</th><td>' + f.mbrLong.toFixed(1) + ' × ' + f.mbrShort.toFixed(1) + ' → <b>' + r2(f.arMbr) + '</b></td></tr>' +
+        '<tr class="hl"><th>종횡비 ③ PCA (√(λ1/λ2))</th><td><b>' + r2(f.arPca) + '</b></td></tr>' +
+        '<tr><th>직각성 ① BBox 기준 (A / BBox 넓이)</th><td><b>' + r2(f.rectBox) + '</b></td></tr>' +
+        '<tr><th>직각성 ② MBR 기준 (A / MBR 넓이)</th><td><b>' + r2(f.rectMbr) + '</b></td></tr>' +
+        '<tr><th>무게중심 Centroid</th><td>(' + f.cx.toFixed(1) + ', ' + f.cy.toFixed(1) + ')</td></tr>';
+    }
+    ['#ft-kind', '#ft-rot', '#ft-bbox', '#ft-mbr', '#ft-pca'].forEach(function (s) { box.querySelector(s).addEventListener('input', update); box.querySelector(s).addEventListener('change', update); });
+    update();
+  })();
+
+  /* =====================================================
+     3) Feature 필터 놀이터
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-filter'); if (!box) return;
+    var W = 256, H = 160, N = W * H, TYPES = ['', '이물', '스크래치', '얼룩', '노이즈'];
+    function scene() {
+      var r = rng(2024), mask = new Uint8Array(N), type = new Uint8Array(N), placed = [], i;
+      function free(x, y, rad) { for (var k = 0; k < placed.length; k++) { var p = placed[k]; if (Math.hypot(p[0] - x, p[1] - y) < p[2] + rad + 6) return false; } return true; }
+      function pos(rad) { for (var t = 0; t < 400; t++) { var x = rad + 4 + r() * (W - 2 * rad - 8), y = rad + 4 + r() * (H - 2 * rad - 8); if (free(x, y, rad)) { placed.push([x, y, rad]); return [x, y]; } } return null; }
+      function put(x, y, tp) { if (x >= 0 && y >= 0 && x < W && y < H) { mask[y * W + x] = 1; type[y * W + x] = tp; } }
+      function disc(tp, R, irr, lobes) {
+        var p = pos(R * (1 + irr) + 1); if (!p) return; var ph = r() * 6.28, ph2 = r() * 6.28, y, x;
+        for (y = Math.floor(p[1] - R * 2); y <= p[1] + R * 2; y++) for (x = Math.floor(p[0] - R * 2); x <= p[0] + R * 2; x++) { var dx = x - p[0], dy = y - p[1], th = Math.atan2(dy, dx), rr = R * (1 + irr * (Math.sin(lobes * th + ph) + 0.5 * Math.sin((lobes + 2) * th + ph2)) * 0.75); if (Math.hypot(dx, dy) <= rr) put(x, y, tp); }
+      }
+      function line(len, th) {
+        var p = pos(len / 2 + 2); if (!p) return; var a = r() * Math.PI, ca = Math.cos(a), sa = Math.sin(a), y, x, hl = len / 2;
+        for (y = Math.floor(p[1] - hl - 3); y <= p[1] + hl + 3; y++) for (x = Math.floor(p[0] - hl - 3); x <= p[0] + hl + 3; x++) { var dx = x + 0.5 - p[0], dy = y + 0.5 - p[1], u = dx * ca + dy * sa, v = -dx * sa + dy * ca; if (Math.abs(u) <= hl && Math.abs(v) <= th / 2) put(x, y, 2); }
+      }
+      for (i = 0; i < 6; i++) disc(1, 5 + r() * 4, 0.06, 3);
+      for (i = 0; i < 3; i++) line(36 + r() * 20, 2.4);
+      for (i = 0; i < 2; i++) disc(3, 18 + r() * 3, 0.42, 4);
+      for (i = 0; i < 14; i++) { var p = pos(2); if (!p) continue; var x0 = Math.floor(p[0]), y0 = Math.floor(p[1]), q = r(); put(x0, y0, 4); if (q > 0.5) put(x0 + 1, y0, 4); if (q > 0.85) put(x0, y0 + 1, 4); }
+      return { mask: mask, type: type };
+    }
+    var sc = scene();
+    /* 8-연결 라벨링 */
+    var lab = new Int32Array(N), nb = 0, blobs = [];
+    (function () {
+      var st = new Int32Array(N), i, sp;
+      for (i = 0; i < N; i++) if (sc.mask[i] && !lab[i]) {
+        nb++; sp = 0; st[sp++] = i; lab[i] = nb; var px = [];
+        while (sp) { var p = st[--sp]; px.push(p); var x = p % W, y = (p / W) | 0, dy, dx; for (dy = -1; dy <= 1; dy++) for (dx = -1; dx <= 1; dx++) { var nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; var q = ny * W + nx; if (sc.mask[q] && !lab[q]) { lab[q] = nb; st[sp++] = q; } } }
+        var id = nb, f = blobFeatures(px, W, H, function (x, y) { return lab[y * W + x] === id; }); f.id = id; f.type = sc.type[i]; blobs.push(f);
+      }
+    })();
+
+    box.innerHTML = '<div class="demo-head">🎚️ Feature 조합으로 결함 유형 가려내기</div>' +
+      '<div class="demo-controls" style="margin-bottom:6px"><span>프리셋 :</span><button class="demo-btn" data-p="none">조건 없음</button><button class="demo-btn" data-p="area">Area만 (≥ 30)</button><button class="demo-btn" data-p="part">이물 규칙</button><button class="demo-btn" data-p="scr">스크래치 규칙</button></div>' +
+      '<div class="demo-controls"><label><span>최소 면적</span><input id="fl-area" type="range" min="0" max="600" step="5" value="0"><span class="val" id="fl-area-v" style="min-width:40px">0</span></label>' +
+      '<label><span>최소 원형도</span><input id="fl-circ" type="range" min="0" max="1" step="0.05" value="0"><span class="val" id="fl-circ-v">0.00</span></label>' +
+      '<label><span>최소 종횡비</span><input id="fl-armin" type="range" min="1" max="20" step="0.5" value="1"><span class="val" id="fl-armin-v">1.0</span></label>' +
+      '<label><span>최대 종횡비</span><input id="fl-armax" type="range" min="1" max="40" step="0.5" value="40"><span class="val" id="fl-armax-v">40.0</span></label></div>' +
+      '<div class="feat-view"><canvas class="px" id="fl-px" width="' + W + '" height="' + H + '"></canvas><canvas id="fl-ov" width="512" height="320"></canvas></div>' +
+      '<div class="demo-stat" id="fl-info" style="color:#9ca3af">영상 위에 마우스를 올리면 해당 Blob의 Feature가 표시됩니다.</div>' +
+      '<table class="feat-table" id="fl-table"></table>' +
+      '<div class="demo-hint">💡 ① <b>Area만 (≥ 30)</b> : 노이즈 점은 사라지지만 이물·스크래치·얼룩이 모두 남습니다 — 면적만으로는 유형을 못 나눕니다. ② <b>이물 규칙</b>(면적 + 원형도 + 종횡비 상한) : 길쭉한 스크래치와 불규칙한 얼룩이 함께 걸러집니다. ③ <b>스크래치 규칙</b>(종횡비 하한)만으로도 스크래치가 분리되는지 확인해 보세요. 이렇게 Feature를 AND로 조합한 것이 다음 챕터의 판정 규칙입니다. (가상 데이터라 수치는 예시용입니다)</div>';
+    var px = box.querySelector('#fl-px').getContext('2d'), ov = box.querySelector('#fl-ov').getContext('2d'), tbl = box.querySelector('#fl-table'), info = box.querySelector('#fl-info');
+    var IDS = { area: '#fl-area', circ: '#fl-circ', armin: '#fl-armin', armax: '#fl-armax' };
+    function params() { return { area: +box.querySelector(IDS.area).value, circ: +box.querySelector(IDS.circ).value, armin: +box.querySelector(IDS.armin).value, armax: +box.querySelector(IDS.armax).value }; }
+    function pass(b, p) { return b.area >= p.area && b.circ >= p.circ && b.arMbr >= p.armin && b.arMbr <= p.armax; }
+    function update() {
+      var p = params(); box.querySelector('#fl-area-v').textContent = p.area; box.querySelector('#fl-circ-v').textContent = p.circ.toFixed(2); box.querySelector('#fl-armin-v').textContent = p.armin.toFixed(1); box.querySelector('#fl-armax-v').textContent = p.armax.toFixed(1);
+      var passed = {}, i; blobs.forEach(function (b) { passed[b.id] = pass(b, p); });
+      var im = px.createImageData(W, H);
+      for (i = 0; i < N; i++) { var o = 4 * i, l = lab[i]; if (!l) { im.data[o] = 14; im.data[o + 1] = 20; im.data[o + 2] = 32; } else if (passed[l]) { im.data[o] = 16; im.data[o + 1] = 185; im.data[o + 2] = 129; } else { im.data[o] = 107; im.data[o + 1] = 114; im.data[o + 2] = 128; } im.data[o + 3] = 255; }
+      px.putImageData(im, 0, 0);
+      ov.clearRect(0, 0, 512, 320); ov.strokeStyle = '#34d399'; ov.lineWidth = 2;
+      blobs.forEach(function (b) { if (passed[b.id]) ov.strokeRect(b.minx * 2 - 3, b.miny * 2 - 3, b.bw * 2 + 6, b.bh * 2 + 6); });
+      var cnt = {}, tot = {}, k; for (k = 1; k <= 4; k++) { cnt[k] = 0; tot[k] = 0; }
+      blobs.forEach(function (b) { tot[b.type]++; if (passed[b.id]) cnt[b.type]++; });
+      var passAll = 0; blobs.forEach(function (b) { if (passed[b.id]) passAll++; });
+      tbl.innerHTML = '<tr><th style="width:30%">결함 유형 (정답)</th><th style="width:20%">통과 / 전체</th><th>통과 비율</th></tr>' +
+        [1, 2, 3, 4].map(function (t) { return '<tr><th>' + TYPES[t] + '</th><td><b>' + cnt[t] + '</b> / ' + tot[t] + '</td><td><div style="height:10px;border-radius:5px;background:' + ['', '#10b981', '#3b82f6', '#f59e0b', '#9ca3af'][t] + ';width:' + (tot[t] ? 100 * cnt[t] / tot[t] : 0) + '%"></div></td></tr>'; }).join('') +
+        '<tr><th>합계 (통과한 Blob)</th><td><b>' + passAll + '</b> / ' + blobs.length + '</td><td></td></tr>';
+    }
+    Object.keys(IDS).forEach(function (k) { box.querySelector(IDS[k]).addEventListener('input', update); });
+    var PRE = { none: [0, 0, 1, 40], area: [30, 0, 1, 40], part: [30, 0.65, 1, 2.5], scr: [30, 0, 6, 40] };
+    box.querySelectorAll('[data-p]').forEach(function (btn) { btn.addEventListener('click', function () { var v = PRE[btn.getAttribute('data-p')]; box.querySelector(IDS.area).value = v[0]; box.querySelector(IDS.circ).value = v[1]; box.querySelector(IDS.armin).value = v[2]; box.querySelector(IDS.armax).value = v[3]; update(); }); });
+    var view = box.querySelector('.feat-view');
+    view.addEventListener('pointermove', function (e) {
+      var r = view.getBoundingClientRect(), x = Math.floor((e.clientX - r.left) / r.width * W), y = Math.floor((e.clientY - r.top) / r.height * H), l = 0, dx, dy;
+      for (dy = -2; dy <= 2 && !l; dy++) for (dx = -2; dx <= 2 && !l; dx++) { var xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < W && yy < H && lab[yy * W + xx]) l = lab[yy * W + xx]; }
+      if (!l) { info.style.color = '#9ca3af'; info.textContent = '영상 위의 흰 Blob에 마우스를 올려 보세요.'; return; }
+      var b = blobs[l - 1]; info.style.color = ''; info.innerHTML = '정답 유형 <b>' + TYPES[b.type] + '</b> &nbsp;|&nbsp; 면적 <b>' + b.area + '</b> &nbsp;|&nbsp; 원형도 <b>' + b.circ.toFixed(2) + '</b> &nbsp;|&nbsp; 종횡비(MBR) <b>' + b.arMbr.toFixed(1) + '</b>';
+    });
+    update();
+  })();
+
+  /* 공용 : 8-연결 라벨링 (BFS) */
+  function labelAll(mask, W, H) {
+    var N = W * H, lab = new Int32Array(N), st = new Int32Array(N), blobs = [], nb = 0, i, sp;
+    for (i = 0; i < N; i++) if (mask[i] && !lab[i]) {
+      nb++; sp = 0; st[sp++] = i; lab[i] = nb; var px = [];
+      while (sp) { var p = st[--sp]; px.push(p); var x = p % W, y = (p / W) | 0, dy, dx; for (dy = -1; dy <= 1; dy++) for (dx = -1; dx <= 1; dx++) { var nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; var q = ny * W + nx; if (mask[q] && !lab[q]) { lab[q] = nb; st[sp++] = q; } } }
+      var id = nb, f = blobFeatures(px, W, H, function (x, y) { return lab[y * W + x] === id; }); f.id = id; f.px = px; blobs.push(f);
+    }
+    return { lab: lab, blobs: blobs };
+  }
+
+  /* =====================================================
+     4) Blob 클릭 → 기본 속성
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-pick'); if (!box) return;
+    var W = 256, H = 160, N = W * H, mask = new Uint8Array(N), x, y;
+    function distSeg(px, py, ax, ay, bx, by) { var dx = bx - ax, dy = by - ay, t = ci(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy), 0, 1), ex = px - (ax + t * dx), ey = py - (ay + t * dy); return Math.sqrt(ex * ex + ey * ey); }
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var dx = x + 0.5, dy = y + 0.5, on = false;
+      if ((dx - 44) * (dx - 44) + (dy - 42) * (dy - 42) <= 13 * 13) on = true;
+      if (dx >= 95 && dx <= 135 && dy >= 28 && dy <= 48) on = true;
+      if (distSeg(dx, dy, 160, 25, 225, 70) <= 1.7) on = true;
+      if ((dx >= 25 && dx <= 37 && dy >= 95 && dy <= 135) || (dx >= 25 && dx <= 65 && dy >= 123 && dy <= 135)) on = true;
+      var th = Math.atan2(dy - 112, dx - 125), rr = 18 * (1 + 0.28 * Math.sin(3 * th + 0.5) + 0.12 * Math.sin(5 * th));
+      if (Math.hypot(dx - 125, dy - 112) <= rr) on = true;
+      var ex = dx - 208, ey = dy - 115, ca = Math.cos(0.52), sa = Math.sin(0.52), lx = ex * ca + ey * sa, ly = -ex * sa + ey * ca;
+      if (lx * lx / (17 * 17) + ly * ly / (8 * 8) <= 1) on = true;
+      if (on) mask[y * W + x] = 1;
+    }
+    var L = labelAll(mask, W, H), lab = L.lab, blobs = L.blobs, sel = lab[42 * W + 44] || 1;
+    box.innerHTML = '<div class="demo-head">👆 Blob 클릭 — 기본 속성 확인</div>' +
+      '<div class="demo-controls"><label><input type="checkbox" id="pk-num" checked><span>Blob 번호 표시</span></label></div>' +
+      '<div class="feat-view" style="cursor:pointer"><canvas class="px" id="pk-px" width="' + W + '" height="' + H + '"></canvas><canvas id="pk-ov" width="512" height="320"></canvas></div>' +
+      '<table class="feat-table" id="pk-table"></table>' +
+      '<div class="demo-hint">💡 Blob을 클릭해 보세요. 가는 선(1번, 스크래치)은 Bounding Box가 매우 크지만 픽셀 수는 적어서 "BBox 채움 비율"이 0.1 이하로 낮습니다. 원(3번)은 약 0.8(= π/4)이고 직사각형(2번)은 1.0입니다. 채움 비율은 다음 절의 Rectangularity와 같은 개념입니다.</div>';
+    var px = box.querySelector('#pk-px').getContext('2d'), ov = box.querySelector('#pk-ov').getContext('2d'), tbl = box.querySelector('#pk-table'), view = box.querySelector('.feat-view');
+    function hex(c) { return [parseInt(c.substr(1, 2), 16), parseInt(c.substr(3, 2), 16), parseInt(c.substr(5, 2), 16)]; }
+    function draw() {
+      var im = px.createImageData(W, H), i;
+      for (i = 0; i < N; i++) { var o = 4 * i, l = lab[i]; if (!l) { im.data[o] = 14; im.data[o + 1] = 20; im.data[o + 2] = 32; } else { var c = hex(palette(l)), k = l === sel ? 1 : 0.45; im.data[o] = c[0] * k; im.data[o + 1] = c[1] * k; im.data[o + 2] = c[2] * k; } im.data[o + 3] = 255; }
+      px.putImageData(im, 0, 0);
+      ov.clearRect(0, 0, 512, 320);
+      if (box.querySelector('#pk-num').checked) { ov.font = 'bold 18px sans-serif'; ov.textAlign = 'center'; ov.textBaseline = 'middle'; blobs.forEach(function (b) { if (b.id === sel) return; ov.fillStyle = 'rgba(11,17,32,.85)'; ov.fillRect((b.cx + 0.5) * 2 - 11, (b.cy + 0.5) * 2 - 11, 22, 22); ov.fillStyle = '#fff'; ov.fillText(b.id, (b.cx + 0.5) * 2, (b.cy + 0.5) * 2 + 1); }); }
+      var b = blobs[sel - 1];
+      ov.strokeStyle = '#fde047'; ov.lineWidth = 2; ov.setLineDash([6, 4]); ov.strokeRect(b.minx * 2, b.miny * 2, b.bw * 2, b.bh * 2); ov.setLineDash([]);
+      var X = (b.cx + 0.5) * 2, Y = (b.cy + 0.5) * 2; ov.strokeStyle = '#ffffff'; ov.lineWidth = 3; ov.beginPath(); ov.moveTo(X - 9, Y); ov.lineTo(X + 9, Y); ov.moveTo(X, Y - 9); ov.lineTo(X, Y + 9); ov.stroke();
+      ov.strokeStyle = '#ef4444'; ov.lineWidth = 1.5; ov.beginPath(); ov.moveTo(X - 9, Y); ov.lineTo(X + 9, Y); ov.moveTo(X, Y - 9); ov.lineTo(X, Y + 9); ov.stroke();
+      var t1 = 'Blob #' + b.id + '  Area ' + b.area, t2 = 'Centroid (' + b.cx.toFixed(1) + ', ' + b.cy.toFixed(1) + ')';
+      ov.font = '15px sans-serif'; ov.textAlign = 'left'; ov.textBaseline = 'top';
+      var tw = Math.max(ov.measureText(t1).width, ov.measureText(t2).width) + 14, bx = ci(b.minx * 2, 4, 508 - tw), by = b.miny * 2 - 48 >= 4 ? b.miny * 2 - 48 : (b.miny + b.bh) * 2 + 6;
+      ov.fillStyle = 'rgba(17,24,39,.94)'; ov.fillRect(bx, by, tw, 42); ov.strokeStyle = '#fde047'; ov.lineWidth = 1.5; ov.strokeRect(bx, by, tw, 42); ov.fillStyle = '#fde047'; ov.fillText(t1, bx + 7, by + 5); ov.fillStyle = '#e5e7eb'; ov.fillText(t2, bx + 7, by + 23);
+      var sx = 0, sy = 0; b.px.forEach(function (p) { sx += p % W; sy += (p / W) | 0; });
+      tbl.innerHTML =
+        '<tr><th>라벨</th><td><b>#' + b.id + '</b></td></tr>' +
+        '<tr><th>Pixel Count (면적의 기초)</th><td><b>' + b.area + '</b> px</td></tr>' +
+        '<tr><th>Σx , Σy (모든 픽셀 좌표의 합)</th><td>' + sx + ' , ' + sy + '</td></tr>' +
+        '<tr class="hl"><th>Centroid = (Σx / N , Σy / N)</th><td>(' + sx + ' / ' + b.area + ' , ' + sy + ' / ' + b.area + ') = <b>(' + b.cx.toFixed(2) + ' , ' + b.cy.toFixed(2) + ')</b></td></tr>' +
+        '<tr class="hl"><th>Bounding Box (x, y, 너비 × 높이)</th><td>(' + b.minx + ', ' + b.miny + ') , <b>' + b.bw + ' × ' + b.bh + '</b></td></tr>' +
+        '<tr><th>BBox 면적 / 채움 비율 (A ÷ BBox)</th><td>' + (b.bw * b.bh) + ' px² / <b>' + (b.area / (b.bw * b.bh)).toFixed(2) + '</b></td></tr>';
+    }
+    view.addEventListener('pointerdown', function (e) {
+      var r = view.getBoundingClientRect(), mx = Math.floor((e.clientX - r.left) / r.width * W), my = Math.floor((e.clientY - r.top) / r.height * H), l = 0, dx, dy;
+      for (dy = -2; dy <= 2 && !l; dy++) for (dx = -2; dx <= 2 && !l; dx++) { var xx = mx + dx, yy = my + dy; if (xx >= 0 && yy >= 0 && xx < W && yy < H && lab[yy * W + xx]) l = lab[yy * W + xx]; }
+      if (l) { sel = l; draw(); }
+    });
+    box.querySelector('#pk-num').addEventListener('change', draw);
+    draw();
+  })();
+
+  /* =====================================================
+     5) 쪼개진 Blob 병합 (BlobLink / BlobMerge 개념)
+  ===================================================== */
+  (function () {
+    var box = document.getElementById('demo-merge'); if (!box) return;
+    var W = 256, H = 160, N = W * H, mask = new Uint8Array(N), truth = new Uint8Array(N), x, y, i;
+    function put(px, py, id) { if (px >= 0 && py >= 0 && px < W && py < H) { mask[py * W + px] = 1; truth[py * W + px] = id; } }
+    var ang = 8 * Math.PI / 180, ca = Math.cos(ang), sa = Math.sin(ang), SEG = [[0, 14], [19, 33], [38, 55], [62, 76], [80, 96]];
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      var dx = x + 0.5 - 22, dy = y + 0.5 - 26, u = dx * ca + dy * sa, v = -dx * sa + dy * ca;
+      if (Math.abs(v) <= 1.2) for (i = 0; i < SEG.length; i++) if (u >= SEG[i][0] && u <= SEG[i][1]) put(x, y, 1);
+      var px = x + 0.5 - 195, py = y + 0.5 - 45;
+      if (Math.hypot(px, py) <= 12 && !(Math.abs(px) <= 1.0) && !(px > 0 && Math.abs(py) <= 1.0)) put(x, y, 2);
+      if (Math.hypot(x + 0.5 - 46, y + 0.5 - 115) <= 6) put(x, y, 3);
+      if (Math.hypot(x + 0.5 - 72, y + 0.5 - 115) <= 6) put(x, y, 4);
+      if (x >= 205 && x < 225 && y >= 110 && y < 122) put(x, y, 5);
+    }
+    [[120, 90], [150, 125], [30, 75], [100, 62], [235, 90], [160, 85], [240, 140]].forEach(function (p, k) { put(p[0], p[1], 6 + k); if (k % 2) put(p[0] + 1, p[1], 6 + k); });
+    var L = labelAll(mask, W, H), lab = L.lab, blobs = L.blobs, B = blobs.length, bi, bj;
+    blobs.forEach(function (b) { b.truth = truth[b.px[0]]; });
+    var dmin = []; for (bi = 0; bi < B; bi++) { dmin.push(new Float64Array(B)); }
+    for (bi = 0; bi < B; bi++) for (bj = bi + 1; bj < B; bj++) {
+      var a = blobs[bi], b = blobs[bj], gx = Math.max(0, Math.max(a.minx - (b.minx + b.bw - 1), b.minx - (a.minx + a.bw - 1))), gy = Math.max(0, Math.max(a.miny - (b.miny + b.bh - 1), b.miny - (a.miny + a.bh - 1))), best = Math.hypot(gx, gy);
+      if (best > 40) { dmin[bi][bj] = dmin[bj][bi] = 999; continue; }
+      best = 1e9; var m, n;
+      for (m = 0; m < a.px.length; m++) { var ax = a.px[m] % W, ay = (a.px[m] / W) | 0; for (n = 0; n < b.px.length; n++) { var d2 = (ax - b.px[n] % W) * (ax - b.px[n] % W) + (ay - ((b.px[n] / W) | 0)) * (ay - ((b.px[n] / W) | 0)); if (d2 < best) best = d2; } }
+      dmin[bi][bj] = dmin[bj][bi] = Math.sqrt(best);
+    }
+    box.innerHTML = '<div class="demo-head">🔗 쪼개진 Blob 병합</div>' +
+      '<div class="demo-controls"><label><span>병합 거리 d (픽셀)</span><input id="mg-d" type="range" min="0" max="20" step="1" value="0"><span class="val" id="mg-d-v">0</span></label></div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:10px;max-width:660px;margin:0 auto">' +
+      '<div style="flex:1 1 300px"><div style="text-align:center;font-size:12.5px;color:#9ca3af;margin-bottom:4px">병합 전 (조각마다 다른 색)</div><div class="feat-view" style="max-width:none"><canvas class="px" id="mg-a" width="' + W + '" height="' + H + '"></canvas></div></div>' +
+      '<div style="flex:1 1 300px"><div style="text-align:center;font-size:12.5px;color:#9ca3af;margin-bottom:4px">병합 후 (같은 그룹은 같은 색)</div><div class="feat-view" style="max-width:none"><canvas class="px" id="mg-b" width="' + W + '" height="' + H + '"></canvas><canvas id="mg-ov" width="512" height="320"></canvas></div></div></div>' +
+      '<table class="feat-table" id="mg-table"></table>' +
+      '<div class="demo-hint" id="mg-hint"></div>';
+    var ca2 = box.querySelector('#mg-a').getContext('2d'), cb = box.querySelector('#mg-b').getContext('2d'), ov = box.querySelector('#mg-ov').getContext('2d'), tbl = box.querySelector('#mg-table');
+    function hex(c) { return [parseInt(c.substr(1, 2), 16), parseInt(c.substr(3, 2), 16), parseInt(c.substr(5, 2), 16)]; }
+    function paint(ctx, colorOf) { var im = ctx.createImageData(W, H), k; for (k = 0; k < N; k++) { var o = 4 * k, l = lab[k]; if (!l) { im.data[o] = 14; im.data[o + 1] = 20; im.data[o + 2] = 32; } else { var c = hex(colorOf(l - 1)); im.data[o] = c[0]; im.data[o + 1] = c[1]; im.data[o + 2] = c[2]; } im.data[o + 3] = 255; } ctx.putImageData(im, 0, 0); }
+    var distances = []; for (bi = 0; bi < B; bi++) for (bj = bi + 1; bj < B; bj++) if (dmin[bi][bj] < 40) distances.push([dmin[bi][bj], blobs[bi].truth, blobs[bj].truth]);
+    function update() {
+      var d = +box.querySelector('#mg-d').value; box.querySelector('#mg-d-v').textContent = d;
+      var par = []; for (i = 0; i < B; i++) par.push(i);
+      function find(a) { while (par[a] !== a) a = par[a]; return a; }
+      for (bi = 0; bi < B; bi++) for (bj = bi + 1; bj < B; bj++) if (dmin[bi][bj] <= d) { var ra = find(bi), rb = find(bj); if (ra !== rb) par[Math.max(ra, rb)] = Math.min(ra, rb); }
+      var groups = {}; for (i = 0; i < B; i++) { var r = find(i); (groups[r] = groups[r] || []).push(i); }
+      paint(ca2, function (k) { return palette(k + 1); });
+      paint(cb, function (k) { return palette(find(k) + 1); });
+      ov.clearRect(0, 0, 512, 320); ov.strokeStyle = '#fff'; ov.lineWidth = 2; ov.setLineDash([5, 4]);
+      var gcount = 0, passBefore = 0, passAfter = 0, over = 0, stillFrag = 0, gFeat = {};
+      blobs.forEach(function (b) { if (b.area >= 60 && b.arMbr >= 10) passBefore++; });
+      Object.keys(groups).forEach(function (key) {
+        var g = groups[key]; gcount++;
+        var area = 0, pts = [], minx = 1e9, miny = 1e9, maxx = -1, maxy = -1, tset = {};
+        g.forEach(function (idx) { var b = blobs[idx]; area += b.area; pts = pts.concat(b.pts); minx = Math.min(minx, b.minx); miny = Math.min(miny, b.miny); maxx = Math.max(maxx, b.minx + b.bw - 1); maxy = Math.max(maxy, b.miny + b.bh - 1); tset[b.truth] = 1; });
+        var mb = mbrOf(pts), ar = Math.max(mb.w, mb.h) / Math.min(mb.w, mb.h);
+        if (area >= 60 && ar >= 10) passAfter++;
+        if (Object.keys(tset).length > 1) over++;
+        if (g.length > 1) ov.strokeRect(minx * 2 - 3, miny * 2 - 3, (maxx - minx + 1) * 2 + 6, (maxy - miny + 1) * 2 + 6);
+      });
+      ov.setLineDash([]);
+      [1, 2].forEach(function (t) { var gs = {}; blobs.forEach(function (b, idx) { if (b.truth === t) gs[find(idx)] = 1; }); if (Object.keys(gs).length > 1) stillFrag++; });
+      tbl.innerHTML = '<tr><th style="width:44%">항목</th><th style="width:20%">병합 전</th><th>병합 후 (d = ' + d + ')</th></tr>' +
+        '<tr><th>Blob 개수</th><td><b>' + B + '</b></td><td><b>' + gcount + '</b></td></tr>' +
+        '<tr class="hl"><th>스크래치 규칙 통과 개수<br><span style="font-weight:400;font-size:12px">(면적 ≥ 60 AND 종횡비 ≥ 10)</span></th><td><b>' + passBefore + '</b></td><td><b>' + passAfter + '</b></td></tr>' +
+        '<tr><th>아직 조각난 결함 (스크래치·균열 이물 중)</th><td><b>2</b> / 2</td><td><b>' + stillFrag + '</b> / 2</td></tr>' +
+        '<tr><th>과병합 (서로 다른 결함이 합쳐진 그룹)</th><td>0</td><td><b style="color:' + (over ? '#f87171' : '#fbbf24') + '">' + over + '</b></td></tr>';
+    }
+    function minD(t) {
+      var idxs = [], dd; blobs.forEach(function (b, k) { if (b.truth === t) idxs.push(k); });
+      for (dd = 0; dd < 40; dd++) { var pp = {}, a, b2; idxs.forEach(function (k) { pp[k] = k; }); var fd = function (z) { while (pp[z] !== z) z = pp[z]; return z; };
+        for (a = 0; a < idxs.length; a++) for (b2 = a + 1; b2 < idxs.length; b2++) if (dmin[idxs[a]][idxs[b2]] <= dd) { var r1 = fd(idxs[a]), r2 = fd(idxs[b2]); if (r1 !== r2) pp[r1] = r2; }
+        var roots = {}; idxs.forEach(function (k) { roots[fd(k)] = 1; }); if (Object.keys(roots).length === 1) return dd; }
+      return 40;
+    }
+    var scr = minD(1), prt = minD(2), pairD = 1e9; distances.forEach(function (t) { if ((t[1] === 3 && t[2] === 4) || (t[1] === 4 && t[2] === 3)) pairD = Math.min(pairD, t[0]); });
+    pairD = Math.ceil(pairD);
+    box.querySelector('#mg-hint').textContent = '💡 ① d = ' + prt + ' 이상 : 균열로 갈라진 이물(3조각)이 하나로 합쳐집니다. ② d = ' + scr + ' 이상 : 5조각으로 끊긴 스크래치가 모두 하나로 합쳐집니다. 조각 상태(d = 0)에서는 조각 하나하나가 면적도 종횡비도 기준에 못 미쳐 "스크래치 규칙" 통과가 0개였지만, 합치면 1개로 통과합니다. (d = 5~7은 일부 조각만 합쳐진 중간 상태입니다) ③ d = ' + pairD + ' 이상 : 원래 별개인 두 이물까지 합쳐지는 과병합이 시작됩니다. 병합 거리는 "하나였어야 할 조각 사이 간격(' + scr + ')"보다 크고 "별개 결함 사이 간격(' + pairD + ')"보다 작게 정해야 합니다. (가상 데이터)';
+    box.querySelector('#mg-d').addEventListener('input', update);
+    update();
+  })();
+})();
+</script>
 </body>
 </html>
