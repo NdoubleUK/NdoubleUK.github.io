@@ -338,7 +338,39 @@
                 <div id="demo-feature"></div>
 
                 <h3>Struct Factor(직선성 팩터)</h3>
-                <p>Blob의 주축 방향을 따라 픽셀들이 얼마나 일관되게 좁고 길게 분포하는지를 정량화한 지표이다. 직선형인 스크래치와, 형태가 불규칙한 이물을 구분하는 데 사용된다.</p>
+                <p>Blob이 <b>"가늘고 일정한 굵기로 길게 이어진 선"</b>에 얼마나 가까운지를 하나의 숫자로 나타낸 지표이다. 직선형 스크래치와, 형태가 불규칙한 이물·얼룩을 구분하는 데 사용된다.</p>
+
+                <h4 style="margin:14px 0 6px">왜 Aspect Ratio만으로는 부족한가</h4>
+                <p>종횡비는 Blob 전체를 감싸는 사각형의 <b>바깥 치수</b>만 본다. 그래서 굵고 길쭉한 얼룩, 구불구불한 머리카락 같은 이물도 종횡비가 크게 나와 스크래치와 섞인다. 스크래치를 가려내려면 바깥 치수가 아니라 <b>Blob 내부의 굵기가 어떻게 분포하는지</b>를 봐야 한다. 이를 위해 Blob의 뼈대(중심선)를 따라가며 굵기를 재는 방식을 쓴다.</p>
+
+                <h4 style="margin:14px 0 6px">계산 순서 (개념)</h4>
+                <ol>
+                    <li><b>중심선(Skeleton / Locus) 추출</b> : Blob을 안쪽에서부터 한 겹씩 깎아 1픽셀 두께의 뼈대만 남긴다(Thinning). 중심선의 길이를 <b>L</b>이라 한다.</li>
+                    <li><b>지점별 두께 측정</b> : 중심선 위의 각 점에서, 그 점이 Blob 경계까지 닿는 거리의 2배를 두께 t로 잡는다(거리 변환 값 × 2).</li>
+                    <li><b>통계 요약</b> : 두께의 평균 <b>T̄</b>와 표준편차 <b>σt</b>를 구한다.</li>
+                    <li><b>지표 계산</b> : 아래 두 값을 조합해 "선 같은 정도"를 판단한다.</li>
+                </ol>
+                <div class="formula-box">
+                    길쭉함 E = L / T̄ &nbsp;&nbsp;(클수록 가늘고 긴 선)<br>
+                    균일도 CV = σt / T̄ &nbsp;&nbsp;(작을수록 굵기가 일정)<br>
+                    직진성 S = (중심선 양끝 사이 직선 거리) / L &nbsp;&nbsp;(1에 가까울수록 곧음)
+                </div>
+                <p><b>스크래치</b>는 E가 크고 CV가 작으며 S가 1에 가깝다. <b>이물·얼룩</b>은 E가 작거나 CV가 크다(굵기가 뭉쳤다 가늘어졌다 함). 이 세 값을 각각 임계값과 비교하거나 하나로 합쳐 사용한다.</p>
+
+                <h4 style="margin:14px 0 6px">숫자 예 : 면적이 같은(400px) 두 Blob</h4>
+                <table class="compare-table">
+                    <tr><th>구분</th><th>스크래치</th><th>이물</th></tr>
+                    <tr><td>면적</td><td>400</td><td>400</td></tr>
+                    <tr><td>중심선 길이 L</td><td>100</td><td>30</td></tr>
+                    <tr><td>평균 두께 T̄ (= 면적 ÷ L)</td><td>4.0</td><td>13.3</td></tr>
+                    <tr><td>5지점 두께 샘플</td><td>4, 4, 5, 4, 3</td><td>6, 18, 22, 14, 6</td></tr>
+                    <tr><td>두께 표준편차 σt</td><td>0.63</td><td>6.4</td></tr>
+                    <tr class="hl"><td>길쭉함 E = L / T̄</td><td><b>25</b></td><td><b>2.3</b></td></tr>
+                    <tr class="hl"><td>균일도 CV = σt / T̄</td><td><b>0.16</b></td><td><b>0.49</b></td></tr>
+                    <tr class="hl"><td>직진성 S</td><td><b>0.98</b></td><td>-</td></tr>
+                </table>
+                <p>두 Blob은 <b>면적이 400으로 동일</b>하므로 Area로는 구분이 안 된다. 하지만 E는 25 대 2.3, CV는 0.16 대 0.49로 뚜렷하게 갈린다. 이것이 Struct Factor를 따로 두는 이유다.</p>
+                <div class="note">위 E·CV·S는 개념을 이해하기 위한 <b>일반적인 정의</b>이다. 실제 장비 라이브러리가 내부적으로 어떤 식으로 값을 만들고 정규화하는지는 제품마다 다르므로, 판정 규칙에 쓸 때는 라이브러리가 반환하는 값의 분포를 샘플로 먼저 확인한 뒤 임계값을 정해야 한다.</div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span><code>GetBlobThicknessLocus()</code>가 정확히 이 개념을 구현한 함수다. <strong style="color:#fbbf24;">함께 알아두면 좋은 점</strong>은 이름 그대로 Thickness(두께)와 Locus(궤적, Blob의 중심선)를 함께 계산한다는 것 — Blob의 중심선을 따라가며 그 지점마다 두께를 측정해, 두께가 얇고 균일하게 유지된 채로 길게 이어지면 스크래치, 두께가 불균일하거나 국소적으로 뭉쳐 있으면 이물로 구분하는 실무적 지표다. 일반화된 "직선성"이라는 개념을 "중심선 + 두께 분포"라는 더 구체적이고 계산 가능한 형태로 구현한 사례로 볼 수 있다. 여기에 더해 <code>GetBlobEdgeEnergy()</code>(Blob 경계의 뚜렷함 정도)와 <code>GetBlobContrast()</code>(배경 대비 핵심/평균 대비, 이물처럼 국소적으로 진한 결함과 얼룩처럼 은은하게 퍼진 결함을 구분)까지 있어, Area·Circularity·Aspect Ratio만으로는 부족한 판별력을 보완하는 부가 Feature들이 실무에서 함께 활용되고 있음을 알 수 있다.</span>
