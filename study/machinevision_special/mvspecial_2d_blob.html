@@ -287,14 +287,51 @@
                 <p>완전한 원에 가까울수록 1에 근접하고, 모양이 길쭉하거나 불규칙할수록 1에서 멀어진다. 둥근 형태의 이물을 판별하는 핵심 지표로 쓰인다.</p>
 
                 <h3>Aspect Ratio(종횡비)</h3>
-                <p>Blob에 외접하는 최소 회전 사각형(Minimum Bounding Rectangle)을 구하거나, 주성분분석(PCA)으로 Blob의 장축·단축 방향을 구한 뒤, 그 비율(장축 길이 ÷ 단축 길이)을 계산한다. 길쭉한 스크래치를 판별하는 핵심 지표로 쓰인다.</p>
+                <p>Blob의 장축 길이 ÷ 단축 길이로 정의한다. 길쭉한 스크래치를 판별하는 핵심 지표이며, "장축·단축을 어떻게 구하느냐"에 따라 세 가지 방식이 있다.</p>
+
+                <h4 style="margin:14px 0 6px">① Bounding Box 방식 (축 정렬)</h4>
+                <div class="formula-box">AR(BBox) = max(bw, bh) / min(bw, bh)</div>
+                <p>계산은 가장 쉽지만 영상의 x·y 축에 고정된 사각형이라 Blob이 기울어지면 값이 무너진다. 45°로 놓인 가는 선은 BBox가 거의 정사각형이 되어 AR이 1에 가깝게 나온다.</p>
+
+                <h4 style="margin:14px 0 6px">② MBR (Minimum Bounding Rectangle, 최소 회전 외접 사각형)</h4>
+                <p>Blob을 감싸는 사각형 중 <b>회전을 허용하고 면적이 최소</b>인 것을 찾는다. 그 사각형의 긴 변·짧은 변이 장축·단축이 된다.</p>
+                <div class="formula-box">
+                    각도 θ를 0°~179°로 돌려 가며<br>
+                    u = x·cosθ + y·sinθ , v = −x·sinθ + y·cosθ<br>
+                    w(θ) = max(u) − min(u) + 1 , h(θ) = max(v) − min(v) + 1<br>
+                    면적 w(θ)·h(θ)가 최소인 θ* 선택 → AR(MBR) = max(w, h) / min(w, h)
+                </div>
+                <p><b>계산 과정</b> : 경계 픽셀 좌표를 θ만큼 회전시킨 뒤 그 좌표계에서 BBox를 구하는 과정을 θ마다 반복하고, 면적이 가장 작은 각도를 채택한다(이 페이지의 데모는 1° 간격으로 탐색). 정밀 구현에서는 볼록 껍질(Convex Hull)을 구한 뒤 "최소 면적 사각형은 한 변이 반드시 볼록 껍질의 변과 겹친다"는 성질을 이용해 변의 방향만 시험하는 Rotating Calipers 방식을 쓴다.</p>
+                <p><b>숫자 예</b> : 길이 20, 두께 4인 직선을 45°로 기울이면 BBox는 약 17 × 17이므로 AR(BBox) ≈ 1.0이지만, MBR은 20 × 4로 AR(MBR) = 5.0이다.</p>
+
+                <h4 style="margin:14px 0 6px">③ PCA (주성분분석, Principal Component Analysis)</h4>
+                <p>Blob 픽셀 좌표 (x, y)의 <b>분포가 어느 방향으로 얼마나 퍼져 있는지</b>를 통계로 구하는 방식이다. 사각형을 찾는 대신 좌표의 공분산 행렬을 만들어 고유값을 구한다.</p>
+                <div class="formula-box">
+                    무게중심 (x̄, ȳ) 기준으로<br>
+                    σxx = Σ(x−x̄)² / N , σyy = Σ(y−ȳ)² / N , σxy = Σ(x−x̄)(y−ȳ) / N<br>
+                    공분산 행렬 C = [[σxx, σxy], [σxy, σyy]]<br>
+                    고유값 λ1,2 = (σxx+σyy)/2 ± √( ((σxx−σyy)/2)² + σxy² )<br>
+                    장축 방향 θ = ½ · atan2( 2σxy , σxx − σyy )<br>
+                    AR(PCA) = √( λ1 / λ2 )
+                </div>
+                <p>λ1(큰 고유값)은 장축 방향 분산, λ2는 단축 방향 분산이다. 분산은 길이의 제곱 단위이므로 비율에 제곱근을 취해야 "길이 비"가 된다. 반복 탐색이 필요 없어 MBR보다 빠르고 θ까지 한 번에 나온다.</p>
+                <p><b>숫자 예</b> : σxx = 10, σyy = 10, σxy = 6 이면 λ1 = 10 + 6 = 16, λ2 = 10 − 6 = 4 이므로 AR(PCA) = √(16/4) = <b>2.0</b>, θ = ½·atan2(12, 0) = <b>45°</b>. 즉 "45° 방향으로 길쭉하고, 장축이 단축의 2배 퍼져 있다"는 뜻이다.</p>
+
+                <table class="compare-table">
+                    <tr><th>구분</th><th>기준</th><th>장점</th><th>주의점</th></tr>
+                    <tr><td>BBox</td><td>축 정렬 사각형</td><td>가장 빠르고 단순</td><td>회전하면 값이 변한다</td></tr>
+                    <tr><td>MBR</td><td>면적 최소 회전 사각형</td><td>실제 모양의 길이·폭에 직관적으로 대응</td><td>각도 탐색·볼록 껍질 계산 비용</td></tr>
+                    <tr><td>PCA</td><td>좌표 분포의 분산</td><td>한 번에 계산, 방향까지 구함, 경계 노이즈에 덜 민감</td><td>값이 "분포 폭"이라 직사각형·타원처럼 대칭인 모양은 MBR과 거의 같지만, L자·돌기가 있는 불규칙한 모양에서는 MBR과 차이가 난다</td></tr>
+                </table>
+                <div class="note">같은 Blob이라도 MBR과 PCA의 AR 값은 다를 수 있다. 판정 규칙에 쓸 때는 <b>한 방식으로 통일해서 임계값을 정하는 것</b>이 중요하다. 아래 데모에서 두 값을 비교해 보자.</div>
                 <div class="ipvm-tag">
                     <span class="ipvm-label">🔧 IPVM</span>
                     <span><code>GetBlobWidthLength()</code>가 Width/Length를 직접 반환해주므로, 이 값들의 비율을 그대로 Aspect Ratio로 사용할 수 있다.</span>
                 </div>
 
                 <h3>Rectangularity(직각성)</h3>
-                <p>Blob의 면적이 그 Bounding Box 면적에서 차지하는 비율이다. 사각형에 가까운 형태(패턴 결함, 깨짐 등)를 판별하는 데 활용된다.</p>
+                <div class="formula-box">Rectangularity = Area / (bw × bh) &nbsp;(MBR 기준 : Area / (MBR 장변 × 단변))</div>
+                <p>Blob의 면적이 그 Bounding Box 면적에서 차지하는 비율(채움 비율)이다. 꽉 찬 사각형은 1.0, 원은 π/4 ≈ 0.785, 마름모·삼각형은 약 0.5이며, 기울어진 가는 선처럼 BBox 안이 대부분 비면 0에 가까워진다. 사각형에 가까운 형태(패턴 결함, 깨짐 등)를 판별하는 데 활용된다. BBox 기준은 회전에 따라 값이 변하므로, 회전 영향을 없애려면 MBR 기준으로 계산한다.</p>
 
                 <h3>직접 해보기 — 도형별 Feature 계산과 Bounding Box vs MBR</h3>
                 <p>도형을 고르고 회전시켜 보세요. 영상 위에 Bounding Box(청록), 최소 회전 외접 사각형 MBR(분홍), PCA 주축(초록)이 겹쳐 그려지고, 아래 표에서 Feature 값이 실시간으로 계산됩니다. 회전해도 달라지지 않는 값과 달라지는 값을 비교해 보는 것이 포인트입니다.</p>
